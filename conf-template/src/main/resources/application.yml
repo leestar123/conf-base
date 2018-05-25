@@ -1,0 +1,25 @@
+spring:
+ datasource: 
+   url: jdbc:mysql://localhost:3306/conf?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8 
+   driver-class-name: com.mysql.jdbc.Driver 
+   username: root
+   password: root 
+   # 使用druid数据源
+   type: com.alibaba.druid.pool.DruidDataSource
+   filters: stat
+   maxActive: 20
+   initialSize: 1
+   maxWait: 60000
+   minIdle: 1
+   timeBetweenEvictionRunsMillis: 60000
+   minEvictableIdleTimeMillis: 300000
+   validationQuery: select 'x'
+   testWhileIdle: true
+   testOnBorrow: false
+   testOnReturn: false
+   poolPreparedStatements: true
+   maxOpenPreparedStatements: 20
+mybatis: 
+  # 重要配置 
+  type-aliases-package: com.conf.template.db.model 
+  mapper-locations: classpath:com/conf/template/db/mapper/*.xml

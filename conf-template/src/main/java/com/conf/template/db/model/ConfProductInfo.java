@@ -1,15 +1,15 @@
 package com.conf.template.db.model;
 
 /**
- * 配置节点模板
+ * 产品关联组件
  * 
  * @author li_mingxing
  *
  */
-public class ConfNodeTemplate {
+public class ConfProductInfo {
 
 	/**
-	 * 节点模板唯一ID
+	 * 唯一ID
 	 */
 	private String id;
 	
@@ -19,12 +19,12 @@ public class ConfNodeTemplate {
 	private String productId;
 	
 	/**
-	 * 节点名称
+	 * 节点ID
 	 */
 	private String nodeId;
 	
 	/**
-	 * 属性ID/规则ID
+	 * 属性/规则ID
 	 */
 	private String uid;
 }

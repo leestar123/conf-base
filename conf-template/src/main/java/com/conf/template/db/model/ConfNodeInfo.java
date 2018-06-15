@@ -19,12 +19,19 @@ public class ConfNodeInfo {
 	private String nodeName;
 	
 	/**
+	 * 说明
+	 */
+	private String remark;
+	
+	/**
 	 *  节点类型 规则节点、属性节点、配置节点
 	 */
 	private String nodeType;
 	
 	/**
-	 *  继承节点 继承该节点所有的属性
+	 *  版本号
 	 */
-	private String extendNode;
+	private String version;
+	
+	
 }

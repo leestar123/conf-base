@@ -3,7 +3,7 @@ package com.conf.template.db.model;
 public class ConfRuleInfo {
     private Integer uid;
 
-    private String name;
+    private String ruleName;
 
     private String remark;
 
@@ -23,12 +23,12 @@ public class ConfRuleInfo {
         this.uid = uid;
     }
 
-    public String getName() {
-        return name;
+    public String getRuleName() {
+        return ruleName;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setRuleName(String ruleName) {
+        this.ruleName = ruleName == null ? null : ruleName.trim();
     }
 
     public String getRemark() {

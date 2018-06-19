@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.conf.template.db.mapper.ConfNodeInfoMapper">
+  <resultMap id="BaseResultMap" type="com.conf.template.db.model.ConfNodeInfo">
+    <id column="node_id" jdbcType="INTEGER" property="nodeId" />
+    <result column="node_name" jdbcType="VARCHAR" property="nodeName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="node_type" jdbcType="VARCHAR" property="nodeType" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="teller" jdbcType="VARCHAR" property="teller" />
+    <result column="org" jdbcType="VARCHAR" property="org" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    node_id, node_name, remark, node_type, version, teller, org
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_node_info
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from conf_node_info
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.conf.template.db.model.ConfNodeInfo">
+    insert into conf_node_info (node_id, node_name, remark, 
+      node_type, version, teller, 
+      org)
+    values (#{nodeId,jdbcType=INTEGER}, #{nodeName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{nodeType,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, #{teller,jdbcType=VARCHAR}, 
+      #{org,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfNodeInfo">
+    insert into conf_node_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="nodeName != null">
+        node_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="nodeType != null">
+        node_type,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="teller != null">
+        teller,
+      </if>
+      <if test="org != null">
+        org,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=INTEGER},
+      </if>
+      <if test="nodeName != null">
+        #{nodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeType != null">
+        #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="teller != null">
+        #{teller,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        #{org,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.conf.template.db.model.ConfNodeInfo">
+    update conf_node_info
+    <set>
+      <if test="nodeName != null">
+        node_name = #{nodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeType != null">
+        node_type = #{nodeType,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="teller != null">
+        teller = #{teller,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        org = #{org,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.conf.template.db.model.ConfNodeInfo">
+    update conf_node_info
+    set node_name = #{nodeName,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      node_type = #{nodeType,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      teller = #{teller,jdbcType=VARCHAR},
+      org = #{org,jdbcType=VARCHAR}
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </update>
+</mapper>

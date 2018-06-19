@@ -1,37 +1,73 @@
 package com.conf.template.db.model;
 
-/**
- * 节点基础信息
- * 
- * @author li_mingxing
- *
- */
 public class ConfNodeInfo {
+    private Integer nodeId;
 
-	/**
-	 *  节点编号
-	 */
-	private String nodeId;
-	
-	/**
-	 *  节点名称
-	 */
-	private String nodeName;
-	
-	/**
-	 * 说明
-	 */
-	private String remark;
-	
-	/**
-	 *  节点类型 规则节点、属性节点、配置节点
-	 */
-	private String nodeType;
-	
-	/**
-	 *  版本号
-	 */
-	private String version;
-	
-	
+    private String nodeName;
+
+    private String remark;
+
+    private String nodeType;
+
+    private String version;
+
+    private String teller;
+
+    private String org;
+
+    public Integer getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(Integer nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName == null ? null : nodeName.trim();
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType == null ? null : nodeType.trim();
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version == null ? null : version.trim();
+    }
+
+    public String getTeller() {
+        return teller;
+    }
+
+    public void setTeller(String teller) {
+        this.teller = teller == null ? null : teller.trim();
+    }
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org == null ? null : org.trim();
+    }
 }

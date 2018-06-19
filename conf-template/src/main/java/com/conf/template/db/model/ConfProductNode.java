@@ -1,15 +1,17 @@
 package com.conf.template.db.model;
 
-public class ConfNodeTemplate {
+public class ConfProductNode {
     private Integer id;
+
+    private Integer productId;
 
     private Integer nodeId;
 
     private Integer uid;
 
-    private String teller;
+    private Integer teller;
 
-    private String org;
+    private Integer org;
 
     public Integer getId() {
         return id;
@@ -17,6 +19,14 @@ public class ConfNodeTemplate {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public Integer getNodeId() {
@@ -35,19 +45,19 @@ public class ConfNodeTemplate {
         this.uid = uid;
     }
 
-    public String getTeller() {
+    public Integer getTeller() {
         return teller;
     }
 
-    public void setTeller(String teller) {
-        this.teller = teller == null ? null : teller.trim();
+    public void setTeller(Integer teller) {
+        this.teller = teller;
     }
 
-    public String getOrg() {
+    public Integer getOrg() {
         return org;
     }
 
-    public void setOrg(String org) {
-        this.org = org == null ? null : org.trim();
+    public void setOrg(Integer org) {
+        this.org = org;
     }
 }

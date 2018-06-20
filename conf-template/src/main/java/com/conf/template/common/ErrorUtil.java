@@ -12,10 +12,10 @@ public class ErrorUtil {
 	 * @param msg
 	 * @return
 	 */
-	public static Map<String, ? extends Object> errorResp(ErrorCode code) {
+	public static Map<String, ? extends Object> errorResp(ErrorCode code, Object... params) {
 		Map<String, Object> data = new HashMap<>();
 		data.put("code", code.getCode());
-		data.put("msg", code.getMsg());
+		data.put("msg", code.getMsg(params));
 		data.put("success", "false");
 		return data;
 	}
@@ -31,6 +31,7 @@ public class ErrorUtil {
 		data.put("code", ErrorCode.code_0000.getCode());
 		data.put("msg", ErrorCode.code_0000.getMsg());
 		data.put("success", "true");
+		data.put("body", body);
 		return data;
 	}
 }

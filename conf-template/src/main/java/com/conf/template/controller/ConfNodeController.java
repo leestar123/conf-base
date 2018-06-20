@@ -34,9 +34,24 @@ public class ConfNodeController {
 	@RequestMapping(value="createNode", method=RequestMethod.POST)
 	public Map<String, ? extends Object> createNode(Map<String, ? extends Object> data) {
 		String nodeType = ToolsUtil.obj2Str(data.get("nodeType"));
+		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		if (StringUtils.isBlank(nodeType)) {
-			return ErrorUtil.errorResp(ErrorCode.code_0001);
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeType");
+		}
+		if (StringUtils.isBlank(nodeName)) {
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeType");
 		}
 		return nodeService.createNode(data);
+	}
+	
+	/**
+	 * 查询录入的可用组件列表
+	 * @param data
+	 * @return
+	 */
+	@RequestMapping(value="createNode", method=RequestMethod.POST)
+	public Map<String, ? extends Object> queryNodeList(Map<String, ? extends Object> data) {
+				
+		return nodeService.queryNodeList(data);
 	}
 }

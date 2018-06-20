@@ -20,15 +20,11 @@
     where uid = #{uid,jdbcType=INTEGER}
   </select>
   <select id="selectRecordList"  resultMap="BaseResultMap">
-  select 
-    <include refid="Base_Column_List" />
-    form conf_rule_info,conf_product_node,conf_node_info,conf_node_temp
-    where 
-    conf_product_node.product_id = #{productId}
-    and conf_product_node.node_id = #{nodeId}
-    and conf_product_node.node_id = conf_node_info.node_id
-    and conf_node_info.node_id = conf_node_temp.node_id
-    and conf_node_temp.uid = conf_rule_info.uid    
+  select m.*
+    from conf_product_node t left join conf_rule_info m 
+    on t.uid = m.uid
+    where t.product_id = #{productId}
+    and t.node_id = #{nodeId}   
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from conf_rule_info

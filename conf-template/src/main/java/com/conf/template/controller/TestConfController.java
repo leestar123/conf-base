@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.conf.template.db.jpa.TestConfJPA;
 import com.conf.template.db.mapper.TestConfMapper;
 import com.conf.template.scan.impl.ScanMgrImpl;
+import com.conf.template.service.RuleService;
 
 @RestController
 public class TestConfController {
 
 	@Autowired
 	private TestConfMapper testConfMapper;
-
+	@Autowired
+	private RuleService ruleService;
 	@Autowired
 	private ScanMgrImpl scanMgrImpl;
 	
@@ -27,12 +29,7 @@ public class TestConfController {
 //		testConfJPA.findById(id).get().getName();
 //		return testConfMapper.selectByPrimaryKey(id).getName();
 //		ScanMgrImpl ScanMgrImpl =new ScanMgrImpl();
-		try {
-			scanMgrImpl.firstScan();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ruleService.doRule(1, 1);
 		return "";
 	}
 }

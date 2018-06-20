@@ -3,8 +3,6 @@ package com.conf.template.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.conf.template.ErrorCode;
-
 public class ErrorUtil {
 
 	/**

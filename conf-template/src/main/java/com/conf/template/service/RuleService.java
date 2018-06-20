@@ -38,7 +38,7 @@ public class RuleService {
 		}
 
 		Class<?> cls = null;
-		Map map =null ;
+		Map map = null ;
 		for(int i=0;i<selectRecordList.size();i++)
 		{
 			try {
@@ -47,7 +47,7 @@ public class RuleService {
 				Object obj = cls.newInstance();
 				//方法名和对应的参数类型  
 			    Method method;
-			    method = cls.getMethod(selectRecordList.get(i).getMethod(),Map.class); 
+			    method = cls.getMethod(selectRecordList.get(i).getMethod(),java.util.Map.class); 
 			    //调用得到的上边的方法method
 			    method.invoke(obj,map);
 				

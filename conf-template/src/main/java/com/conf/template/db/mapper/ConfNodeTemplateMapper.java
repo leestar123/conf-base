@@ -14,4 +14,6 @@ public interface ConfNodeTemplateMapper {
     int updateByPrimaryKeySelective(ConfNodeTemplate record);
 
     int updateByPrimaryKey(ConfNodeTemplate record);
+    
+    
 }

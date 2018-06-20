@@ -19,6 +19,18 @@
     from conf_node_info
     where node_id = #{nodeId,jdbcType=INTEGER}
   </select>
+  <select id="queryNodeList" resultMap="BaseResultMap">
+  select o.* from (select t.* from conf_node_info t
+  where 1=1
+  <if test="nodeName!=null and nodeName!=''">
+        and t.nodeName like #{nodeName}
+   </if>
+   <if test="nodeType!=null and nodeType!=''">
+        and t.nodeType like #{nodeType}
+   </if>) o  
+   limit #{startNum},#{endNum}
+   
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from conf_node_info
     where node_id = #{nodeId,jdbcType=INTEGER}

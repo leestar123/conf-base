@@ -26,6 +26,22 @@
     where t.product_id = #{productId}
     and t.node_id = #{nodeId}   
   </select>
+  
+  <select id="selectRecordListByPage"  resultMap="BaseResultMap">
+  select o.* from (select m.*
+    from conf_product_node t left join conf_rule_info m 
+    on t.uid = m.uid
+    where t.node_id = #{nodeId}) o 
+    limit #{startNum},#{endNum}  
+  </select>
+  
+  <select id="queryRuleListByName"  resultMap="BaseResultMap">
+ 	select m.*
+    from  conf_rule_info m 
+    where m.rule_name like #{ruleName} 
+    limit #{startNum},#{endNum}  
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from conf_rule_info
     where uid = #{uid,jdbcType=INTEGER}

@@ -1,5 +1,6 @@
 package com.conf.template.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,7 +40,7 @@ public class ConfNodeController {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeType");
 		}
 		if (StringUtils.isBlank(nodeName)) {
-			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeType");
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
 		}
 		return nodeService.createNode(data);
 	}
@@ -49,9 +50,84 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
-	@RequestMapping(value="createNode", method=RequestMethod.POST)
+	@RequestMapping(value="queryNodeList", method=RequestMethod.POST)
 	public Map<String, ? extends Object> queryNodeList(Map<String, ? extends Object> data) {
 				
 		return nodeService.queryNodeList(data);
+	}
+	
+	/**
+	 * 删除已经定义好的组件
+	 * @param data
+	 * @return
+	 */
+	@RequestMapping(value="deleteNode", method=RequestMethod.POST)
+	public Map<String, ? extends Object> deleteNode(Map<String, ? extends Object> data) {
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));	
+		if (StringUtils.isBlank(nodeId)) {
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+		}
+		return nodeService.deleteNode(data);
+	}
+	
+	/**
+	 * 单个组件查看详情，包括里面涉及已绑定规则
+	 * @param data
+	 * @return
+	 */
+	@RequestMapping(value="queryRuleByNode", method=RequestMethod.POST)
+	public Map<String, ? extends Object> queryRuleByNode(Map<String, ? extends Object> data) {
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		if (StringUtils.isBlank(nodeId)) {
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+		}		
+		return nodeService.queryRuleByNode(data);
+	}
+	
+	/**
+	 * 查询系统中存在的规则
+	 * 支持根据规则名称模糊查询
+	 * @param data
+	 * @return
+	 */
+	@RequestMapping(value="queryNodeList", method=RequestMethod.POST)
+	public Map<String, ? extends Object> queryRuleList(Map<String, ? extends Object> data) {		
+		return nodeService.queryRuleList(data);
+	}
+	
+	/**
+	 * 查询系统中存在的规则
+	 * 支持根据规则名称模糊查询
+	 * @param data
+	 * @return
+	 */
+	@RequestMapping(value="addRuleByNode", method=RequestMethod.POST)
+	public Map<String, ? extends Object> addRuleByNode(Map<String, ? extends Object> data) {		
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		List<String> ruleList = (List<String>) data.get("ruleList");
+		if (StringUtils.isBlank(nodeId)) {
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+		}
+		if(ruleList.size()==0)
+		{
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleList");
+		}
+		
+		for(int i=0;i<ruleList.size();i++)
+		{
+			
+		}
+		return nodeService.queryRuleList(data);
+	}
+	
+	/**
+	 * 单个组件关联规则删除
+	 * 支持多条删除
+	 * @param data
+	 * @return
+	 */
+	@RequestMapping(value="addRuleByNode", method=RequestMethod.POST)
+	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
+		return nodeService.queryRuleList(data);
 	}
 }

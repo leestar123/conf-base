@@ -20,4 +20,8 @@ public interface ConfRuleInfoMapper {
     int updateByPrimaryKey(ConfRuleInfo record);
     
     List<ConfRuleInfo> selectRecordList(@Param("productId") Integer productId ,@Param("nodeId")Integer nodeId);
+    
+    List<ConfRuleInfo> selectRecordListByPage(@Param("nodeId")Integer nodeId,@Param("startNum")Integer startNum,@Param("endNum")Integer endNum);
+
+    List<ConfRuleInfo> queryRuleListByName(@Param("ruleName")String ruleName,@Param("startNum")Integer startNum,@Param("endNum")Integer endNum);
 }

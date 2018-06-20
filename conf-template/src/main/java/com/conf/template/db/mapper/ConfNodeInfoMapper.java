@@ -1,5 +1,10 @@
 package com.conf.template.db.mapper;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.conf.template.db.model.ConfNodeInfo;
 
 public interface ConfNodeInfoMapper {
@@ -14,4 +19,9 @@ public interface ConfNodeInfoMapper {
     int updateByPrimaryKeySelective(ConfNodeInfo record);
 
     int updateByPrimaryKey(ConfNodeInfo record);
+    
+    List<ConfNodeInfo> queryNodeList(@Param("nodeName") String nodeName
+    									,@Param("nodeType") String nodeType,
+    										@Param("startNum") Integer startNum
+    										,@Param("endNum") Integer endNum);
 }

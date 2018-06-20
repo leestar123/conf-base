@@ -1,5 +1,7 @@
 package com.conf.template.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +16,8 @@ import com.conf.template.service.RuleService;
 @RestController
 public class TestConfController {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());  
+	
 	@Autowired
 	private TestConfMapper testConfMapper;
 	@Autowired
@@ -26,6 +30,7 @@ public class TestConfController {
 	
 	@RequestMapping(value="test", method=RequestMethod.GET)
 	public String getName(@RequestParam String id) {
+		logger.info("开始测试方法getName()");
 //		testConfJPA.findById(id).get().getName();
 //		return testConfMapper.selectByPrimaryKey(id).getName();
 //		ScanMgrImpl ScanMgrImpl =new ScanMgrImpl();

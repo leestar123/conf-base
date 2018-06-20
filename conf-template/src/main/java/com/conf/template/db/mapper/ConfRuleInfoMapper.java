@@ -19,5 +19,5 @@ public interface ConfRuleInfoMapper {
 
     int updateByPrimaryKey(ConfRuleInfo record);
     
-    List<ConfRuleInfo> selectRecordList(@Param("productId") Integer productId ,@Param("nodeId") Integer nodeId);
+    List<ConfRuleInfo> selectRecordList(@Param("productId") Integer productId ,@Param("nodeId")Integer nodeId);
 }

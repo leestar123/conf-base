@@ -46,7 +46,7 @@
  	select m.*
     from  conf_rule_info m 
     <if test="ruleName != null">
-   	 where m.rule_name like '%#{ruleName}%'
+   	 where m.rule_name like '%${ruleName}%'
     </if> 
     limit #{startNum},#{endNum}  
   </select>
@@ -55,7 +55,7 @@
  	select count(1)
     from  conf_rule_info m 
     <if test="ruleName != null">
-   	 where m.rule_name like '%#{ruleName}%'  
+   	 where m.rule_name like '%${ruleName}%'  
    	</if>
   </select>
   

@@ -24,10 +24,10 @@
   select count(1) from conf_node_info
   where 1=1
   <if test="nodeName!=null and nodeName!=''">
-        and t.nodeName like '%#{nodeName}%' 
+        and t.nodeName like '%${nodeName}%' 
    </if>
    <if test="nodeType!=null and nodeType!=''">
-        and t.nodeType like '%#{nodeType}%'
+        and t.nodeType like '%${nodeType}%'
    </if>
   </select>
   
@@ -35,10 +35,10 @@
   select o.* from (select t.* from conf_node_info t
   where 1=1
   <if test="nodeName!=null and nodeName!=''">
-        and t.nodeName like '%#{nodeName}%'
+        and t.nodeName like '%${nodeName}%'
    </if>
    <if test="nodeType!=null and nodeType!=''">
-        and t.nodeType like '%#{nodeType}%'
+        and t.nodeType like '%${nodeType}%'
    </if>) o  
    limit #{startNum},#{endNum}
    

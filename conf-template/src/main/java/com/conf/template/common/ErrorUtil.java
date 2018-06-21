@@ -21,6 +21,21 @@ public class ErrorUtil {
 	}
 	
 	/**
+	 * 设置错误返回信息
+	 * 
+	 * @param code
+	 * @param msg
+	 * @return
+	 */
+	public static Map<String, ? extends Object> errorResp(String code, String msg) {
+		Map<String, Object> data = new HashMap<>();
+		data.put("code", code);
+		data.put("msg", msg);
+		data.put("success", false);
+		return data;
+	}
+	
+	/**
 	 * 设置成功返回
 	 * 
 	 * @param body

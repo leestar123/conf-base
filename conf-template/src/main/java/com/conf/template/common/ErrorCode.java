@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 
 public enum ErrorCode {
 
+	code_9999("9999", "系统执行异常"),
 	code_0000("0000","excute success") ,
 	code_0001("0001", "缺少必输字段{0}"),
 	code_0002("0002", "数据库操作异常");

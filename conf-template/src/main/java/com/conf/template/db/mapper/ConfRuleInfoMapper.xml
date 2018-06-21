@@ -28,16 +28,16 @@
   </select>
   
   <select id="selectRecordListByPage"  resultMap="BaseResultMap">
-  select o.* from (select m.*
-    from conf_product_node t left join conf_rule_info m 
+  	select m.*
+    from conf_node_template t left join conf_rule_info m 
     on t.uid = m.uid
-    where t.node_id = #{nodeId}) o 
+    where t.node_id = #{nodeId}
     limit #{startNum},#{endNum}  
   </select>
   
   <select id="queryCountByNodeId" resultType="java.lang.Integer">
   select count(1)
-    from conf_product_node t left join conf_rule_info m 
+    from conf_node_template t left join conf_rule_info m 
     on t.uid = m.uid
     where t.node_id = #{nodeId}
   </select>

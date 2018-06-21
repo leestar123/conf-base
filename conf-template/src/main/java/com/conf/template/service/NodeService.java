@@ -127,15 +127,15 @@ public class NodeService {
 		return ErrorUtil.successResp(map);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
 		
-		@SuppressWarnings("unchecked")
-		List<String> ruleList = (List<String>) data.get("ruleList");
+		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
-		for(int i=0;i<ruleList.size();i++)
-		{
-			confNodeTemplateMapper.deleteByIdAndUid(Integer.valueOf(nodeId),Integer.valueOf(ruleList.get(i)));
+		for (Map<String, Object> map : ruleList) {
+			confNodeTemplateMapper.deleteByIdAndUid(Integer.valueOf(nodeId), ToolsUtil.obj2Int(map.get("uid"), null));
 		}
+		
 		Map<String,Object> map = new HashMap<String, Object>();
 		return ErrorUtil.successResp(map);
 	}

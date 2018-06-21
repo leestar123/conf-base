@@ -146,7 +146,7 @@ public class ConfNodeController {
 		{
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleList");
 		}
-		return nodeService.queryRuleList(data);
+		return nodeService.deleteRuleByNode(data);
 	}
 	
 }

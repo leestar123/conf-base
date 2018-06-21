@@ -45,10 +45,9 @@ public class NodeService {
 		{
 			return ErrorUtil.errorResp(ErrorCode.code_0002);
 		}
-		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("nodeId", nodeId);
-		return ErrorUtil.successResp(map);
+		return ErrorUtil.successResp(body);
 	}
 	
 	public Map<String, ? extends Object> queryNodeList(Map<String, ? extends Object> data) {
@@ -58,11 +57,10 @@ public class NodeService {
 		int  startNum = ((int) data.get("pageSize")-1)*(int) data.get("pageNum")+1;
 		int  endNum = (int) data.get("pageSize")*(int) data.get("pageNum");
 		List<ConfNodeInfo> list= confNodeInfoMapper.queryNodeList(nodeName, nodeType, startNum, endNum);
-		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("totalNum", list.size());
 		body.put("list", list);
-		return ErrorUtil.successResp(map);
+		return ErrorUtil.successResp(body);
 	}
 	
 	public Map<String, ? extends Object> deleteNode(Map<String, ? extends Object> data) {
@@ -81,11 +79,10 @@ public class NodeService {
 		int  startNum = ((int) data.get("pageSize")-1)*(int) data.get("pageNum")+1;
 		int  endNum = (int) data.get("pageSize")*(int) data.get("pageNum");
 		List<ConfRuleInfo> list= confRuleInfoMapper.selectRecordListByPage(nodeId, startNum, endNum);
-		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("totalNum", list.size());
 		body.put("list", list);
-		return ErrorUtil.successResp(map);
+		return ErrorUtil.successResp(body);
 	}
 	
 	public Map<String, ? extends Object> queryRuleList(Map<String, ? extends Object> data) {

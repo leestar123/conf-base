@@ -19,7 +19,10 @@ spring:
    testOnReturn: false
    poolPreparedStatements: true
    maxOpenPreparedStatements: 20
-mybatis: 
+# 日志配置
+logging:
+  config: classpath:logback-boot.xml
+mybatis:
   # 重要配置 
   type-aliases-package: com.conf.template.db.model 
   mapper-locations: classpath:com/conf/template/db/mapper/*.xml

@@ -42,5 +42,9 @@ public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
 			e.printStackTrace();
 		}
 	}
-
+	
+	@Override
+	public boolean isMaster() {
+		return true;
+	}
 }

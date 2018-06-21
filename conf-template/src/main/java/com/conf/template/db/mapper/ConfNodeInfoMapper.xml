@@ -19,6 +19,18 @@
     from conf_node_info
     where node_id = #{nodeId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectCount" resultType="java.lang.Integer">
+  select count(1) from conf_node_info
+  where 1=1
+  <if test="nodeName!=null and nodeName!=''">
+        and t.nodeName like #{nodeName}
+   </if>
+   <if test="nodeType!=null and nodeType!=''">
+        and t.nodeType like #{nodeType}
+   </if>
+  </select>
+  
   <select id="queryNodeList" resultMap="BaseResultMap">
   select o.* from (select t.* from conf_node_info t
   where 1=1

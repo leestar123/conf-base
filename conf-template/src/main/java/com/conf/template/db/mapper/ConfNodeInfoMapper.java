@@ -23,4 +23,7 @@ public interface ConfNodeInfoMapper {
     									,@Param("nodeType") String nodeType,
     										@Param("startNum") Integer startNum
     										,@Param("endNum") Integer endNum);
+    
+    int queryCount(@Param("nodeName") String nodeName
+			,@Param("nodeType") String nodeType);
 }

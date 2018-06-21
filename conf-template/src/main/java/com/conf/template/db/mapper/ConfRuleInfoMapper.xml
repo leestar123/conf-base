@@ -35,11 +35,24 @@
     limit #{startNum},#{endNum}  
   </select>
   
+  <select id="queryCountByNodeId" resultType="java.lang.Integer">
+  select count(1)
+    from conf_product_node t left join conf_rule_info m 
+    on t.uid = m.uid
+    where t.node_id = #{nodeId}
+  </select>
+  
   <select id="queryRuleListByName"  resultMap="BaseResultMap">
  	select m.*
     from  conf_rule_info m 
     where m.rule_name like #{ruleName} 
     limit #{startNum},#{endNum}  
+  </select>
+  
+  <select id="queryCountByName"  resultType="java.lang.Integer">
+ 	select count(1)
+    from  conf_rule_info m 
+    where m.rule_name like #{ruleName}  
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

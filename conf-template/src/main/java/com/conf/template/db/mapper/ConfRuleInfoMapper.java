@@ -24,4 +24,8 @@ public interface ConfRuleInfoMapper {
     List<ConfRuleInfo> selectRecordListByPage(@Param("nodeId")Integer nodeId,@Param("startNum")Integer startNum,@Param("endNum")Integer endNum);
 
     List<ConfRuleInfo> queryRuleListByName(@Param("ruleName")String ruleName,@Param("startNum")Integer startNum,@Param("endNum")Integer endNum);
+
+    int queryCountByNodeId(@Param("nodeId")Integer nodeId);
+    
+    int queryCountByName(@Param("ruleName")String ruleName);
 }

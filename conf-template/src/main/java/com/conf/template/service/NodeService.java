@@ -60,8 +60,9 @@ public class NodeService {
 		int  startNum = (pageNum-1)*pageSize;
 		int  endNum = pageNum*pageSize;
 		List<ConfNodeInfo> list= confNodeInfoMapper.queryNodeList(nodeName, nodeType, startNum , endNum);
+		int totalNum = confNodeInfoMapper.queryCount(nodeName, nodeType);
 		Map<String,Object> body = new HashMap<String, Object>();
-		body.put("totalNum", list.size());
+		body.put("totalNum", totalNum);
 		body.put("list", list);
 		return ErrorUtil.successResp(body);
 	}
@@ -83,8 +84,9 @@ public class NodeService {
 		int  startNum = (pageNum-1)*pageSize;
 		int  endNum = pageNum*pageSize;
 		List<ConfRuleInfo> list= confRuleInfoMapper.selectRecordListByPage(nodeId, startNum, endNum);
+		int totalNum = confRuleInfoMapper.queryCountByNodeId(nodeId);
 		Map<String,Object> body = new HashMap<String, Object>();
-		body.put("totalNum", list.size());
+		body.put("totalNum", totalNum);
 		body.put("list", list);
 		return ErrorUtil.successResp(body);
 	}
@@ -96,12 +98,13 @@ public class NodeService {
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
 		int  startNum = (pageNum-1)*pageSize;
 		int  endNum = pageNum*pageSize;
+		int totalNum = confRuleInfoMapper.queryCountByName(ruleName);
 		List<ConfRuleInfo> list= confRuleInfoMapper.queryRuleListByName(ruleName, startNum, endNum);
-		Map<String,Object> map = new HashMap<String, Object>();
+		//Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("totalNum", list.size());
 		body.put("list", list);
-		return ErrorUtil.successResp(map);
+		return ErrorUtil.successResp(body);
 	}
 	
 	public Map<String, ? extends Object> addRuleByNode(Map<String, ? extends Object> data) {

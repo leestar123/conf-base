@@ -69,7 +69,7 @@ public class NodeService {
 	
 	public Map<String, ? extends Object> deleteNode(Map<String, ? extends Object> data) {
 		
-		if(ToolsUtil.obj2Str(data.get("nodeId")).contains(","))
+		if(!ToolsUtil.obj2Str(data.get("nodeId")).contains(","))
 		{
 			confNodeInfoMapper.deleteByPrimaryKey(Integer.parseInt(ToolsUtil.obj2Str(data.get("nodeId"))));		
 		}else

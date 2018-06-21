@@ -67,7 +67,7 @@ public class NodeService {
 	}
 	
 	public Map<String, ? extends Object> deleteNode(Map<String, ? extends Object> data) {
-		int result = confNodeInfoMapper.deleteByPrimaryKey(Integer.valueOf((String) data.get("nodeId")));
+		int result = confNodeInfoMapper.deleteByPrimaryKey(Integer.parseInt(ToolsUtil.obj2Str(data.get("nodeId"))));
 		if(result !=1)
 		{
 			return ErrorUtil.errorResp(ErrorCode.code_0002);
@@ -77,9 +77,11 @@ public class NodeService {
 	}
 	
 	public Map<String, ? extends Object> queryRuleByNode(Map<String, ? extends Object> data) {
-		int nodeId = (int) data.get("nodeId");
-		int  startNum = ((int) data.get("pageSize")-1)*(int) data.get("pageNum")+1;
-		int  endNum = (int) data.get("pageSize")*(int) data.get("pageNum");
+		int nodeId = Integer.parseInt(ToolsUtil.obj2Str(data.get("nodeId")));
+		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
+		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
+		int  startNum = (pageNum-1)*pageSize;
+		int  endNum = pageNum*pageSize;
 		List<ConfRuleInfo> list= confRuleInfoMapper.selectRecordListByPage(nodeId, startNum, endNum);
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("totalNum", list.size());
@@ -89,9 +91,11 @@ public class NodeService {
 	
 	public Map<String, ? extends Object> queryRuleList(Map<String, ? extends Object> data) {
 		
-		String ruleName = (String) data.get("ruleName");
-		int  startNum = ((int) data.get("pageSize")-1)*(int) data.get("pageNum")+1;
-		int  endNum = (int) data.get("pageSize")*(int) data.get("pageNum");
+		String ruleName = ToolsUtil.obj2Str(data.get("ruleName"));
+		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
+		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
+		int  startNum = (pageNum-1)*pageSize;
+		int  endNum = pageNum*pageSize;
 		List<ConfRuleInfo> list= confRuleInfoMapper.queryRuleListByName(ruleName, startNum, endNum);
 		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,Object> body = new HashMap<String, Object>();
@@ -111,10 +115,10 @@ public class NodeService {
 			record = new ConfNodeTemplate();
 			int id = ToolsUtil.autoNumber();
 			record.setId(id);
-			record.setNodeId(Integer.valueOf(nodeId));
+			record.setNodeId(Integer.parseInt(nodeId));
 			record.setOrg("");
 			record.setTeller("");
-			record.setUid(Integer.valueOf(ruleList.get(i)));
+			record.setUid(Integer.parseInt(ruleList.get(i)));
 			confNodeTemplateMapper.insertSelective(record);
 		}
 		Map<String,Object> map = new HashMap<String, Object>();

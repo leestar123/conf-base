@@ -52,11 +52,14 @@ public class NodeService {
 	
 	public Map<String, ? extends Object> queryNodeList(Map<String, ? extends Object> data) {
 		
-		String nodeName = (String) data.get("nodeName");
-		String nodeType = (String) data.get("nodeType");
-		int  startNum = ((int) data.get("pageSize")-1)*(int) data.get("pageNum")+1;
-		int  endNum = (int) data.get("pageSize")*(int) data.get("pageNum");
-		List<ConfNodeInfo> list= confNodeInfoMapper.queryNodeList(nodeName, nodeType, startNum, endNum);
+		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+		String nodeType = ToolsUtil.obj2Str(data.get("nodeType"));
+		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
+		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
+		
+		int  startNum = (pageNum-1)*pageSize;
+		int  endNum = pageNum*pageSize;
+		List<ConfNodeInfo> list= confNodeInfoMapper.queryNodeList(nodeName, nodeType, startNum , endNum);
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("totalNum", list.size());
 		body.put("list", list);

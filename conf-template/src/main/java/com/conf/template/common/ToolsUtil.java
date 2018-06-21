@@ -24,4 +24,21 @@ public class ToolsUtil {
         String result =  format.format(sequence).replace(",", "");
 		return Integer.valueOf(result);
 	}
+	
+	/**
+	 * Object对象转换为Integer
+	 * 
+	 * @param obj
+	 * @param defaultValue
+	 * @return
+	 */
+	public static Integer obj2Int(Object obj, Integer defaultValue) {
+		if (obj == null)
+			return defaultValue;
+		try {
+			return Integer.parseInt(obj.toString());
+		} catch (Exception e) {
+			return defaultValue;
+		}
+	}
 }

@@ -126,5 +126,14 @@ public class NodeService {
 		return ErrorUtil.successResp(map);
 	}
 	
+	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
+		
+		@SuppressWarnings("unchecked")
+		List<String> ruleList = (List<String>) data.get("ruleList");
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		Map<String,Object> map = new HashMap<String, Object>();
+		
+		return ErrorUtil.successResp(map);
+	}
 	
 }

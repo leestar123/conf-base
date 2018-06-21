@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +35,7 @@ public class ConfNodeController {
 	 * @return
 	 */
 	@RequestMapping(value="createNode", method=RequestMethod.POST)
-	public Map<String, ? extends Object> createNode(Map<String, ? extends Object> data) {
+	public Map<String, ? extends Object> createNode(@RequestBody Map<String, ? extends Object> data) {
 		String nodeType = ToolsUtil.obj2Str(data.get("nodeType"));
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		if (StringUtils.isBlank(nodeType)) {
@@ -52,7 +53,7 @@ public class ConfNodeController {
 	 * @return
 	 */
 	@RequestMapping(value="queryNodeList", method=RequestMethod.POST)
-	public Map<String, ? extends Object> queryNodeList(Map<String, ? extends Object> data) {
+	public Map<String, ? extends Object> queryNodeList(@RequestBody Map<String, ? extends Object> data) {
 				
 		return nodeService.queryNodeList(data);
 	}
@@ -63,7 +64,7 @@ public class ConfNodeController {
 	 * @return
 	 */
 	@RequestMapping(value="deleteNode", method=RequestMethod.POST)
-	public Map<String, ? extends Object> deleteNode(Map<String, ? extends Object> data) {
+	public Map<String, ? extends Object> deleteNode(@RequestBody Map<String, ? extends Object> data) {
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));	
 		if (StringUtils.isBlank(nodeId)) {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
@@ -77,7 +78,7 @@ public class ConfNodeController {
 	 * @return
 	 */
 	@RequestMapping(value="queryRuleByNode", method=RequestMethod.POST)
-	public Map<String, ? extends Object> queryRuleByNode(Map<String, ? extends Object> data) {
+	public Map<String, ? extends Object> queryRuleByNode(@RequestBody Map<String, ? extends Object> data) {
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
 		if (StringUtils.isBlank(nodeId)) {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
@@ -91,8 +92,8 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
-	@RequestMapping(value="queryNodeList", method=RequestMethod.POST)
-	public Map<String, ? extends Object> queryRuleList(Map<String, ? extends Object> data) {		
+	@RequestMapping(value="queryRuleList", method=RequestMethod.POST)
+	public Map<String, ? extends Object> queryRuleList(@RequestBody Map<String, ? extends Object> data) {		
 		return nodeService.queryRuleList(data);
 	}
 	
@@ -103,8 +104,9 @@ public class ConfNodeController {
 	 * @return
 	 */
 	@RequestMapping(value="addRuleByNode", method=RequestMethod.POST)
-	public Map<String, ? extends Object> addRuleByNode(Map<String, ? extends Object> data) {		
+	public Map<String, ? extends Object> addRuleByNode(@RequestBody Map<String, ? extends Object> data) {		
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		@SuppressWarnings("unchecked")
 		List<String> ruleList = (List<String>) data.get("ruleList");
 		if (StringUtils.isBlank(nodeId)) {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
@@ -123,8 +125,19 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
-	@RequestMapping(value="addRuleByNode", method=RequestMethod.POST)
-	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
+	@RequestMapping(value="deleteRuleByNode", method=RequestMethod.POST)
+	public Map<String, ? extends Object> deleteRuleByNode(@RequestBody Map<String, ? extends Object> data) {
+		
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		@SuppressWarnings("unchecked")
+		List<String> ruleList = (List<String>) data.get("ruleList");
+		if (StringUtils.isBlank(nodeId)) {
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+		}
+		if(ruleList.size()==0)
+		{
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleList");
+		}
 		return nodeService.queryRuleList(data);
 	}
 	

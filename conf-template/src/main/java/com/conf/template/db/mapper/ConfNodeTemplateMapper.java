@@ -1,5 +1,7 @@
 package com.conf.template.db.mapper;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.conf.template.db.model.ConfNodeTemplate;
 
 public interface ConfNodeTemplateMapper {
@@ -15,5 +17,6 @@ public interface ConfNodeTemplateMapper {
 
     int updateByPrimaryKey(ConfNodeTemplate record);
     
+    int deleteByIdAndUid(@Param("nodeId") Integer nodeId,@Param("uid") Integer uid);
     
 }

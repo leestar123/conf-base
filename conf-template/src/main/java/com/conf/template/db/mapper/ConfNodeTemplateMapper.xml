@@ -21,6 +21,13 @@
     delete from conf_node_template
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  
+  <delete id="deleteByIdAndUid" >
+    delete from conf_node_template
+    where node_id = #{nodeId}
+    and uid = #{uid}
+  </delete>
+  
   <insert id="insert" parameterType="com.conf.template.db.model.ConfNodeTemplate">
     insert into conf_node_template (id, node_id, uid, 
       teller, org)

@@ -74,7 +74,6 @@ public class NodeService {
 	}
 	
 	public Map<String, ? extends Object> queryRuleByNode(Map<String, ? extends Object> data) {
-		
 		int nodeId = (int) data.get("nodeId");
 		int  startNum = ((int) data.get("pageSize")-1)*(int) data.get("pageNum")+1;
 		int  endNum = (int) data.get("pageSize")*(int) data.get("pageNum");
@@ -124,8 +123,11 @@ public class NodeService {
 		@SuppressWarnings("unchecked")
 		List<String> ruleList = (List<String>) data.get("ruleList");
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		for(int i=0;i<ruleList.size();i++)
+		{
+			confNodeTemplateMapper.deleteByIdAndUid(Integer.valueOf(nodeId),Integer.valueOf(ruleList.get(i)));
+		}
 		Map<String,Object> map = new HashMap<String, Object>();
-		
 		return ErrorUtil.successResp(map);
 	}
 	

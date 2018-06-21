@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.conf.template.common.ErrorCode;
 import com.conf.template.common.ErrorUtil;
 import com.conf.template.common.ToolsUtil;
+import com.conf.template.common.annotation.ApiException;
 import com.conf.template.service.NodeService;
 
 /**
@@ -34,6 +35,7 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
+	@ApiException
 	@RequestMapping(value="createNode", method=RequestMethod.POST)
 	public Map<String, ? extends Object> createNode(@RequestBody Map<String, ? extends Object> data) {
 		String nodeType = ToolsUtil.obj2Str(data.get("nodeType"));
@@ -52,6 +54,7 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
+	@ApiException
 	@RequestMapping(value="queryNodeList", method=RequestMethod.POST)
 	public Map<String, ? extends Object> queryNodeList(@RequestBody Map<String, ? extends Object> data) {
 				
@@ -63,6 +66,7 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
+	@ApiException
 	@RequestMapping(value="deleteNode", method=RequestMethod.POST)
 	public Map<String, ? extends Object> deleteNode(@RequestBody Map<String, ? extends Object> data) {
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));	
@@ -77,6 +81,7 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
+	@ApiException
 	@RequestMapping(value="queryRuleByNode", method=RequestMethod.POST)
 	public Map<String, ? extends Object> queryRuleByNode(@RequestBody Map<String, ? extends Object> data) {
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
@@ -92,6 +97,7 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
+	@ApiException
 	@RequestMapping(value="queryRuleList", method=RequestMethod.POST)
 	public Map<String, ? extends Object> queryRuleList(@RequestBody Map<String, ? extends Object> data) {		
 		return nodeService.queryRuleList(data);
@@ -103,6 +109,7 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
+	@ApiException
 	@RequestMapping(value="addRuleByNode", method=RequestMethod.POST)
 	public Map<String, ? extends Object> addRuleByNode(@RequestBody Map<String, ? extends Object> data) {		
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
@@ -125,6 +132,7 @@ public class ConfNodeController {
 	 * @param data
 	 * @return
 	 */
+	@ApiException
 	@RequestMapping(value="deleteRuleByNode", method=RequestMethod.POST)
 	public Map<String, ? extends Object> deleteRuleByNode(@RequestBody Map<String, ? extends Object> data) {
 		

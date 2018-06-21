@@ -102,7 +102,7 @@ public class NodeService {
 		List<ConfRuleInfo> list= confRuleInfoMapper.queryRuleListByName(ruleName, startNum, endNum);
 		//Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,Object> body = new HashMap<String, Object>();
-		body.put("totalNum", list.size());
+		body.put("totalNum", totalNum);
 		body.put("list", list);
 		return ErrorUtil.successResp(body);
 	}

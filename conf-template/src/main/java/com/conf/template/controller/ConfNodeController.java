@@ -20,7 +20,8 @@ import com.conf.template.service.NodeService;
  * @author li_mingxing
  *
  */
-@RestController("node")
+@RestController
+@RequestMapping("node")
 public class ConfNodeController {
 
 	@Autowired
@@ -113,11 +114,7 @@ public class ConfNodeController {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleList");
 		}
 		
-		for(int i=0;i<ruleList.size();i++)
-		{
-			
-		}
-		return nodeService.queryRuleList(data);
+		return nodeService.addRuleByNode(data);
 	}
 	
 	/**
@@ -130,4 +127,5 @@ public class ConfNodeController {
 	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
 		return nodeService.queryRuleList(data);
 	}
+	
 }

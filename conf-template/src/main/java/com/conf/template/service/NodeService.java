@@ -11,9 +11,12 @@ import org.springframework.stereotype.Service;
 
 import com.conf.template.common.ErrorCode;
 import com.conf.template.common.ErrorUtil;
+import com.conf.template.common.ToolsUtil;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
+import com.conf.template.db.mapper.ConfNodeTemplateMapper;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.model.ConfNodeInfo;
+import com.conf.template.db.model.ConfNodeTemplate;
 import com.conf.template.db.model.ConfRuleInfo;
 
 @Service
@@ -22,6 +25,8 @@ public class NodeService {
 	ConfNodeInfoMapper confNodeInfoMapper ;
 	@Autowired
 	ConfRuleInfoMapper confRuleInfoMapper;
+	@Autowired
+	ConfNodeTemplateMapper confNodeTemplateMapper;
 	public Map<String, ? extends Object> createNode(Map<String, ? extends Object> data) {
 		//参数拼装
 		ConfNodeInfo confNodeInfo= new ConfNodeInfo();
@@ -101,6 +106,25 @@ public class NodeService {
 	}
 	
 	public Map<String, ? extends Object> addRuleByNode(Map<String, ? extends Object> data) {
-		return ErrorUtil.successResp(data);
+		
+		@SuppressWarnings("unchecked")
+		List<String> ruleList = (List<String>) data.get("ruleList");
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		ConfNodeTemplate record = null;
+		for(int i=0;i<ruleList.size();i++)
+		{
+			record = new ConfNodeTemplate();
+			int id = ToolsUtil.autoNumber();
+			record.setId(id);
+			record.setNodeId(Integer.valueOf(nodeId));
+			record.setOrg("");
+			record.setTeller("");
+			record.setUid(Integer.valueOf(ruleList.get(i)));
+			confNodeTemplateMapper.insertSelective(record);
+		}
+		Map<String,Object> map = new HashMap<String, Object>();
+		return ErrorUtil.successResp(map);
 	}
+	
+	
 }

@@ -68,10 +68,17 @@ public class NodeService {
 	}
 	
 	public Map<String, ? extends Object> deleteNode(Map<String, ? extends Object> data) {
-		int result = confNodeInfoMapper.deleteByPrimaryKey(Integer.parseInt(ToolsUtil.obj2Str(data.get("nodeId"))));
-		if(result !=1)
+		
+		if(ToolsUtil.obj2Str(data.get("nodeId")).contains(","))
 		{
-			return ErrorUtil.errorResp(ErrorCode.code_0002);
+			confNodeInfoMapper.deleteByPrimaryKey(Integer.parseInt(ToolsUtil.obj2Str(data.get("nodeId"))));		
+		}else
+		{
+			String[] str = ToolsUtil.obj2Str(data.get("nodeId")).split(",");
+			for(int i=0;i<str.length;i++)
+			{
+				confNodeInfoMapper.deleteByPrimaryKey(Integer.parseInt(str[i]));
+			}
 		}
 		Map<String,Object> body = new HashMap<String, Object>();
 		return ErrorUtil.successResp(body);

@@ -16,7 +16,7 @@ public class ErrorUtil {
 		Map<String, Object> data = new HashMap<>();
 		data.put("code", code.getCode());
 		data.put("msg", code.getMsg(params));
-		data.put("success", "false");
+		data.put("success", false);
 		return data;
 	}
 	
@@ -30,7 +30,7 @@ public class ErrorUtil {
 		Map<String, Object> data = new HashMap<>();
 		data.put("code", ErrorCode.code_0000.getCode());
 		data.put("msg", ErrorCode.code_0000.getMsg());
-		data.put("success", "true");
+		data.put("success", true);
 		data.put("body", body);
 		return data;
 	}

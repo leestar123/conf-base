@@ -48,7 +48,6 @@ public class NodeService {
 		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("nodeId", nodeId);
-		map.put("body", body);
 		return ErrorUtil.successResp(map);
 	}
 	
@@ -63,7 +62,6 @@ public class NodeService {
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("totalNum", list.size());
 		body.put("list", list);
-		map.put("body", body);
 		return ErrorUtil.successResp(map);
 	}
 	
@@ -87,7 +85,6 @@ public class NodeService {
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("totalNum", list.size());
 		body.put("list", list);
-		map.put("body", body);
 		return ErrorUtil.successResp(map);
 	}
 	
@@ -101,7 +98,6 @@ public class NodeService {
 		Map<String,Object> body = new HashMap<String, Object>();
 		body.put("totalNum", list.size());
 		body.put("list", list);
-		map.put("body", body);
 		return ErrorUtil.successResp(map);
 	}
 	

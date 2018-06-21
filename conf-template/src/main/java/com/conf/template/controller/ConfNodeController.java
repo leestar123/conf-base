@@ -111,10 +111,10 @@ public class ConfNodeController {
 	 */
 	@ApiException
 	@RequestMapping(value="addRuleByNode", method=RequestMethod.POST)
+	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> addRuleByNode(@RequestBody Map<String, ? extends Object> data) {		
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
-		@SuppressWarnings("unchecked")
-		List<String> ruleList = (List<String>) data.get("ruleList");
+		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
 		if (StringUtils.isBlank(nodeId)) {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
 		}

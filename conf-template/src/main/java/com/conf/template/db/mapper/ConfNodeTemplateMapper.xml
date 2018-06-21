@@ -29,17 +29,17 @@
   </delete>
   
   <insert id="insert" parameterType="com.conf.template.db.model.ConfNodeTemplate">
-    insert into conf_node_template (id, node_id, uid, 
+    insert into conf_node_template (node_id, uid, 
       teller, org)
-    values (#{id,jdbcType=INTEGER}, #{nodeId,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, 
+    #{nodeId,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, 
       #{teller,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfNodeTemplate">
+     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+   		SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into conf_node_template
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="nodeId != null">
         node_id,
       </if>
@@ -54,9 +54,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="nodeId != null">
         #{nodeId,jdbcType=INTEGER},
       </if>

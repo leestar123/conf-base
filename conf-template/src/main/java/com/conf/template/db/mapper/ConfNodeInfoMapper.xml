@@ -48,19 +48,19 @@
     where node_id = #{nodeId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfNodeInfo">
-    insert into conf_node_info (node_id, node_name, remark, 
+    insert into conf_node_info (node_name, remark, 
       node_type, version, teller, 
       org)
-    values (#{nodeId,jdbcType=INTEGER}, #{nodeName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+     #{nodeName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{nodeType,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, #{teller,jdbcType=VARCHAR}, 
       #{org,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfNodeInfo">
+   <selectKey resultType="java.lang.Integer" keyProperty="nodeId" order="AFTER">
+   		SELECT LAST_INSERT_ID()
+   </selectKey>
     insert into conf_node_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="nodeId != null">
-        node_id,
-      </if>
       <if test="nodeName != null">
         node_name,
       </if>
@@ -81,9 +81,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="nodeId != null">
-        #{nodeId,jdbcType=INTEGER},
-      </if>
       <if test="nodeName != null">
         #{nodeName,jdbcType=VARCHAR},
       </if>

@@ -23,17 +23,17 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfProductNode">
-    insert into conf_product_node (id, product_id, node_id, 
+    insert into conf_product_node (product_id, node_id, 
       uid, teller, org)
-    values (#{id,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, #{nodeId,jdbcType=INTEGER}, 
+    #{productId,jdbcType=INTEGER}, #{nodeId,jdbcType=INTEGER}, 
       #{uid,jdbcType=INTEGER}, #{teller,jdbcType=INTEGER}, #{org,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfProductNode">
+     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+   		SELECT LAST_INSERT_ID()
+     </selectKey>
     insert into conf_product_node
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="productId != null">
         product_id,
       </if>
@@ -51,9 +51,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="productId != null">
         #{productId,jdbcType=INTEGER},
       </if>

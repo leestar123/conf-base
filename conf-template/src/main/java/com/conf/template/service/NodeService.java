@@ -1,7 +1,5 @@
 package com.conf.template.service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,17 +34,13 @@ public class NodeService {
 		confNodeInfo.setRemark((String)data.get("remark "));
 		confNodeInfo.setTeller((String)data.get("teller"));
 		confNodeInfo.setVersion("");
-		//nodeid生成
-		SimpleDateFormat df = new SimpleDateFormat("MMddHHmmss");//设置日期格式
-		int nodeId = Integer.valueOf(df.format(new Date()));// new Date()为获取当前系统时间，也可使用当前时间戳
-		confNodeInfo.setNodeId(nodeId);
 		int result = confNodeInfoMapper.insertSelective(confNodeInfo);
 		if(result !=1)
 		{
 			return ErrorUtil.errorResp(ErrorCode.code_0002);
 		}
 		Map<String,Object> body = new HashMap<String, Object>();
-		body.put("nodeId", nodeId);
+		body.put("nodeId", confNodeInfo.getNodeId());
 		return ErrorUtil.successResp(body);
 	}
 	
@@ -114,21 +108,19 @@ public class NodeService {
 		return ErrorUtil.successResp(body);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> addRuleByNode(Map<String, ? extends Object> data) {
 		
-		@SuppressWarnings("unchecked")
-		List<String> ruleList = (List<String>) data.get("ruleList");
+		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
 		ConfNodeTemplate record = null;
 		for(int i=0;i<ruleList.size();i++)
 		{
 			record = new ConfNodeTemplate();
-			int id = ToolsUtil.autoNumber();
-			record.setId(id);
 			record.setNodeId(Integer.parseInt(nodeId));
 			record.setOrg("");
 			record.setTeller("");
-			record.setUid(Integer.parseInt(ruleList.get(i)));
+			record.setUid(ToolsUtil.obj2Int(ruleList.get(i).get("uid"), null));
 			confNodeTemplateMapper.insertSelective(record);
 		}
 		Map<String,Object> map = new HashMap<String, Object>();

@@ -64,19 +64,19 @@
     where uid = #{uid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfRuleInfo">
-    insert into conf_rule_info (uid, rule_name, remark, 
+    insert into conf_rule_info (rule_name, remark, 
       clazz, method, param, 
       version)
-    values (#{uid,jdbcType=INTEGER}, #{ruleName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+    #{ruleName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{clazz,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR}, #{param,jdbcType=VARCHAR}, 
       #{version,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfRuleInfo">
+     <selectKey resultType="java.lang.Integer" keyProperty="uid" order="AFTER">
+   		SELECT LAST_INSERT_ID()
+     </selectKey>
     insert into conf_rule_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        uid,
-      </if>
       <if test="ruleName != null">
         rule_name,
       </if>
@@ -97,9 +97,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        #{uid,jdbcType=INTEGER},
-      </if>
       <if test="ruleName != null">
         #{ruleName,jdbcType=VARCHAR},
       </if>

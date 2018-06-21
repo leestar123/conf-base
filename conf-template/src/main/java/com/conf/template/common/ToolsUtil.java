@@ -4,7 +4,9 @@ import java.text.NumberFormat;
 
 public class ToolsUtil {
 
-	public final static int sequence =0;
+	private static SequenceGen gen = new SequenceGen(2L);
+	
+	public static int sequence =0;
 	/**
 	 * Object对象转换为String
 	 * 
@@ -22,7 +24,8 @@ public class ToolsUtil {
 		NumberFormat format = NumberFormat.getInstance();
         format.setMinimumIntegerDigits(12);
         String result =  format.format(sequence).replace(",", "");
-		return Integer.valueOf(result);
+        sequence = Integer.valueOf(result);
+		return sequence;
 	}
 	
 	/**
@@ -40,5 +43,14 @@ public class ToolsUtil {
 		} catch (Exception e) {
 			return defaultValue;
 		}
+	}
+	
+	/**
+	 * 生成唯一全局流水号
+	 * 
+	 * @return
+	 */
+	public static Long nextSeq() {
+		return gen.nextId();
 	}
 }

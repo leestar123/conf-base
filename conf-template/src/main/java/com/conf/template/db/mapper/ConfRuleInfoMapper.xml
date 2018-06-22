@@ -31,7 +31,21 @@
   	select m.*
     from conf_node_template t left join conf_rule_info m 
     on t.uid = m.uid
+    <if test="productId != null">
+    	left join conf_product_node n 
+    	on t.node_id = n.node_id and t.uid = n.uid
+    </if>
     where t.node_id = #{nodeId}
+    limit #{startNum},#{endNum}  
+  </select>
+  
+  <select id="selectEffectRecordListByPage"  resultMap="BaseResultMap">
+  	select m.*, (case n.id when null  then '1' else '0') as effect
+    from conf_node_template t left join conf_rule_info m 
+    on t.uid = m.uid
+    left join conf_product_node n 
+    on t.node_id = n.node_id and t.uid = n.uid
+    where t.node_id = #{nodeId} and n.product_id = #{productId}
     limit #{startNum},#{endNum}  
   </select>
   

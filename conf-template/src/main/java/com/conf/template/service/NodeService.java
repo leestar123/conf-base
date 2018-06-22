@@ -87,12 +87,18 @@ public class NodeService {
 	}
 
 	public Map<String, ? extends Object> queryRuleByNode(Map<String, ? extends Object> data) {
-		int nodeId = Integer.parseInt(ToolsUtil.obj2Str(data.get("nodeId")));
+		Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null);
+		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null);
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
 		int startNum = (pageNum - 1) * pageSize;
 		int endNum = pageNum * pageSize;
-		List<ConfRuleInfo> list = confRuleInfoMapper.selectRecordListByPage(nodeId, startNum, endNum);
+		List<ConfRuleInfo> list = null;
+		if (productId == null) {
+			list = confRuleInfoMapper.selectRecordListByPage(nodeId, startNum, endNum);
+		} else {
+			list = confRuleInfoMapper.selectEffectRecordListByPage(productId, nodeId, startNum, endNum);
+		}
 		int totalNum = confRuleInfoMapper.queryCountByNodeId(nodeId);
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("totalNum", totalNum);
@@ -149,7 +155,6 @@ public class NodeService {
 	}
 
 	@Transactional
-	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> queryNodeByProduct(Map<String, ? extends Object> data) {
 		String productId = ToolsUtil.obj2Str(data.get("productId"));
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
@@ -168,7 +173,6 @@ public class NodeService {
 	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> addNodeByProduct(Map<String, ? extends Object> data) {
 		String productId = ToolsUtil.obj2Str(data.get("productId"));
-		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> nodeList = (List<Map<String, Object>>) data.get("nodeList");
 		//通过nodeId查询Conf_Node_Template表里对应的uid
 		ConfProductNode record = null;
@@ -194,7 +198,6 @@ public class NodeService {
 	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> deleteNodeByProduct(Map<String, ? extends Object> data) {
 		String productId = ToolsUtil.obj2Str(data.get("productId"));
-		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> nodeList = (List<Map<String, Object>>) data.get("nodeList");
 		for (int i = 0; i < nodeList.size(); i++) {
 			int nodeId = ToolsUtil.obj2Int(nodeList.get(i).get("nodeId"), null);

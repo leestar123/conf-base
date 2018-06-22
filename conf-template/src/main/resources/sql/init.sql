@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS `conf_product_node` (
   `product_id` int(12) NOT NULL COMMENT '产品ID',
   `node_id` int(12) NOT NULL COMMENT '组件ID',
   `uid` int(12) NOT NULL COMMENT '属性/规则ID',
-  `teller` int(12) DEFAULT NULL COMMENT '操作柜员',
-  `org` int(12) DEFAULT NULL COMMENT '操作机构',
+  `teller` varchar(50) DEFAULT NULL COMMENT '操作柜员',
+  `org` varchar(50) DEFAULT NULL COMMENT '操作机构',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `PRODUCT__NODE_IDX` (`product_id`,`node_id`,`uid`)
+  UNIQUE KEY `PRODUCT_NODE_IDX` (`product_id`,`node_id`,`uid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30000000 DEFAULT CHARSET=utf8 MAX_ROWS=39999999 COMMENT='产品关联组件配置';
 
 

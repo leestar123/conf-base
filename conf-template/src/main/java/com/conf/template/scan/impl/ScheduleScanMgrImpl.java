@@ -44,7 +44,7 @@ public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
 	@Override
 	public void reloadableScan() throws Exception {
 		// TODO Auto-generated method stub
-		logger.debug("reloadScan...");
+		logger.debug("start reloadScan...");
 		// TODO:定时读取jar包
 		List<String> size = new ArrayList<String>();
 		// 包名

@@ -10,6 +10,16 @@
     <result column="param" jdbcType="VARCHAR" property="param" />
     <result column="version" jdbcType="VARCHAR" property="version" />
   </resultMap>
+  <resultMap id="EffectResultMap" type="com.conf.template.db.model.ConfRuleInfo">
+    <id column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="clazz" jdbcType="VARCHAR" property="clazz" />
+    <result column="method" jdbcType="VARCHAR" property="method" />
+    <result column="param" jdbcType="VARCHAR" property="param" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="effect" jdbcType="VARCHAR" property="effect" />
+  </resultMap>
   <sql id="Base_Column_List">
     You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '
   </sql>
@@ -31,21 +41,17 @@
   	select m.*
     from conf_node_template t left join conf_rule_info m 
     on t.uid = m.uid
-    <if test="productId != null">
-    	left join conf_product_node n 
-    	on t.node_id = n.node_id and t.uid = n.uid
-    </if>
     where t.node_id = #{nodeId}
     limit #{startNum},#{endNum}  
   </select>
   
-  <select id="selectEffectRecordListByPage"  resultMap="BaseResultMap">
-  	select m.*, (case n.id when null  then '1' else '0') as effect
+  <select id="selectEffectRecordListByPage"  resultMap="EffectResultMap">
+  	select m.*, (case when n.id > 0  then '0' else '1' end) as effect
     from conf_node_template t left join conf_rule_info m 
     on t.uid = m.uid
     left join conf_product_node n 
-    on t.node_id = n.node_id and t.uid = n.uid
-    where t.node_id = #{nodeId} and n.product_id = #{productId}
+    on t.node_id = n.node_id and t.uid = n.uid and n.product_id = #{productId}
+    where t.node_id = #{nodeId}
     limit #{startNum},#{endNum}  
   </select>
   

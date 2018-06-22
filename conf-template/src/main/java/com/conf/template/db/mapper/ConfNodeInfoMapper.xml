@@ -146,7 +146,7 @@
     limit #{startNum},#{endNum}  
    </select>
    
-   <select id="queryNodeCountByProduct" resultMap="BaseResultMap">
+   <select id="queryNodeCountByProduct" resultMap="java.lang.Integer">
   select count(1)
     from conf_product_node t left join conf_node_info m 
     on t.node_id = m.node_id

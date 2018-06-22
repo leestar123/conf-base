@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.conf.template.db.jpa.TestConfJPA;
 import com.conf.template.db.mapper.TestConfMapper;
 import com.conf.template.scan.impl.ScanMgrImpl;
+import com.conf.template.scan.impl.ScheduleScanMgrImpl;
 import com.conf.template.service.RuleService;
 
 @RestController
@@ -24,7 +25,8 @@ public class TestConfController {
 	private RuleService ruleService;
 	@Autowired
 	private ScanMgrImpl scanMgrImpl;
-	
+	@Autowired
+	ScheduleScanMgrImpl scheduleScanMgrImpl;
 	@Autowired
 	private TestConfJPA testConfJPA;
 	
@@ -34,7 +36,13 @@ public class TestConfController {
 //		testConfJPA.findById(id).get().getName();
 //		return testConfMapper.selectByPrimaryKey(id).getName();
 //		ScanMgrImpl ScanMgrImpl =new ScanMgrImpl();
-		ruleService.doRule(1, 1);
+//		ruleService.doRule(1, 1);
+		try {
+			scheduleScanMgrImpl.reloadableScan();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return "";
 	}
 }

@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +18,14 @@ public class AnnotationParsing {
 	
 	@Autowired
 	ConfRuleInfoMapper confRuleInfoMapper;
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass()); 
+	/**
+	 * 扫描class文件方法入库
+	 * @param clazz
+	 */
 	public void insertAnnotationInfo(Class<?> clazz)
 	{
+		logger.debug("The insertAnnotationInfo method start " );
 		ConfRuleInfo record = null;
 		ConfRuleInfo confRuleInfo = null;
 		String className = clazz.getName();
@@ -41,7 +48,7 @@ public class AnnotationParsing {
 				if(confRuleInfo == null){
 					//入库操作
 					int result = confRuleInfoMapper.insertSelective(record);
-					System.out.println(result);
+					logger.debug("The  ruleName is " + record.getRuleName());
 				}
 				
 			}

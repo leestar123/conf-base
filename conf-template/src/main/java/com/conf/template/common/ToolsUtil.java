@@ -1,6 +1,7 @@
 package com.conf.template.common;
 
 import java.text.NumberFormat;
+import java.util.Properties;
 
 public class ToolsUtil {
 
@@ -52,5 +53,12 @@ public class ToolsUtil {
 	 */
 	public static Long nextSeq() {
 		return gen.nextId();
+	}
+	
+	public static String getSystemInfo()
+	{
+		Properties props=System.getProperties(); 
+		String osName = props.getProperty("os.name");
+		return osName;
 	}
 }

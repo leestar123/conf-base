@@ -143,4 +143,19 @@ public class NodeService {
 		return ErrorUtil.successResp(map);
 	}
 
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public Map<String, ? extends Object> queryNodeByProduct(Map<String, ? extends Object> data) {
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
+		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
+		int startNum = (pageNum - 1) * pageSize;
+		int endNum = pageNum * pageSize;
+		List<ConfNodeInfo> list = confNodeInfoMapper.queryNodeByProduct(productId, startNum, endNum);
+		int totalNum = confNodeInfoMapper.queryNodeCountByProduct(productId);
+		Map<String, Object> body = new HashMap<String, Object>();
+		body.put("totalNum", totalNum);
+		body.put("list", list);
+		return ErrorUtil.successResp(body);
+	}	
 }

@@ -137,4 +137,19 @@
       org = #{org,jdbcType=VARCHAR}
     where node_id = #{nodeId,jdbcType=INTEGER}
   </update>
+  
+  <select id="queryNodeByProduct" resultMap="BaseResultMap">
+  select m.*
+    from conf_product_node t left join conf_node_info m 
+    on t.node_id = m.node_id
+    where t.product_id = #{productId}
+    limit #{startNum},#{endNum}  
+   </select>
+   
+   <select id="queryNodeCountByProduct" resultMap="BaseResultMap">
+  select count(1)
+    from conf_product_node t left join conf_node_info m 
+    on t.node_id = m.node_id
+    where t.product_id = #{productId} 
+   </select>
 </mapper>

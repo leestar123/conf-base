@@ -14,4 +14,5 @@ public interface ConfProductNodeMapper {
     int updateByPrimaryKeySelective(ConfProductNode record);
 
     int updateByPrimaryKey(ConfProductNode record);
+    
 }

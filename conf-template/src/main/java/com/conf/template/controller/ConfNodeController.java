@@ -149,4 +149,19 @@ public class ConfNodeController {
 		return nodeService.deleteRuleByNode(data);
 	}
 	
+	/**
+	 * 根据产品编号查询已经绑定关系的组件列表
+	 * 支持多条删除
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+	@RequestMapping(value="queryNodeByProduct", method=RequestMethod.POST)
+	public Map<String, ? extends Object> queryNodeByProduct(@RequestBody Map<String, ? extends Object> data) {
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		if (StringUtils.isBlank(productId)) {
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
+		}
+		return nodeService.queryNodeByProduct(data);
+	}
 }

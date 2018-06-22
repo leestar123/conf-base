@@ -31,6 +31,7 @@ import com.conf.template.scheduler.ScheduleTask;
 @Component
 @EnableScheduling
 public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
+	
 	@Autowired
 	private  AnnotationParsing annotationParsing;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());  
@@ -38,7 +39,6 @@ public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
 	@Override
 	public void firstScan() throws Exception {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
@@ -115,26 +115,24 @@ public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
 	 * @param name
 	 */
 	private  void formatName(List<String> size, String name, ClassLoader loader) {
-		if (!name.endsWith(".MF")) {
-			if (name.endsWith(".class")) {
-				String fileName = name.replaceAll("/", ".");
-				int n = 6;
-				String ultimaName = fileName.substring(0, name.length() - n);
-				try {
-					// 加载指定类，注意一定要带上类的包名
-					Class<?> cls = loader.loadClass(ultimaName);
-					logger.debug("This Class is " + ultimaName);
-					// 判定此 Class 对象所表示的类或接口与指定的 Class 参数所表示的类或接口是否相同，
-					// 或是否是其超类或超接口。如果是则返回 true；否则返回 false。如果该 Class 表示一个基本类型，
-					// 且指定的 Class 参数正是该 Class 对象，则该方法返回 true；否则返回 false。
-					// if(lifeCycle.isAssignableFrom(cls)){
-					// size.add(ultimaName);
-					// }
-					//执行规则入库操作
-					annotationParsing.insertAnnotationInfo(cls);
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
+		if (!name.endsWith(".MF") && name.endsWith(".class")) {
+			String fileName = name.replaceAll("/", ".");
+			int n = 6;
+			String ultimaName = fileName.substring(0, name.length() - n);
+			try {
+				// 加载指定类，注意一定要带上类的包名
+				Class<?> cls = loader.loadClass(ultimaName);
+				logger.debug("This Class is " + ultimaName);
+				// 判定此 Class 对象所表示的类或接口与指定的 Class 参数所表示的类或接口是否相同，
+				// 或是否是其超类或超接口。如果是则返回 true；否则返回 false。如果该 Class 表示一个基本类型，
+				// 且指定的 Class 参数正是该 Class 对象，则该方法返回 true；否则返回 false。
+				// if(lifeCycle.isAssignableFrom(cls)){
+				// size.add(ultimaName);
+				// }
+				// 执行规则入库操作
+				annotationParsing.insertAnnotationInfo(cls);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 			}
 		}
 	}

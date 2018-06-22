@@ -39,14 +39,13 @@ public class ScanMgrImpl implements ScanMgr{
         for (String s : classPaths) {
             //把 D:\work\code\20170401\search-class\target\classes\com\baibin\search\a\A.class 这样的绝对路径转换为全类名com.baibin.search.a.A
             s = s.replace(classpath.replace("/","\\").replaceFirst("\\\\",""),"").replace("\\",".").replace(".class","");
-            Class cls = Class.forName(s.substring(s.indexOf(basePack)));
+            Class<?> cls = Class.forName(s.substring(s.indexOf(basePack)));
             annotationParsing.insertAnnotationInfo(cls);
         }
 	}
 
 	@Override
 	public void reloadableScan() throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 	

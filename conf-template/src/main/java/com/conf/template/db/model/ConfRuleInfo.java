@@ -15,6 +15,8 @@ public class ConfRuleInfo {
 
     private String version;
 
+    private String effect;
+    
     public Integer getUid() {
         return uid;
     }
@@ -70,4 +72,12 @@ public class ConfRuleInfo {
     public void setVersion(String version) {
         this.version = version == null ? null : version.trim();
     }
+
+	public String getEffect() {
+		return effect;
+	}
+
+	public void setEffect(String effect) {
+		this.effect = effect;
+	}
 }

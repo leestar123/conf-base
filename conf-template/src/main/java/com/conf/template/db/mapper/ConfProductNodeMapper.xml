@@ -92,7 +92,7 @@
       <if test="uid != null">
         uid = #{uid,jdbcType=INTEGER},
       </if>
-      <if>
+      <if test="effect != null">
       	 effect = #{effect,jdbcType=VARCHAR},
       </if>
       <if test="teller != null">

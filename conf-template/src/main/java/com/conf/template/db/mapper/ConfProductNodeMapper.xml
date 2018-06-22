@@ -98,4 +98,11 @@
       org = #{org,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <delete id="deleteByProductAndNodeId" >
+    delete from conf_product_node
+    where node_id = #{nodeId}
+    and product_id = #{productId}
+  </delete>
+  
 </mapper>

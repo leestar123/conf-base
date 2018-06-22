@@ -189,4 +189,18 @@ public class NodeService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		return ErrorUtil.successResp(map);
 	}
+	
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public Map<String, ? extends Object> deleteNodeByProduct(Map<String, ? extends Object> data) {
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> nodeList = (List<Map<String, Object>>) data.get("nodeList");
+		for (int i = 0; i < nodeList.size(); i++) {
+			int nodeId = ToolsUtil.obj2Int(nodeList.get(i).get("nodeId"), null);
+			confProductNodeMapper.deleteByProductAndNodeId(ToolsUtil.obj2Int(productId, null), nodeId);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		return ErrorUtil.successResp(map);
+	}
 }

@@ -1,5 +1,7 @@
 package com.conf.template.db.mapper;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.conf.template.db.model.ConfProductNode;
 
 public interface ConfProductNodeMapper {
@@ -15,4 +17,6 @@ public interface ConfProductNodeMapper {
 
     int updateByPrimaryKey(ConfProductNode record);
     
+    int deleteByProductAndNodeId(@Param(value = "productId") Integer productId,
+    								@Param(value = "nodeId") Integer nodeId);
 }

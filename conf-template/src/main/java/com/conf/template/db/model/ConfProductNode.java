@@ -8,6 +8,8 @@ public class ConfProductNode {
     private Integer nodeId;
 
     private Integer uid;
+    
+    private String effect;
 
     private Integer teller;
 
@@ -60,4 +62,12 @@ public class ConfProductNode {
     public void setOrg(Integer org) {
         this.org = org;
     }
+
+	public String getEffect() {
+		return effect;
+	}
+
+	public void setEffect(String effect) {
+		this.effect = effect;
+	}
 }

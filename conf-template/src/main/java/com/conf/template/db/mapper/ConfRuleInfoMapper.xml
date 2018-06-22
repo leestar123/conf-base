@@ -46,7 +46,7 @@
   </select>
   
   <select id="selectEffectRecordListByPage"  resultMap="EffectResultMap">
-  	select m.*, (case when n.id > 0  then '0' else '1' end) as effect
+  	select m.*, (case when n.id > 0  then '0' else n.effect end) as effect
     from conf_node_template t left join conf_rule_info m 
     on t.uid = m.uid
     left join conf_product_node n 

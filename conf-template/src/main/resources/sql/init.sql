@@ -42,7 +42,8 @@ CREATE TABLE IF NOT EXISTS `conf_product_node` (
   `product_id` int(12) NOT NULL COMMENT '产品ID',
   `node_id` int(12) NOT NULL COMMENT '组件ID',
   `uid` int(12) NOT NULL COMMENT '属性/规则ID',
-  `teller` varchar(50) DEFAULT NULL COMMENT '操作柜员',
+  `effect` varchar(12) NOT NULL COMMENT '是否生效 0-生效 1-不生效',
+  `teller` varchar(2) DEFAULT NULL COMMENT '操作柜员',
   `org` varchar(50) DEFAULT NULL COMMENT '操作机构',
   PRIMARY KEY (`id`),
   UNIQUE KEY `PRODUCT_NODE_IDX` (`product_id`,`node_id`,`uid`)

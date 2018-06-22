@@ -209,4 +209,16 @@ public class ConfNodeController {
 		return nodeService.deleteNodeByProduct(data);
 	
 	}
+	
+	/**
+	 *   批量查询已经绑定关系组件的产品列表
+	 * 
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+	@RequestMapping(value="batchQueryNodeByProduct", method=RequestMethod.POST)
+	public Map<String, ? extends Object> batchQueryNodeByProduct(@RequestBody Map<String, ? extends Object> data) {
+		return nodeService.batchQueryNodeByProduct(data);
+	}
 }

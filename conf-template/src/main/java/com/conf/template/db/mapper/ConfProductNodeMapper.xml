@@ -9,6 +9,11 @@
     <result column="teller" jdbcType="INTEGER" property="teller" />
     <result column="org" jdbcType="INTEGER" property="org" />
   </resultMap>
+  <resultMap type="com.conf.template.db.model.ConfNodeInfoAndProduct" id="NodeByProductMap">
+  <id column="product_id" property="productId"/>
+  <collection property="nodeList" select="com.conf.template.db.mapper.ConfNodeInfoMapper.queryNodeByProducts"
+  									column="{product_id = product_id}" fetchType="eager"></collection>
+  </resultMap>
   <sql id="Base_Column_List">
     id, product_id, node_id, uid, teller, org
   </sql>
@@ -104,5 +109,17 @@
     where node_id = #{nodeId}
     and product_id = #{productId}
   </delete>
+
+  <select id="queryProductIdCount"  resultType="java.lang.Integer">
+    select 
+    COUNT(DISTINCT product_id)
+    from conf_product_node
+    limit #{startNum},#{endNum}
+  </select>
+  <select id="batchQueryNodeByProduct" resultMap="NodeByProductMap">
+  	select DISTINCT product_id 
+  	from conf_product_node
+    limit #{startNum},#{endNum}
+  </select>
   
 </mapper>

@@ -1,7 +1,10 @@
 package com.conf.template.db.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
+import com.conf.template.db.model.ConfNodeInfoAndProduct;
 import com.conf.template.db.model.ConfProductNode;
 
 public interface ConfProductNodeMapper {
@@ -19,4 +22,12 @@ public interface ConfProductNodeMapper {
     
     int deleteByProductAndNodeId(@Param(value = "productId") Integer productId,
     								@Param(value = "nodeId") Integer nodeId);
+    
+    List<ConfNodeInfoAndProduct> batchQueryNodeByProduct(@Param(value = "pageSize") Integer pageSize,
+													@Param(value = "pageNum") Integer pageNum);
+    
+    int queryProductIdCount(@Param(value = "pageSize") Integer pageSize,
+			@Param(value = "pageNum") Integer pageNum);
+    
+    
 }

@@ -27,9 +27,11 @@ public interface ConfNodeInfoMapper {
     int queryCount(@Param("nodeName") String nodeName
 			,@Param("nodeType") String nodeType);
     
-    List<ConfNodeInfo> queryNodeByProduct(@Param("productId") String productId,
+    List<ConfNodeInfo> queryNodeByProduct(@Param("productId") Integer productId,
 			@Param("startNum") Integer startNum
 			,@Param("endNum") Integer endNum);
     
-    int queryNodeCountByProduct(@Param("productId") String productId);
+    int queryNodeCountByProduct(@Param("productId") Integer productId);
+    
+    List<ConfNodeInfo> queryNodeByProducts(@Param("product_id") Integer product_id);
 }

@@ -16,6 +16,7 @@ import com.conf.template.db.mapper.ConfNodeTemplateMapper;
 import com.conf.template.db.mapper.ConfProductNodeMapper;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.model.ConfNodeInfo;
+import com.conf.template.db.model.ConfNodeInfoAndProduct;
 import com.conf.template.db.model.ConfNodeTemplate;
 import com.conf.template.db.model.ConfProductNode;
 import com.conf.template.db.model.ConfRuleInfo;
@@ -161,8 +162,8 @@ public class NodeService {
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
 		int startNum = (pageNum - 1) * pageSize;
 		int endNum = pageNum * pageSize;
-		List<ConfNodeInfo> list = confNodeInfoMapper.queryNodeByProduct(productId, startNum, endNum);
-		int totalNum = confNodeInfoMapper.queryNodeCountByProduct(productId);
+		List<ConfNodeInfo> list = confNodeInfoMapper.queryNodeByProduct(ToolsUtil.obj2Int(productId, null), startNum, endNum);
+		int totalNum = confNodeInfoMapper.queryNodeCountByProduct(ToolsUtil.obj2Int(productId, null));
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("totalNum", totalNum);
 		body.put("list", list);
@@ -205,5 +206,26 @@ public class NodeService {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		return ErrorUtil.successResp(map);
+	}
+	
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public Map<String, ? extends Object> batchQueryNodeByProduct(Map<String, ? extends Object> data) {
+		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
+		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
+		int startNum = (pageNum - 1) * pageSize;
+		int endNum = pageNum * pageSize;
+		//先查询产品ID
+		List<ConfNodeInfoAndProduct> productList= confProductNodeMapper.batchQueryNodeByProduct(startNum,endNum);
+		Map<String, Object> body = new HashMap<String, Object>();		
+		int totalNum = confProductNodeMapper.queryProductIdCount(startNum,endNum);
+		body.put("totalNum", totalNum);
+		Map<Integer,Object> array = new HashMap<Integer,Object>();		
+		for(int i=0;i<productList.size();i++)
+		{
+			array.put(productList.get(i).getProductId(), productList.get(i).getNodeList());
+		}
+		body.put("array", array);
+		return ErrorUtil.successResp(body);
 	}
 }

@@ -152,4 +152,11 @@
     on t.node_id = m.node_id
     where t.product_id = #{productId} 
    </select>
+
+	<select id="queryNodeByProducts" resultMap="BaseResultMap">
+		select m.*
+		from conf_product_node t left join conf_node_info m
+		on t.node_id = m.node_id
+		where t.product_id = #{productId}
+	</select>
 </mapper>

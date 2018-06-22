@@ -28,4 +28,6 @@ public interface ConfRuleInfoMapper {
     int queryCountByNodeId(@Param("nodeId")Integer nodeId);
     
     int queryCountByName(@Param("ruleName")String ruleName);
+    
+    ConfRuleInfo selectByMethod(String method);
 }

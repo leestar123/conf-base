@@ -59,6 +59,12 @@
    	</if>
   </select>
   
+  <select id="selectByMethod"  parameterType="java.lang.String" resultMap="BaseResultMap">
+ 	select m.*
+    from  conf_rule_info m 
+   	 where m.method = #{method}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from conf_rule_info
     where uid = #{uid,jdbcType=INTEGER}

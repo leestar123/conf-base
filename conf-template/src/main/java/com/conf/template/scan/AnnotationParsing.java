@@ -20,6 +20,7 @@ public class AnnotationParsing {
 	public void insertAnnotationInfo(Class<?> clazz)
 	{
 		ConfRuleInfo record = null;
+		ConfRuleInfo confRuleInfo = null;
 		String className = clazz.getName();
 		Method[] methods = clazz.getDeclaredMethods(); 
 		for(Method method :methods){
@@ -35,9 +36,14 @@ public class AnnotationParsing {
 				record.setRemark(rule.remark());
 				record.setVersion(rule.version());
 				record.setUid(Integer.valueOf(date));
-				//入库操作
-				int result = confRuleInfoMapper.insertSelective(record);
-				System.out.println(result);
+				//查询表里是否存在该方法(精确查询)
+				confRuleInfo = confRuleInfoMapper.selectByMethod(m);
+				if(confRuleInfo == null){
+					//入库操作
+					int result = confRuleInfoMapper.insertSelective(record);
+					System.out.println(result);
+				}
+				
 			}
 		}
 	}

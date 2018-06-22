@@ -164,4 +164,26 @@ public class ConfNodeController {
 		}
 		return nodeService.queryNodeByProduct(data);
 	}
+	
+	/**
+	 * 保存产品关联的组件模板信息，同时保存组件模板中的的规则
+	 * 支持多条删除
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+	@RequestMapping(value="addNodeByProduct", method=RequestMethod.POST)
+	public Map<String, ? extends Object> addNodeByProduct(@RequestBody Map<String, ? extends Object> data) {
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> nodeList = (List<Map<String, Object>>) data.get("nodeList");
+		if (StringUtils.isBlank(productId)) {
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
+		}
+		if(nodeList.size()==0)
+		{
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeList");
+		}
+		return nodeService.addNodeByProduct(data);
+	}
 }

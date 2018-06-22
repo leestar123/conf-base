@@ -94,4 +94,11 @@
       org = #{org,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="confNodeTemplateList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_node_template
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </select>
 </mapper>

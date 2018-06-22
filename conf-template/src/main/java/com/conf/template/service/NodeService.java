@@ -13,9 +13,11 @@ import com.conf.template.common.ErrorUtil;
 import com.conf.template.common.ToolsUtil;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
 import com.conf.template.db.mapper.ConfNodeTemplateMapper;
+import com.conf.template.db.mapper.ConfProductNodeMapper;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfNodeTemplate;
+import com.conf.template.db.model.ConfProductNode;
 import com.conf.template.db.model.ConfRuleInfo;
 
 @Service
@@ -29,6 +31,9 @@ public class NodeService {
 	
 	@Autowired
 	ConfNodeTemplateMapper confNodeTemplateMapper;
+	
+	@Autowired
+	ConfProductNodeMapper confProductNodeMapper;
 
 	@Transactional
 	public Map<String, ? extends Object> createNode(Map<String, ? extends Object> data) {
@@ -158,4 +163,30 @@ public class NodeService {
 		body.put("list", list);
 		return ErrorUtil.successResp(body);
 	}	
+	
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public Map<String, ? extends Object> addNodeByProduct(Map<String, ? extends Object> data) {
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> nodeList = (List<Map<String, Object>>) data.get("nodeList");
+		//通过nodeId查询Conf_Node_Template表里对应的uid
+		ConfProductNode record = null;
+		for (int i = 0; i < nodeList.size(); i++) {
+			int nodeId = ToolsUtil.obj2Int(nodeList.get(i).get("nodeId"), null);
+			List<ConfNodeTemplate> templateList = 
+					confNodeTemplateMapper.confNodeTemplateList(nodeId);
+			for (int j = 0; j < templateList.size(); j++) {
+				record =new ConfProductNode();
+				record.setNodeId(nodeId);
+				record.setOrg(0);
+				record.setProductId(ToolsUtil.obj2Int(productId, null));
+				record.setTeller(0);
+				record.setUid(templateList.get(j).getUid());
+				confProductNodeMapper.insertSelective(record);
+			}
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		return ErrorUtil.successResp(map);
+	}
 }

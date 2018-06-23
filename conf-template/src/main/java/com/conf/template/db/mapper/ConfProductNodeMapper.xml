@@ -133,4 +133,11 @@
     limit #{startNum},#{endNum}
   </select>
   
+  <update id="updateEffectStatus">
+  update conf_product_node
+  set effect = #{effect}
+  where  node_id = #{nodeId}
+    and product_id = #{productId}
+    and uid = #{uid}
+  </update>
 </mapper>

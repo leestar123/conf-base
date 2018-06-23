@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -220,5 +221,31 @@ public class ConfNodeController {
 	@RequestMapping(value="batchQueryNodeByProduct", method=RequestMethod.POST)
 	public Map<String, ? extends Object> batchQueryNodeByProduct(@RequestBody Map<String, ? extends Object> data) {
 		return nodeService.batchQueryNodeByProduct(data);
+	}
+	
+	/**
+	 *   根据之前产品绑定的规则，重新选择绑定的规则
+	 * 
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+	@RequestMapping(value="modifyNodeByProduct", method=RequestMethod.POST)
+	public Map<String, ? extends Object> modifyNodeByProduct(@RequestBody Map<String, ? extends Object> data) {
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
+		if (StringUtils.isBlank(productId)) {
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
+		}
+		if (StringUtils.isBlank(nodeId)) {
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+		}
+		if(ruleList.size()==0)
+		{
+			return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleList");
+		}
+		return nodeService.modifyNodeByProduct(data);
 	}
 }

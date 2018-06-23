@@ -1,5 +1,7 @@
 package com.conf.template.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -227,5 +229,36 @@ public class NodeService {
 		}
 		body.put("array", array);
 		return ErrorUtil.successResp(body);
+	}
+	
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public Map<String, ? extends Object> modifyNodeByProduct(Map<String, ? extends Object> data) {
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
+		//对传过来的sequence进行判断
+		List<String> seqList = null;
+		Map<String, Object> ruleMap = null;
+		for(int i=0;i<ruleList.size();i++)
+		{
+			String sequence = ToolsUtil.obj2Str(ruleList.get(i).get("sequence"));
+			seqList = new ArrayList();
+			seqList.add(sequence);
+			ruleMap.put(sequence, ruleList.get(i));
+		}
+		//按照sequence大小进行修改
+		String[] saqArr= (String[]) seqList.toArray();
+		Arrays.sort(saqArr);
+		for(String i: saqArr){
+			Map<String, Object> rule = (Map<String, Object>) ruleMap.get(i);
+			Integer uid = ToolsUtil.obj2Int(rule.get("uid"),null);
+			String effect = ToolsUtil.obj2Str(rule.get("effect"));
+			confProductNodeMapper.updateEffectStatus(ToolsUtil.obj2Int(productId,null),
+					ToolsUtil.obj2Int(nodeId,null),uid,effect);			
+			}
+		Map<String, Object> map = new HashMap<String, Object>();
+		return ErrorUtil.successResp(map);
 	}
 }

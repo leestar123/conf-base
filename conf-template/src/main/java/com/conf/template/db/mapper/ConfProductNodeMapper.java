@@ -29,5 +29,8 @@ public interface ConfProductNodeMapper {
     int queryProductIdCount(@Param(value = "pageSize") Integer pageSize,
 			@Param(value = "pageNum") Integer pageNum);
     
-    
+    int updateEffectStatus(@Param(value = "productId") Integer productId,
+			@Param(value = "nodeId") Integer nodeId,
+			@Param(value = "uid") Integer uid,
+			@Param(value = "effect") String effect);
 }

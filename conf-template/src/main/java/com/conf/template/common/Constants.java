@@ -11,5 +11,10 @@ public class Constants {
 	/**
 	 * 状态生效状态 0- 生效 1-失效
 	 */
+	public final static String EFFECT_STATUS_VALID = "0";
+	
+	/**
+	 * 状态生效状态 0- 生效 1-失效
+	 */
 	public final static String EFFECT_STATUS_INVALID = "1";
 }

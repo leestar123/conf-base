@@ -13,7 +13,7 @@
   <resultMap type="com.conf.template.db.model.ConfNodeInfoAndProduct" id="NodeByProductMap">
   <id column="product_id" property="productId"/>
   <collection property="nodeList" select="com.conf.template.db.mapper.ConfNodeInfoMapper.queryNodeByProducts"
-  									column="{product_id = product_id}" fetchType="eager"></collection>
+  									column="{productId = product_id}" fetchType="eager"></collection>
   </resultMap>
   <sql id="Base_Column_List">
     id, product_id, node_id, uid, effect, teller, org
@@ -125,12 +125,12 @@
     select 
     COUNT(DISTINCT product_id)
     from conf_product_node
-    limit #{startNum},#{endNum}
+    limit #{startNum},#{pageSize}
   </select>
   <select id="batchQueryNodeByProduct" resultMap="NodeByProductMap">
   	select DISTINCT product_id 
   	from conf_product_node
-    limit #{startNum},#{endNum}
+    limit #{startNum},#{pageSize}
   </select>
   
   <update id="updateEffectStatus">

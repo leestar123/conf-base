@@ -181,7 +181,7 @@ public class ConfNodeController {
 		if (StringUtils.isBlank(productId)) {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
 		}
-		if(nodeList.size()==0)
+		if(nodeList == null || nodeList.size()==0)
 		{
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeList");
 		}

@@ -186,12 +186,16 @@ public class NodeService {
 			int nodeId = ToolsUtil.obj2Int(nodeList.get(i).get("nodeId"), null);
 			List<ConfNodeTemplate> templateList = 
 					confNodeTemplateMapper.confNodeTemplateList(nodeId);
+			if (templateList == null || templateList.size() == 0) {
+				return ErrorUtil.errorResp(ErrorCode.code_0003, nodeId);
+			}
 			for (int j = 0; j < templateList.size(); j++) {
 				record =new ConfProductNode();
 				record.setNodeId(nodeId);
 				record.setProductId(ToolsUtil.obj2Int(productId, null));
 				record.setUid(templateList.get(j).getUid());
 				record.setOrg(org);
+				record.setEffect(Constants.EFFECT_STATUS_VALID);
 				record.setTeller(teller);
 				confProductNodeMapper.insertSelective(record);
 			}
@@ -218,16 +222,17 @@ public class NodeService {
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
 		int startNum = (pageNum - 1) * pageSize;
-		int endNum = pageNum * pageSize;
 		//先查询产品ID
-		List<ConfNodeInfoAndProduct> productList= confProductNodeMapper.batchQueryNodeByProduct(startNum,endNum);
+		List<ConfNodeInfoAndProduct> productList= confProductNodeMapper.batchQueryNodeByProduct(startNum, pageSize);
 		Map<String, Object> body = new HashMap<String, Object>();		
-		int totalNum = confProductNodeMapper.queryProductIdCount(startNum,endNum);
+		int totalNum = confProductNodeMapper.queryProductIdCount(startNum, pageSize);
 		body.put("totalNum", totalNum);
-		Map<Integer,Object> array = new HashMap<Integer,Object>();		
-		for(int i=0;i<productList.size();i++)
-		{
-			array.put(productList.get(i).getProductId(), productList.get(i).getNodeList());
+		List<Map<String,Object>> array = new ArrayList<>();		
+		for (ConfNodeInfoAndProduct product : productList) {
+			Map<String,Object> map = new HashMap<>();
+			map.put("productId", product.getProductId());
+			map.put("list", product.getNodeList());
+			array.add(map);
 		}
 		body.put("array", array);
 		return ErrorUtil.successResp(body);

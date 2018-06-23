@@ -143,20 +143,22 @@
     from conf_product_node t left join conf_node_info m 
     on t.node_id = m.node_id
     where t.product_id = #{productId}
+    group by t.node_id
     limit #{startNum},#{endNum}  
    </select>
    
    <select id="queryNodeCountByProduct" resultType="java.lang.Integer">
-  select count(1)
+  select count(distinct(t.node_id))
     from conf_product_node t left join conf_node_info m 
     on t.node_id = m.node_id
     where t.product_id = #{productId} 
    </select>
 
 	<select id="queryNodeByProducts" resultMap="BaseResultMap">
-		select m.*
-		from conf_product_node t left join conf_node_info m
+		select m.* from (
+		select distinct(node_id) from conf_product_node 
+		where product_id = #{productId}
+		) t left join conf_node_info m
 		on t.node_id = m.node_id
-		where t.product_id = #{productId}
 	</select>
 </mapper>

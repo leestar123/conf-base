@@ -23,11 +23,11 @@ public interface ConfProductNodeMapper {
     int deleteByProductAndNodeId(@Param(value = "productId") Integer productId,
     								@Param(value = "nodeId") Integer nodeId);
     
-    List<ConfNodeInfoAndProduct> batchQueryNodeByProduct(@Param(value = "pageSize") Integer pageSize,
-													@Param(value = "pageNum") Integer pageNum);
+    List<ConfNodeInfoAndProduct> batchQueryNodeByProduct(@Param(value = "startNum") Integer startNum,
+													@Param(value = "pageSize") Integer pageSize);
     
-    int queryProductIdCount(@Param(value = "pageSize") Integer pageSize,
-			@Param(value = "pageNum") Integer pageNum);
+    int queryProductIdCount(@Param(value = "startNum") Integer startNum,
+			@Param(value = "pageSize") Integer pageSize);
     
     int updateEffectStatus(@Param(value = "productId") Integer productId,
 			@Param(value = "nodeId") Integer nodeId,

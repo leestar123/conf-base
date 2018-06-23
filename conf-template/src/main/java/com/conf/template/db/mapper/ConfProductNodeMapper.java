@@ -33,4 +33,9 @@ public interface ConfProductNodeMapper {
 			@Param(value = "nodeId") Integer nodeId,
 			@Param(value = "uid") Integer uid,
 			@Param(value = "effect") String effect);
+    
+    int updateInvalidStatus(@Param(value = "productId") Integer productId,
+			@Param(value = "nodeId") Integer nodeId,
+			@Param(value = "list") List<Integer> list,
+			@Param(value = "effect") String effect);
 }

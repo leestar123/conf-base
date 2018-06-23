@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.conf.template.common.Constants;
 import com.conf.template.common.ErrorCode;
 import com.conf.template.common.ErrorUtil;
 import com.conf.template.common.ToolsUtil;
@@ -176,6 +177,8 @@ public class NodeService {
 	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> addNodeByProduct(Map<String, ? extends Object> data) {
 		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		String teller = ToolsUtil.obj2Str(data.get("teller"));
+		String org = ToolsUtil.obj2Str(data.get("org"));
 		List<Map<String, Object>> nodeList = (List<Map<String, Object>>) data.get("nodeList");
 		//通过nodeId查询Conf_Node_Template表里对应的uid
 		ConfProductNode record = null;
@@ -186,10 +189,10 @@ public class NodeService {
 			for (int j = 0; j < templateList.size(); j++) {
 				record =new ConfProductNode();
 				record.setNodeId(nodeId);
-				record.setOrg(0);
 				record.setProductId(ToolsUtil.obj2Int(productId, null));
-				record.setTeller(0);
 				record.setUid(templateList.get(j).getUid());
+				record.setOrg(org);
+				record.setTeller(teller);
 				confProductNodeMapper.insertSelective(record);
 			}
 		}
@@ -211,7 +214,6 @@ public class NodeService {
 	}
 	
 	@Transactional
-	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> batchQueryNodeByProduct(Map<String, ? extends Object> data) {
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
@@ -234,29 +236,41 @@ public class NodeService {
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> modifyNodeByProduct(Map<String, ? extends Object> data) {
-		String productId = ToolsUtil.obj2Str(data.get("productId"));
-		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
-		@SuppressWarnings("unchecked")
+		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null);
+		Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null);
+		String teller = ToolsUtil.obj2Str(data.get("teller"));
+		String org = ToolsUtil.obj2Str(data.get("org"));
 		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
 		//对传过来的sequence进行判断
-		List<String> seqList = null;
-		Map<String, Object> ruleMap = null;
+		List<String> seqList = new ArrayList<>();
+		Map<String, Object> ruleMap = new HashMap<>();
 		for(int i=0;i<ruleList.size();i++)
 		{
 			String sequence = ToolsUtil.obj2Str(ruleList.get(i).get("sequence"));
-			seqList = new ArrayList();
 			seqList.add(sequence);
 			ruleMap.put(sequence, ruleList.get(i));
 		}
 		//按照sequence大小进行修改
-		String[] saqArr= (String[]) seqList.toArray();
-		Arrays.sort(saqArr);
-		for(String i: saqArr){
+		Arrays.sort( seqList.toArray());
+		List<Integer> uidList = new ArrayList<>();
+		for(String i: seqList){
 			Map<String, Object> rule = (Map<String, Object>) ruleMap.get(i);
 			Integer uid = ToolsUtil.obj2Int(rule.get("uid"),null);
+			uidList.add(uid);
 			String effect = ToolsUtil.obj2Str(rule.get("effect"));
-			confProductNodeMapper.updateEffectStatus(ToolsUtil.obj2Int(productId,null),
-					ToolsUtil.obj2Int(nodeId,null),uid,effect);			
+			int num = confProductNodeMapper.updateEffectStatus(productId, nodeId, uid, effect);			
+			if (num == 0) {
+				ConfProductNode productNode = new ConfProductNode();
+				productNode.setNodeId(nodeId);
+				productNode.setProductId(productId);
+				productNode.setUid(uid);
+				productNode.setEffect(effect);
+				productNode.setTeller(teller);
+				productNode.setOrg(org);
+				confProductNodeMapper.insertSelective(productNode);
+			}
+			//使未传输的对象失效
+			confProductNodeMapper.updateInvalidStatus(productId, nodeId, uidList, Constants.EFFECT_STATUS_INVALID);
 			}
 		Map<String, Object> map = new HashMap<String, Object>();
 		return ErrorUtil.successResp(map);

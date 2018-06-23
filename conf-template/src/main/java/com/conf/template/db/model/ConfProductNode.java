@@ -11,9 +11,9 @@ public class ConfProductNode {
     
     private String effect;
 
-    private Integer teller;
+    private String teller;
 
-    private Integer org;
+    private String org;
 
     public Integer getId() {
         return id;
@@ -47,19 +47,19 @@ public class ConfProductNode {
         this.uid = uid;
     }
 
-    public Integer getTeller() {
+    public String getTeller() {
         return teller;
     }
 
-    public void setTeller(Integer teller) {
+    public void setTeller(String teller) {
         this.teller = teller;
     }
 
-    public Integer getOrg() {
+    public String getOrg() {
         return org;
     }
 
-    public void setOrg(Integer org) {
+    public void setOrg(String org) {
         this.org = org;
     }
 

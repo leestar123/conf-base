@@ -5,9 +5,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
 import org.jboss.jandex.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
-import com.conf.template.common.Constants;
-import com.conf.template.common.ToolsUtil;
+
 import com.conf.template.scan.AnnotationParsing;
 import com.conf.template.scan.ScanMgr;
 import com.conf.template.scheduler.ScheduleTask;
@@ -35,7 +37,9 @@ public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
 	@Autowired
 	private  AnnotationParsing annotationParsing;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());  
-	List<String> classPaths = new ArrayList<String>();
+	Set<String> classPaths = new HashSet<String>();
+	Set<String> scanClassPaths = new HashSet<String>();
+	
 	@Override
 	public void firstScan() throws Exception {
 		// TODO Auto-generated method stub
@@ -43,35 +47,15 @@ public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
 	
 	@Override
 	public void reloadableScan() throws Exception {
-		// TODO Auto-generated method stub
 		logger.debug("start reloadScan...");
-		// TODO:定时读取jar包
 		List<String> size = new ArrayList<String>();
-		// 包名
-		String basePack = Constants.SCAN_PACKAGE_NAME;
 		// 先把包名转换为路径,首先得到项目的classpath
 		String classpath = Main.class.getResource("/").toString().substring(6);
-		// 然后把我们的包名basPach转换为路径名
-		String basePackCopy = null;
-		// 判断当前系统名称
-		if (ToolsUtil.getSystemInfo().contains("Windows")) {
-			basePackCopy = basePack.replace(".", "/");// win环境
-		}else
-		{
-			basePackCopy = basePack.replace(".", File.separator);//unix环境
-		}
-		// 然后把classpath和basePack合并
-		String searchPath = classpath + basePackCopy;
-		doPath(new File(searchPath));
+		
+		doPath(new File(classpath));
 		for (String s : classPaths) {
 
-			// 读取jar包class文件
 			File file = new File(s);
-			long time = file.lastModified();
-			long currentTine = System.currentTimeMillis();
-			if (Constants.SCANNING_TIME_INTERVAL * 1000 + time < currentTine) {
-				continue;
-			}
 			@SuppressWarnings("resource")
 			JarFile jarFile = new JarFile(s);
 			URL url = file.toURI().toURL();
@@ -79,6 +63,8 @@ public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
 			Enumeration<?> files = jarFile.entries();
 			while (files.hasMoreElements()) {
 				process(files.nextElement(), size, loader);
+				scanClassPaths.add(s);
+				classPaths.remove(s);
 			}
 		}
 	}
@@ -149,10 +135,9 @@ public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
             for (File f1 : files) {
                 doPath(f1);
             }
-        } else {//标准文件
-            //标准文件我们就判断是否是class文件
-            if (file.getName().endsWith(".jar")) {
+        } else if(file.getName().endsWith(".jar")) {//标准文件
                 //如果是class文件我们就放入我们的集合中。
+            if (!scanClassPaths.contains(file.getPath())) {
                 classPaths.add(file.getPath());
             }
         }

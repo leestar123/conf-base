@@ -1,11 +1,14 @@
 package com.conf.template.common;
 
 import java.text.NumberFormat;
+import java.util.Map;
 import java.util.Properties;
 
 public class ToolsUtil {
 
 	private static SequenceGen gen = new SequenceGen(2L);
+	
+	static ThreadLocal<Map<String,Object>> threadLocal =new ThreadLocal<Map<String,Object>>();  
 	
 	public static int sequence =0;
 	/**
@@ -60,5 +63,26 @@ public class ToolsUtil {
 		Properties props=System.getProperties(); 
 		String osName = props.getProperty("os.name");
 		return osName;
+	}
+	
+	/**
+	 * 为每个线程存储上下文作为共享变量
+	 * @param map
+	 * @return
+	 */
+	public static ThreadLocal<Map<String,Object>> threadLocalSet(Map<String,Object> map)
+	{
+		threadLocal.set(map);
+		return threadLocal;
+	}
+	
+	/**
+	 * 获取每个线程存储上下文
+	 * @return
+	 */
+	public static Map<String,Object> threadLocalGet()
+	{
+		Map<String,Object> maps = threadLocal.get();
+		return maps;
 	}
 }

@@ -8,6 +8,7 @@ import org.hibernate.mapping.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.conf.template.common.ToolsUtil;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.model.ConfRuleInfo;
 
@@ -38,7 +39,8 @@ public class RuleService {
 		}
 
 		Class<?> cls = null;
-		Map map = null ;
+		//获取上下文
+		Map map = (Map) ToolsUtil.threadLocalGet();
 		for(int i=0;i<selectRecordList.size();i++)
 		{
 			try {
@@ -49,6 +51,7 @@ public class RuleService {
 			    Method method;
 			    method = cls.getMethod(selectRecordList.get(i).getMethod(),java.util.Map.class); 
 			    //调用得到的上边的方法method
+			    //TODO: 考虑调用方法入参和上下文参数传递
 			    method.invoke(obj,map);
 				
 			} catch (ClassNotFoundException e) {

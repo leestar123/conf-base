@@ -17,4 +17,9 @@ public class Constants {
 	 * 状态生效状态 0- 生效 1-失效
 	 */
 	public final static String EFFECT_STATUS_INVALID = "1";
+	
+	/**
+	 * 最大序列号
+	 */
+	public final static Integer MAX_SEQUENCE = 9999;
 }

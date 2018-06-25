@@ -52,6 +52,7 @@
     left join conf_product_node n 
     on t.node_id = n.node_id and t.uid = n.uid and n.product_id = #{productId}
     where t.node_id = #{nodeId}
+    order by n.sequence asc
     limit #{startNum},#{pageSize}  
   </select>
   

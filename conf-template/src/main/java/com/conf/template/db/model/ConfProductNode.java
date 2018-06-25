@@ -10,6 +10,8 @@ public class ConfProductNode {
     private Integer uid;
     
     private String effect;
+    
+    private Integer sequence;
 
     private String teller;
 
@@ -69,5 +71,13 @@ public class ConfProductNode {
 
 	public void setEffect(String effect) {
 		this.effect = effect;
+	}
+
+	public Integer getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(Integer sequence) {
+		this.sequence = sequence;
 	}
 }

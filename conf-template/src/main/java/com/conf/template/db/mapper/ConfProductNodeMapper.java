@@ -32,10 +32,12 @@ public interface ConfProductNodeMapper {
     int updateEffectStatus(@Param(value = "productId") Integer productId,
 			@Param(value = "nodeId") Integer nodeId,
 			@Param(value = "uid") Integer uid,
-			@Param(value = "effect") String effect);
+			@Param(value = "effect") String effect,
+			@Param(value = "sequence") Integer sequence);
     
     int updateInvalidStatus(@Param(value = "productId") Integer productId,
 			@Param(value = "nodeId") Integer nodeId,
 			@Param(value = "list") List<Integer> list,
-			@Param(value = "effect") String effect);
+			@Param(value = "effect") String effect,
+			@Param(value = "sequence") Integer sequence);
 }

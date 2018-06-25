@@ -259,7 +259,7 @@ public class NodeService {
 			Integer uid = ToolsUtil.obj2Int(rule.get("uid"),null);
 			uidList.add(uid);
 			String effect = ToolsUtil.obj2Str(rule.get("effect"));
-			int num = confProductNodeMapper.updateEffectStatus(productId, nodeId, uid, effect);			
+			int num = confProductNodeMapper.updateEffectStatus(productId, nodeId, uid, effect, Integer.parseInt(i));			
 			if (num == 0) {
 				ConfProductNode productNode = new ConfProductNode();
 				productNode.setNodeId(nodeId);
@@ -268,10 +268,11 @@ public class NodeService {
 				productNode.setEffect(effect);
 				productNode.setTeller(teller);
 				productNode.setOrg(org);
+				productNode.setSequence(Constants.MAX_SEQUENCE);
 				confProductNodeMapper.insertSelective(productNode);
 			}
 			//使未传输的对象失效
-			confProductNodeMapper.updateInvalidStatus(productId, nodeId, uidList, Constants.EFFECT_STATUS_INVALID);
+			confProductNodeMapper.updateInvalidStatus(productId, nodeId, uidList, Constants.EFFECT_STATUS_INVALID, Constants.MAX_SEQUENCE);
 			}
 		Map<String, Object> map = new HashMap<String, Object>();
 		return ErrorUtil.successResp(map);

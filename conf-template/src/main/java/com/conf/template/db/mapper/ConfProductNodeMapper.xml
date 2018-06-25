@@ -129,7 +129,7 @@
   </select>
   <select id="batchQueryNodeByProduct" resultMap="NodeByProductMap">
   	select DISTINCT product_id 
-  	from conf_product_node
+  	from conf_product_node 
     limit #{startNum},#{pageSize}
   </select>
   

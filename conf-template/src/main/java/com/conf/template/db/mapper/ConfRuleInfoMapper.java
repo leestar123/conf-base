@@ -21,11 +21,11 @@ public interface ConfRuleInfoMapper {
     
     List<ConfRuleInfo> selectRecordList(@Param("productId") Integer productId ,@Param("nodeId")Integer nodeId);
     
-    List<ConfRuleInfo> selectRecordListByPage(@Param("nodeId")Integer nodeId,@Param("startNum")Integer startNum,@Param("endNum")Integer endNum);
+    List<ConfRuleInfo> selectRecordListByPage(@Param("nodeId")Integer nodeId,@Param("startNum")Integer startNum,@Param("pageSize")Integer pageSize);
     
-    List<ConfRuleInfo> selectEffectRecordListByPage(@Param("productId")Integer productId, @Param("nodeId")Integer nodeId,@Param("startNum")Integer startNum,@Param("endNum")Integer endNum);
+    List<ConfRuleInfo> selectEffectRecordListByPage(@Param("productId")Integer productId, @Param("nodeId")Integer nodeId,@Param("startNum")Integer startNum,@Param("pageSize")Integer pageSize);
 
-    List<ConfRuleInfo> queryRuleListByName(@Param("ruleName")String ruleName,@Param("startNum")Integer startNum,@Param("endNum")Integer endNum);
+    List<ConfRuleInfo> queryRuleListByName(@Param("ruleName")String ruleName,@Param("startNum")Integer startNum,@Param("pageSize")Integer pageSize);
 
     int queryCountByNodeId(@Param("nodeId")Integer nodeId);
     

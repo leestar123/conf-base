@@ -27,7 +27,7 @@
 	        and t.node_name like '%${nodeName}%' 
 	   </if>
 	   <if test="nodeType!=null and nodeType!=''">
-	        and t.node_type like '%${nodeType}%'
+	        and t.node_type = #{nodeType}
 	   </if>
    </where>
   </select>
@@ -39,10 +39,11 @@
 	        and t.node_name like '%${nodeName}%'
 	   </if>
 	   <if test="nodeType!=null and nodeType!=''">
-	        and t.node_type like '%${nodeType}%'
+	        and t.node_type = #{nodeType}
 	   </if>
    </where>  
-   limit #{startNum},#{endNum}
+   order by t.node_id desc
+   limit #{startNum},#{pageSize}
    
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -144,7 +145,7 @@
     on t.node_id = m.node_id
     where t.product_id = #{productId}
     group by t.node_id
-    limit #{startNum},#{endNum}  
+    limit #{startNum},#{pageSize}  
    </select>
    
    <select id="queryNodeCountByProduct" resultType="java.lang.Integer">

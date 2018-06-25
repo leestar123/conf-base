@@ -66,8 +66,7 @@ public class NodeService {
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
 
 		int startNum = (pageNum - 1) * pageSize;
-		int endNum = pageNum * pageSize;
-		List<ConfNodeInfo> list = confNodeInfoMapper.queryNodeList(nodeName, nodeType, startNum, endNum);
+		List<ConfNodeInfo> list = confNodeInfoMapper.queryNodeList(nodeName, nodeType, startNum, pageSize);
 		int totalNum = confNodeInfoMapper.queryCount(nodeName, nodeType);
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("totalNum", totalNum);
@@ -96,12 +95,11 @@ public class NodeService {
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
 		int startNum = (pageNum - 1) * pageSize;
-		int endNum = pageNum * pageSize;
 		List<ConfRuleInfo> list = null;
 		if (productId == null) {
-			list = confRuleInfoMapper.selectRecordListByPage(nodeId, startNum, endNum);
+			list = confRuleInfoMapper.selectRecordListByPage(nodeId, startNum, pageSize);
 		} else {
-			list = confRuleInfoMapper.selectEffectRecordListByPage(productId, nodeId, startNum, endNum);
+			list = confRuleInfoMapper.selectEffectRecordListByPage(productId, nodeId, startNum, pageSize);
 		}
 		int totalNum = confRuleInfoMapper.queryCountByNodeId(nodeId);
 		Map<String, Object> body = new HashMap<String, Object>();
@@ -115,9 +113,8 @@ public class NodeService {
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
 		int startNum = (pageNum - 1) * pageSize;
-		int endNum = pageNum * pageSize;
 		int totalNum = confRuleInfoMapper.queryCountByName(ruleName);
-		List<ConfRuleInfo> list = confRuleInfoMapper.queryRuleListByName(ruleName, startNum, endNum);
+		List<ConfRuleInfo> list = confRuleInfoMapper.queryRuleListByName(ruleName, startNum, pageSize);
 		// Map<String,Object> map = new HashMap<String, Object>();
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("totalNum", totalNum);
@@ -164,8 +161,7 @@ public class NodeService {
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
 		int startNum = (pageNum - 1) * pageSize;
-		int endNum = pageNum * pageSize;
-		List<ConfNodeInfo> list = confNodeInfoMapper.queryNodeByProduct(ToolsUtil.obj2Int(productId, null), startNum, endNum);
+		List<ConfNodeInfo> list = confNodeInfoMapper.queryNodeByProduct(ToolsUtil.obj2Int(productId, null), startNum, pageSize);
 		int totalNum = confNodeInfoMapper.queryNodeCountByProduct(ToolsUtil.obj2Int(productId, null));
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("totalNum", totalNum);

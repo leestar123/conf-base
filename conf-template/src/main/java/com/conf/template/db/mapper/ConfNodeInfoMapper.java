@@ -22,14 +22,14 @@ public interface ConfNodeInfoMapper {
     List<ConfNodeInfo> queryNodeList(@Param("nodeName") String nodeName
     									,@Param("nodeType") String nodeType,
     										@Param("startNum") Integer startNum
-    										,@Param("endNum") Integer endNum);
+    										,@Param("pageSize") Integer pageSize);
     
     int queryCount(@Param("nodeName") String nodeName
 			,@Param("nodeType") String nodeType);
     
     List<ConfNodeInfo> queryNodeByProduct(@Param("productId") Integer productId,
 			@Param("startNum") Integer startNum
-			,@Param("endNum") Integer endNum);
+			,@Param("pageSize") Integer pageSize);
     
     int queryNodeCountByProduct(@Param("productId") Integer productId);
     

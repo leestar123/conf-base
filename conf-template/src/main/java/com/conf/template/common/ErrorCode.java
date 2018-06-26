@@ -8,7 +8,9 @@ public enum ErrorCode {
 	code_0000("0000","excute success") ,
 	code_0001("0001", "缺少必输字段{0}"),
 	code_0002("0002", "数据库操作异常"),
-	code_0003("0003", "组件{0}未绑定任何规则，请先绑定规则！");
+	code_0003("0003", "组件{0}未绑定任何规则，请先绑定规则！"),
+	code_0004("0004", "规则{0}执行失败！");
+	
 	private	String code;
     private String msg;  
     // 构造方法  

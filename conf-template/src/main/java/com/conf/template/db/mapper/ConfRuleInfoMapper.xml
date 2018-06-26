@@ -84,7 +84,7 @@
   <select id="selectByMethod"  parameterType="java.lang.String" resultMap="BaseResultMap">
  	select m.*
     from  conf_rule_info m 
-   	 where m.method = #{method}
+   	 where m.method = #{method,jdbcType=VARCHAR}
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

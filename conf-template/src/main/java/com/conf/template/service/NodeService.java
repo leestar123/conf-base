@@ -46,7 +46,7 @@ public class NodeService {
 		confNodeInfo.setNodeName((String) data.get("nodeName"));
 		confNodeInfo.setNodeType((String) data.get("nodeType"));
 		confNodeInfo.setOrg((String) data.get("org"));
-		confNodeInfo.setRemark((String) data.get("remark "));
+		confNodeInfo.setRemark((String) data.get("remark"));
 		confNodeInfo.setTeller((String) data.get("teller"));
 		confNodeInfo.setVersion("");
 		int result = confNodeInfoMapper.insertSelective(confNodeInfo);
@@ -227,7 +227,10 @@ public class NodeService {
 		for (ConfNodeInfoAndProduct product : productList) {
 			Map<String,Object> map = new HashMap<>();
 			map.put("productId", product.getProductId());
-			map.put("list", product.getNodeList());
+			if(null !=product.getNodeList())
+			{
+				map.put("list", product.getNodeList());
+			}			
 			array.add(map);
 		}
 		body.put("array", array);

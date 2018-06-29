@@ -34,7 +34,7 @@
     insert into conf_product_node (product_id, node_id, 
       uid, effect, sequence, teller, org,product_name)
     #{productId,jdbcType=INTEGER}, #{nodeId,jdbcType=INTEGER}, 
-      #{uid,jdbcType=INTEGER}, #{effect,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER}, #{teller,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{product_name,jdbcType=VARCHAR})
+      #{uid,jdbcType=INTEGER}, #{effect,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER}, #{teller,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfProductNode">
      <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
@@ -63,7 +63,7 @@
       <if test="org != null">
         org,
       </if>
-      <if test="product_name != null">
+      <if test="productName != null">
         product_name,
       </if>
     </trim>

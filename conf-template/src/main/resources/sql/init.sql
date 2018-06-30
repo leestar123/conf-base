@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `conf_product_node` (
   `effect` varchar(12) NOT NULL COMMENT '是否生效 0-生效 1-不生效',
   `teller` varchar(2) DEFAULT NULL COMMENT '操作柜员',
   `org` varchar(50) DEFAULT NULL COMMENT '操作机构',
+  `product_name` varchar(50) DEFAULT NULL COMMENT '产品名称',
   PRIMARY KEY (`id`),
   UNIQUE KEY `PRODUCT_NODE_IDX` (`product_id`,`node_id`,`uid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30000000 DEFAULT CHARSET=utf8 MAX_ROWS=39999999 COMMENT='产品关联组件配置';

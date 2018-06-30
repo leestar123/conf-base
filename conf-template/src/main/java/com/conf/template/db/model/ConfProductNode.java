@@ -16,8 +16,18 @@ public class ConfProductNode {
     private String teller;
 
     private String org;
+    
+    private String productName;
 
-    public Integer getId() {
+    public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public Integer getId() {
         return id;
     }
 

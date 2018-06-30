@@ -9,6 +9,7 @@
     <result column="effect" jdbcType="VARCHAR" property="effect" />
     <result column="sequence" jdbcType="INTEGER" property="sequence" />
     <result column="teller" jdbcType="VARCHAR" property="teller" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="org" jdbcType="VARCHAR" property="org" />
   </resultMap>
   <resultMap type="com.conf.template.db.model.ConfNodeInfoAndProduct" id="NodeByProductMap">
@@ -17,7 +18,7 @@
   									column="{productId = product_id}" fetchType="eager"></collection>
   </resultMap>
   <sql id="Base_Column_List">
-    id, product_id, node_id, uid, effect, sequence, teller, org
+    id, product_id, node_id, uid, effect, sequence, teller, org,product_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,9 +32,9 @@
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfProductNode">
     insert into conf_product_node (product_id, node_id, 
-      uid, effect, sequence, teller, org)
+      uid, effect, sequence, teller, org,product_name)
     #{productId,jdbcType=INTEGER}, #{nodeId,jdbcType=INTEGER}, 
-      #{uid,jdbcType=INTEGER}, #{effect,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER}, #{teller,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR})
+      #{uid,jdbcType=INTEGER}, #{effect,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER}, #{teller,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfProductNode">
      <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
@@ -62,6 +63,9 @@
       <if test="org != null">
         org,
       </if>
+      <if test="productName != null">
+        product_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="productId != null">
@@ -84,6 +88,9 @@
       </if>
       <if test="org != null">
         #{org,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -111,6 +118,9 @@
       <if test="org != null">
         org = #{org,jdbcType=VARCHAR},
       </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -122,7 +132,8 @@
       effect = #{effect,jdbcType=VARCHAR},
       sequence = #{sequence,jdbcType=INTEGER},
       teller = #{teller,jdbcType=VARCHAR},
-      org = #{org,jdbcType=VARCHAR}
+      org = #{org,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   

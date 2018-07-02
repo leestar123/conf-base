@@ -57,7 +57,12 @@
 		<dependency>  
             <groupId>org.springframework</groupId>  
             <artifactId>spring-context-support</artifactId>  
-        </dependency> 
+        </dependency>
+		<dependency>
+			<groupId>com.lmx.conf</groupId>
+			<artifactId>conf-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build> 
 		<plugins> 

@@ -14,7 +14,7 @@ import com.conf.template.scan.impl.ScanMgrImpl;
 import com.conf.template.scan.impl.ScheduleScanMgrImpl;
 import com.conf.template.service.RuleService;
 
-@RestController
+//@RestController
 public class TestConfController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());  

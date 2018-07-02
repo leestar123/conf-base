@@ -1,7 +1,16 @@
 package com.conf.client;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.bstek.urule.console.EnvironmentUtils;
+import com.bstek.urule.console.User;
 import com.bstek.urule.console.repository.RepositoryService;
-import com.bstek.urule.console.repository.model.RepositoryFile;
+import com.bstek.urule.console.servlet.RequestContext;
+import com.bstek.urule.console.servlet.RequestHolder;
 
 /**
  * 
@@ -14,6 +23,8 @@ import com.bstek.urule.console.repository.model.RepositoryFile;
  */
 public class RuleInvokerService
 {
+    private static final String CLASSIFY_COOKIE_NAME="_lib_classify";
+    
     private RepositoryService repositoryService;
     
     public RepositoryService getRepositoryService()
@@ -45,13 +56,12 @@ public class RuleInvokerService
      * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public boolean createProject(boolean classify, String projectName) throws Exception {
-        //String projectName=req.getParameter("newProjectName");
-        //projectName=Utils.decodeURL(projectName);
-        //boolean classify = getClassify(req,resp);
-        //User user=EnvironmentUtils.getLoginUser(new RequestContext(req,resp));
-        RepositoryFile projectFileInfo=repositoryService.createProject(projectName,null,classify);
-        return true;
+    public void createProject(String projectName) throws Exception {
+        HttpServletRequest req = RequestHolder.getRequest();
+        HttpServletResponse resp = RequestHolder.getResponse();
+        boolean classify = getClassify(req,resp);
+        User user=EnvironmentUtils.getLoginUser(new RequestContext(req,resp));
+        repositoryService.createProject(projectName,user,classify);
     }
     
     /**
@@ -115,5 +125,29 @@ public class RuleInvokerService
      */
     public boolean refreshKnowledgeCache(String files, String packageId, String project) {
         return true;
+    }
+    
+    private boolean getClassify(HttpServletRequest req,HttpServletResponse resp) {
+        String classifyValue=req.getParameter("classify");
+        if(StringUtils.isBlank(classifyValue)){
+            Cookie[] cookies=req.getCookies();
+            if(cookies!=null){              
+                for(Cookie cookie:cookies){
+                    if(CLASSIFY_COOKIE_NAME.equals(cookie.getName())){
+                        classifyValue=cookie.getValue();
+                        break;
+                    }
+                }
+            }
+        }else{
+            Cookie classifyCookie=new Cookie(CLASSIFY_COOKIE_NAME,classifyValue);
+            classifyCookie.setMaxAge(2100000000);
+            resp.addCookie(classifyCookie);
+        }
+        boolean classify=true;
+        if(StringUtils.isNotBlank(classifyValue)){
+            classify=Boolean.valueOf(classifyValue);
+        }
+        return classify;
     }
 }

@@ -66,7 +66,7 @@ public class ConfNodeController implements CommController{
         try
         {
             logger.info("Urule创建空项目[" + nodeName + "]");
-            invokerService.createProject(true, nodeName);
+            invokerService.createProject(nodeName);
             return nodeService.createNode(data);
         }
         catch (Exception e)

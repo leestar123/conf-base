@@ -17,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bstek.urule.console.servlet.RequestHolder;
 
 public class ConfBaseServlet extends HttpServlet
 {
@@ -41,7 +42,7 @@ public class ConfBaseServlet extends HttpServlet
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse rep) throws ServletException, IOException
     {
-        //super.doPost(req, resp);
+        RequestHolder.set(req, rep);
         Map<String, ? extends Object> data = HttpUtil.getRequestData(req);
         StringBuffer url = req.getRequestURL();
         int lastIndex = url.toString().lastIndexOf("/");

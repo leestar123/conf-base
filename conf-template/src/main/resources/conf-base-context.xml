@@ -4,12 +4,17 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 	">
-	<import resource="classpath:urule-core-context.xml"/>
+	<import resource="classpath:urule-console-context.xml"/>
 	
 	<bean id="nodeService" class="com.conf.template.service.NodeService"/>
 	
+	<bean id="invokerService" class="com.conf.client.RuleInvokerService">
+		<property name="repositoryService" ref="urule.repositoryService"></property>
+	</bean>
+	
 	<bean id="confNodeCtroller" class="com.conf.template.controller.ConfNodeController">
 		<property name="nodeService" ref="nodeService"></property>
+		<property name="invokerService" ref="invokerService"></property>	
 	</bean>
 	
 </beans>

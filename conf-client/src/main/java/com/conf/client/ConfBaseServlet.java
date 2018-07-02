@@ -27,7 +27,7 @@ public class ConfBaseServlet extends HttpServlet
     
     private final static Logger logger = LoggerFactory.getLogger(ConfBaseServlet.class);
     
-   @Override
+    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         WebApplicationContext applicationContext=getWebApplicationContext(config);

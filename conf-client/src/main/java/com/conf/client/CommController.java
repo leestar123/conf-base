@@ -2,7 +2,6 @@ package com.conf.client;
 
 import java.util.Map;
 
-
 public interface CommController
 {
 

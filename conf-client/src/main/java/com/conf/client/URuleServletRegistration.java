@@ -12,20 +12,21 @@ import com.bstek.urule.console.servlet.URuleServlet;
  */
 @Component
 public class URuleServletRegistration {
+    
     @Bean
     @SuppressWarnings({"rawtypes", "unchecked"})
-	public ServletRegistrationBean registerURuleServlet(){
-		return new ServletRegistrationBean(new URuleServlet(),"/urule/*");
+	public ServletRegistrationBean registerURuleServlet(){ 
+		return new ServletRegistrationBean(new URuleServlet(), "/urule/*");
 	}
 	@Bean
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public ServletRegistrationBean registerIndexServlet(){
-		return new ServletRegistrationBean(new IndexServlet(),"/");
+		return new ServletRegistrationBean(new IndexServlet(), "/");
 	}
 	
 	@Bean
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public ServletRegistrationBean registerConfServlet(){
-	    return new ServletRegistrationBean(new ConfBaseServlet(),"/node/*");
+	    return new ServletRegistrationBean(new ConfBaseServlet(), "/node/*");
 	}
 }

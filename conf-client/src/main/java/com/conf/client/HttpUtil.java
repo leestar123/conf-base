@@ -20,7 +20,7 @@ public class HttpUtil
     @SuppressWarnings("unchecked")
     public static Map<String, ? extends Object> getRequestData(HttpServletRequest request) {
         if ("GET".equalsIgnoreCase(request.getMethod()) || "DELETE".equalsIgnoreCase(request.getMethod())) {
-            Map<String, Object> map = request.getParameterMap();
+            Map<String, String[]> map = request.getParameterMap();
             Map<String, Object> result = new HashMap<>();
             for (String key : map.keySet())
             {

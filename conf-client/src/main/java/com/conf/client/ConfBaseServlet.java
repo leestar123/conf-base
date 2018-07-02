@@ -2,6 +2,7 @@ package com.conf.client;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -22,7 +25,9 @@ public class ConfBaseServlet extends HttpServlet
     
     private CommController controller;
     
-    @Override
+    private final static Logger logger = LoggerFactory.getLogger(ConfBaseServlet.class);
+    
+   @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         WebApplicationContext applicationContext=getWebApplicationContext(config);
@@ -45,12 +50,17 @@ public class ConfBaseServlet extends HttpServlet
         try
         {
             Method method = clazz.getMethod(service, Map.class);
-            Object result = method.invoke(controller, data); 
+            Object result = method.invoke(controller, data);
             HttpUtil.write(rep, JSONObject.toJSONString(result));
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            logger.error("服务[" + service + "]执行异常!", e);
+            Map<String, Object> error = new HashMap<>();
+            error.put("code", "9999");
+            error.put("msg", "系统执行异常");
+            error.put("success", false);
+            HttpUtil.write(rep, JSONObject.toJSONString(error));
         }
     }
 }

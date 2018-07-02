@@ -19,6 +19,8 @@ spring:
    testOnReturn: false
    poolPreparedStatements: true
    maxOpenPreparedStatements: 20
+server:
+  port: 8081
 # 日志配置
 logging:
   config: classpath:logback-boot.xml

@@ -27,8 +27,8 @@ public class TestConfController {
 	private ScanMgrImpl scanMgrImpl;
 	@Autowired
 	ScheduleScanMgrImpl scheduleScanMgrImpl;
-	@Autowired
-	private TestConfJPA testConfJPA;
+//	@Autowired
+//	private TestConfJPA testConfJPA;
 	
 	@RequestMapping(value="test", method=RequestMethod.GET)
 	public String getName(@RequestParam String id) {

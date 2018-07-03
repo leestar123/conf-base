@@ -4,16 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.bstek.urule.Utils;
-import com.bstek.urule.console.repository.model.FileType;
 import com.conf.client.CommController;
-import com.conf.client.RuleInvokerService;
-import com.conf.template.common.Constants;
 import com.conf.template.common.ErrorCode;
 import com.conf.template.common.ErrorUtil;
 import com.conf.template.common.ToolsUtil;
@@ -29,19 +23,9 @@ import com.conf.template.service.NodeService;
 @Component
 public class ConfNodeController implements CommController{
 
-    private final static Logger logger = LoggerFactory.getLogger(ConfNodeController.class);
-    
     @Autowired
 	private NodeService nodeService;
     
-    @Autowired
-    private RuleInvokerService invokerService;
-	
-    public void setInvokerService(RuleInvokerService invokerService)
-    {
-        this.invokerService = invokerService;
-    }
-
     public void setNodeService(NodeService nodeService)
     {
         this.nodeService = nodeService;
@@ -66,17 +50,8 @@ public class ConfNodeController implements CommController{
         {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
         }
-        try
-        {
-            logger.info("Urule创建空项目[" + nodeName + "]");
-            invokerService.createProject(nodeName);
-            return nodeService.createNode(data);
-        }
-        catch (Exception e)
-        {
-            logger.error("创建组件[" + nodeName + "]失败!", e);
-            return ErrorUtil.errorResp(ErrorCode.code_9999);
-        }
+        
+        return nodeService.createNode(data);
     }
 	
 	/**
@@ -271,7 +246,6 @@ public class ConfNodeController implements CommController{
      * 调用urule新增规则
      */
 	@ApiException
-	@SuppressWarnings("unchecked")
     public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data)
     {
         String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
@@ -298,43 +272,7 @@ public class ConfNodeController implements CommController{
         if (StringUtils.isBlank(nodeName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
         }
-        logger.info("Urule创建规则[" + ruleName + "]");
-        ruleName=Utils.decodeURL(ruleName).trim();
-        String path = null;   
-        String url = Constants.RULE_URL_BASE;
-        try
-        {
-        	path = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
-            //判断该规则名字是否存在
-            if(invokerService.fileExistCheck(path)) {
-            	return ErrorUtil.errorResp(ErrorCode.code_0005, path);
-            }
-            //创建目录
-            //invokerService.createFlolder(ruleName, nodeName, ruleType);
-            //创建规则
-            invokerService.createFile(path, ruleType);
-            FileType fileType=FileType.parse(ruleType);
-            if (FileType.DecisionTable == fileType) {
-                url += "decisiontableeditor?file=" + path;
-            } else if (FileType.DecisionTree == fileType) {
-                url += "decisiontreeeditor?file=" + path;
-            } else if (FileType.Ruleset == fileType) {
-                url += "ruleseteditor?file=" + path;
-            } else if (FileType.Scorecard == fileType) {
-                url += "scorecardeditor?file=" + path;
-            } else {}
-        }
-        catch (Exception e)
-        {
-            logger.error("创建规则[" + ruleName + "]失败!", e);
-            return ErrorUtil.errorResp(ErrorCode.code_9999);
-        }
         
-		Map<String,Object> createRuleMap = (Map<String, Object>) data;
-        createRuleMap.put("rulePath", path);
-        Map<String, ? extends Object> result = nodeService.createRule(createRuleMap);  
-        
-        ToolsUtil.addUrl(result, url);
-        return result;
+        return nodeService.createRule(data);
     }
 }

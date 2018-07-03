@@ -14,6 +14,6 @@
 	
 	<bean id="confNodeCtroller" class="com.conf.template.controller.ConfNodeController">
 		<property name="nodeService" ref="nodeService"></property>
-		<property name="invokerService" ref="invokerService"></property>	
+<!-- 		<property name="invokerService" ref="invokerService"></property>	 -->
 	</bean>
 </beans>

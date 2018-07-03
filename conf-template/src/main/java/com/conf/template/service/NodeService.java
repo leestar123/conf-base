@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bstek.urule.Utils;
+import com.bstek.urule.console.repository.model.FileType;
 import com.conf.client.RuleInvokerService;
 import com.conf.template.common.Constants;
 import com.conf.template.common.ErrorCode;
@@ -53,23 +56,37 @@ public class NodeService {
     }
 
 	@Transactional
-	public Map<String, ? extends Object> createNode(Map<String, ? extends Object> data) {
-		// 参数拼装
-		ConfNodeInfo confNodeInfo = new ConfNodeInfo();
-		confNodeInfo.setNodeName((String) data.get("nodeName"));
-		confNodeInfo.setNodeType((String) data.get("nodeType"));
-		confNodeInfo.setOrg((String) data.get("org"));
-		confNodeInfo.setRemark((String) data.get("remark"));
-		confNodeInfo.setTeller((String) data.get("teller"));
-		confNodeInfo.setVersion("");
-		int result = confNodeInfoMapper.insertSelective(confNodeInfo);
-		if (result != 1) {
-			return ErrorUtil.errorResp(ErrorCode.code_0002);
-		}
-		Map<String, Object> body = new HashMap<String, Object>();
-		body.put("nodeId", confNodeInfo.getNodeId());
-		return ErrorUtil.successResp(body);
-	}
+    public Map<String, ? extends Object> createNode(Map<String, ? extends Object> data)
+    {
+        // 参数拼装
+        ConfNodeInfo confNodeInfo = new ConfNodeInfo();
+        confNodeInfo.setNodeName((String)data.get("nodeName"));
+        confNodeInfo.setNodeType((String)data.get("nodeType"));
+        confNodeInfo.setOrg((String)data.get("org"));
+        confNodeInfo.setRemark((String)data.get("remark"));
+        confNodeInfo.setTeller((String)data.get("teller"));
+        confNodeInfo.setVersion("");
+        
+        try
+        {
+            logger.info("Urule创建空项目[" + confNodeInfo.getNodeName() + "]");
+            invokerService.createProject(confNodeInfo.getNodeName());
+        }
+        catch (Exception e)
+        {
+            logger.error("创建组件[" + confNodeInfo.getNodeName() + "]失败!", e);
+            return ErrorUtil.errorResp(ErrorCode.code_9999);
+        }
+        
+        int result = confNodeInfoMapper.insertSelective(confNodeInfo);
+        if (result != 1)
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0002);
+        }
+        Map<String, Object> body = new HashMap<String, Object>();
+        body.put("nodeId", confNodeInfo.getNodeId());
+        return ErrorUtil.successResp(body);
+    }
 
 	@Transactional
 	public Map<String, ? extends Object> queryNodeList(Map<String, ? extends Object> data) {
@@ -140,42 +157,52 @@ public class NodeService {
 
 	@Transactional
 	@SuppressWarnings("unchecked")
-	public Map<String, ? extends Object> addRuleByNode(Map<String, ? extends Object> data) {
-
-		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
-		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
-		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		ConfNodeTemplate record = null;
-		//规则名称
-		String ruleName = null;
-		//规则类型
-		String ruleType = null;
-		//原始规则路径
-		String oldFullPath = null;
-		//要创建的规则路径
-		String newFullPath = null;
-		for (int i = 0; i < ruleList.size(); i++) {
-			record = new ConfNodeTemplate();
-			record.setNodeId(Integer.parseInt(nodeId));
-			record.setOrg("");
-			record.setTeller("");
-			record.setUid(ToolsUtil.obj2Int(ruleList.get(i).get("uid"), null));
-			ruleName = ToolsUtil.obj2Str(ruleList.get(i).get("ruleName"));
-			ruleType = ToolsUtil.obj2Str(ruleList.get(i).get("ruleType"));
-			oldFullPath = ToolsUtil.obj2Str(ruleList.get(i).get("rulePath"));
-			//规则复制
-			newFullPath = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
-			try {
-				invokerService.copyFile(newFullPath, oldFullPath);
-			} catch (Exception e) {
-				logger.error("规则复制[" + newFullPath + "]失败!", e);
-	            return ErrorUtil.errorResp(ErrorCode.code_9999);
-			}
-			confNodeTemplateMapper.insertSelective(record);
-		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		return ErrorUtil.successResp(map);
-	}
+    public Map<String, ? extends Object> addRuleByNode(Map<String, ? extends Object> data)
+    {
+        
+        List<Map<String, Object>> ruleList = (List<Map<String, Object>>)data.get("ruleList");
+        String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        ConfNodeTemplate record = null;
+        //规则名称
+        String ruleName = null;
+        //规则类型
+        String ruleType = null;
+        //原始规则路径
+        String oldFullPath = null;
+        //要创建的规则路径
+        String newFullPath = null;
+        for (int i = 0; i < ruleList.size(); i++)
+        {
+            record = new ConfNodeTemplate();
+            record.setNodeId(Integer.parseInt(nodeId));
+            record.setOrg("");
+            record.setTeller("");
+            record.setUid(ToolsUtil.obj2Int(ruleList.get(i).get("uid"), null));
+            ruleName = ToolsUtil.obj2Str(ruleList.get(i).get("ruleName"));
+            ruleType = ToolsUtil.obj2Str(ruleList.get(i).get("ruleType"));
+            oldFullPath = ToolsUtil.obj2Str(ruleList.get(i).get("rulePath"));
+            if (StringUtils.isBlank(oldFullPath))
+            {
+                logger.info("规则[" + ruleName + "]无规则路径，跳过复制！");
+                continue;
+            }
+            //规则复制
+            newFullPath = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
+            try
+            {
+                invokerService.copyFile(newFullPath, oldFullPath);
+            }
+            catch (Exception e)
+            {
+                logger.error("规则复制[" + newFullPath + "]失败!", e);
+                return ErrorUtil.errorResp(ErrorCode.code_9999);
+            }
+            confNodeTemplateMapper.insertSelective(record);
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        return ErrorUtil.successResp(map);
+    }
 
 	@Transactional
 	@SuppressWarnings("unchecked")
@@ -324,18 +351,52 @@ public class NodeService {
         String ruleName = ToolsUtil.obj2Str(data.get("ruleName"));
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
-        String rulePath = ToolsUtil.obj2Str(data.get("rulePath"));
+        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        
+        logger.info("Urule创建规则[" + ruleName + "]");
+        ruleName=Utils.decodeURL(ruleName).trim();
+        String path = null;   
+        String url = Constants.RULE_URL_BASE;
+        try
+        {
+            path = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
+            //判断该规则名字是否存在
+            if(invokerService.fileExistCheck(path)) {
+                return ErrorUtil.errorResp(ErrorCode.code_0005, path);
+            }
+            //创建目录
+            //invokerService.createFlolder(ruleName, nodeName, ruleType);
+            //创建规则
+            invokerService.createFile(path, ruleType);
+            FileType fileType=FileType.parse(ruleType);
+            if (FileType.DecisionTable == fileType) {
+                url += "decisiontableeditor?file=" + path;
+            } else if (FileType.DecisionTree == fileType) {
+                url += "decisiontreeeditor?file=" + path;
+            } else if (FileType.Ruleset == fileType) {
+                url += "ruleseteditor?file=" + path;
+            } else if (FileType.Scorecard == fileType) {
+                url += "scorecardeditor?file=" + path;
+            } else {}
+        }
+        catch (Exception e)
+        {
+            logger.error("创建规则[" + ruleName + "]失败!", e);
+            return ErrorUtil.errorResp(ErrorCode.code_9999);
+        }
+        
         //类型转换
         ruleType = ToolsUtil.parse(ruleType);
         record.setOrg(org);
         record.setRuleName(ruleName);
-        record.setRulePath(rulePath);
+        record.setRulePath(path);
         record.setRuleType(ruleType);
         record.setTeller(teller);
 		//入库操作
 		confRuleInfoMapper.insertSelective(record);
 	    Map<String, Object> body = new HashMap<String, Object>();
 	    body.put("uid", record.getUid());
+	    body.put("url", url);
         return ErrorUtil.successResp(body);
 	}
 }

@@ -300,12 +300,15 @@ public class ConfNodeController implements CommController{
                
         try
         {
+        	String path = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
             //判断该规则名字是否存在
-            invokerService.fileExistCheck(ruleName);
+            if(invokerService.fileExistCheck(path)) {
+            	return ErrorUtil.errorResp(ErrorCode.code_0005, path);
+            }
             //创建目录
-            invokerService.createFlolder(ruleName, nodeName, ruleType);
+            //invokerService.createFlolder(ruleName, nodeName, ruleType);
             //创建规则
-            invokerService.createFile(ruleName, ruleType);
+            invokerService.createFile(path, ruleType);
         }
         catch (Exception e)
         {
@@ -314,6 +317,6 @@ public class ConfNodeController implements CommController{
         }
         
         
-        return nodeService.createRule(data);
+        return nodeService.createRule(data);                      
     }
 }

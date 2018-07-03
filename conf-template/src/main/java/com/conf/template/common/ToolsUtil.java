@@ -85,5 +85,20 @@ public class ToolsUtil {
 		Map<String, ? extends Object> maps = threadLocal.get();
 		return maps;
 	}
-
+	
+	/**
+	 * 组装路径
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static String combPath(String... name) {
+		if (name == null || name.length == 0)
+			return "";
+		String path = "";
+		for (String str : name) {
+			path += "/" + str ;
+		}
+		return path;
+	}
 }

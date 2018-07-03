@@ -14,7 +14,6 @@ import com.conf.template.common.Constants;
 import com.conf.template.common.ErrorCode;
 import com.conf.template.common.ErrorUtil;
 import com.conf.template.common.ToolsUtil;
-import com.conf.template.common.annotation.ApiException;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
 import com.conf.template.db.mapper.ConfNodeTemplateMapper;
 import com.conf.template.db.mapper.ConfProductNodeMapper;
@@ -286,7 +285,6 @@ public class NodeService {
 	}
 	
 	@Transactional
-    @SuppressWarnings("unchecked")
     public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data) {
 	    
 	    Map<String, Object> map = new HashMap<String, Object>();

@@ -113,14 +113,13 @@ public class RuleInvokerService
      * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public boolean createFile(String path, String types) throws Exception {
+    public void createFile(String path, String types) throws Exception {
         FileType fileType=FileType.parse(types);
         StringBuilder content = generateContext(fileType);
         HttpServletRequest req = RequestHolder.getRequest();
         HttpServletResponse resp = RequestHolder.getResponse();
         User user=EnvironmentUtils.getLoginUser(new RequestContext(req,resp));
         repositoryService.createFile(path, content.toString(),user);
-        return true;
     }
 
     /**

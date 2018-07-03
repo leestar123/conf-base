@@ -69,11 +69,6 @@ public class ConfNodeController implements CommController{
         try
         {
             logger.info("Urule创建空项目[" + nodeName + "]");
-            //判断该规则名字是否存在
-            nodeName=Utils.decodeURL(nodeName).trim();
-            if(invokerService.existCheck(nodeName)) {
-            	return ErrorUtil.errorResp(ErrorCode.code_0006, nodeName);
-            }
             invokerService.createProject(nodeName);
             return nodeService.createNode(data);
         }
@@ -337,11 +332,9 @@ public class ConfNodeController implements CommController{
         
 		Map<String,Object> createRuleMap = (Map<String, Object>) data;
         createRuleMap.put("rulePath", path);
-        Map<String, ? extends Object> result = nodeService.createRule(createRuleMap);    
-        if (ErrorUtil.isSuccess(result)) {
-            Map<String, Object> body = (Map<String, Object>)result.get("body");
-            body.put("url", url);
-        }
+        Map<String, ? extends Object> result = nodeService.createRule(createRuleMap);  
+        
+        ToolsUtil.addUrl(result, url);
         return result;
     }
 }

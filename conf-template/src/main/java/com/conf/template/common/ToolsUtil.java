@@ -126,4 +126,20 @@ public class ToolsUtil {
 			throw new RuleException("Unknow type:" + type);
 		}
 	}
+	
+	/**
+	 * 添加URL
+	 * 
+	 * @param data
+	 * @param url
+	 * @return
+	 * @see [类、类#方法、类#成员]
+	 */
+	@SuppressWarnings("unchecked")
+	public static void addUrl(Map<String, ? extends Object> data, String url) {
+        if (ErrorUtil.isSuccess(data)) {
+            Map<String, Object> body = (Map<String, Object>)data.get("body");
+            body.put("url", url);
+        }
+	}
 }

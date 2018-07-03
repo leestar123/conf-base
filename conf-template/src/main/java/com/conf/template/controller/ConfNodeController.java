@@ -271,6 +271,7 @@ public class ConfNodeController implements CommController{
      * 调用urule新增规则
      */
 	@ApiException
+	@SuppressWarnings("unchecked")
     public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data)
     {
         String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
@@ -329,12 +330,10 @@ public class ConfNodeController implements CommController{
             return ErrorUtil.errorResp(ErrorCode.code_9999);
         }
         
-        @SuppressWarnings("unchecked")
 		Map<String,Object> createRuleMap = (Map<String, Object>) data;
         createRuleMap.put("rulePath", path);
-        Map<String, ? extends Object> result = nodeService.createRule(data);    
+        Map<String, ? extends Object> result = nodeService.createRule(createRuleMap);    
         if (ErrorUtil.isSuccess(result)) {
-            @SuppressWarnings("unchecked")
             Map<String, Object> body = (Map<String, Object>)result.get("body");
             body.put("url", url);
         }

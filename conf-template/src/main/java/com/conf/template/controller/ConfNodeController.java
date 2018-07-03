@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bstek.urule.Utils;
-import com.bstek.urule.console.repository.model.FileType;
 import com.conf.client.CommController;
 import com.conf.client.RuleInvokerService;
 import com.conf.template.common.ErrorCode;
@@ -277,6 +276,7 @@ public class ConfNodeController implements CommController{
         String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
+        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
         if (StringUtils.isBlank(ruleType)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleType");
         }
@@ -292,7 +292,9 @@ public class ConfNodeController implements CommController{
         if (StringUtils.isBlank(org)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "org");
         }
-        
+        if (StringUtils.isBlank(nodeName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
+        }
         logger.info("Urule创建规则[" + ruleName + "]");
         ruleName=Utils.decodeURL(ruleName).trim();
                
@@ -301,7 +303,7 @@ public class ConfNodeController implements CommController{
             //判断该规则名字是否存在
             invokerService.fileExistCheck(ruleName);
             //创建目录
-            invokerService.createFlolder(classify, fullFolderName, projectName, types);
+            invokerService.createFlolder(ruleName, nodeName, ruleType);
             //创建规则
             invokerService.createFile(ruleName, ruleType);
         }

@@ -22,4 +22,5 @@ public class Constants {
 	 * 最大序列号
 	 */
 	public final static Integer MAX_SEQUENCE = 9999;
+	
 }

@@ -1,5 +1,7 @@
 package com.conf.template.common;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.NumberFormat;
 import java.util.Map;
 import java.util.Properties;
@@ -142,4 +144,25 @@ public class ToolsUtil {
             body.put("url", url);
         }
 	}
+	
+	/**
+	 * 
+	 * 获取本机IP地址
+	 * 
+	 * @return
+	 * @see [类、类#方法、类#成员]
+	 */
+    public static String localIP()
+    {
+        InetAddress address;
+        try
+        {
+            address = InetAddress.getLocalHost();
+            return address.getHostAddress();
+        }
+        catch (UnknownHostException e)
+        {
+            return "127.0.0.1";
+        }
+    }
 }

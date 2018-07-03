@@ -23,5 +23,8 @@ public class Constants {
 	 */
 	public final static Integer MAX_SEQUENCE = 9999;
 	
-	public final static String RULE_URL_BASE = "http://localhost:8081/urule/";
+	/**
+	 * RULE基础地址
+	 */
+    public final static String RULE_URL_BASE = "http://" + ToolsUtil.localIP() + ":8081/urule/";
 }

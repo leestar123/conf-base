@@ -1,10 +1,15 @@
 package com.conf.client;
 
+import java.io.InputStream;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+
+import com.bstek.urule.Utils;
 import com.bstek.urule.console.EnvironmentUtils;
 import com.bstek.urule.console.User;
 import com.bstek.urule.console.repository.RepositoryService;
@@ -158,10 +163,19 @@ public class RuleInvokerService
      * 
      * @param newFullPath
      * @param oldFullPath
+     * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public void copyFile(String newFullPath, String oldFullPath) {
-        
+    public void copyFile(String newFullPath, String oldFullPath) throws Exception {
+    	newFullPath=Utils.decodeURL(newFullPath);
+		oldFullPath=Utils.decodeURL(oldFullPath);
+		HttpServletRequest req = RequestHolder.getRequest();
+        HttpServletResponse resp = RequestHolder.getResponse();
+        User user=EnvironmentUtils.getLoginUser(new RequestContext(req,resp));
+        InputStream inputStream=repositoryService.readFile(oldFullPath, null);
+		String content=IOUtils.toString(inputStream, "utf-8");
+		inputStream.close();
+		repositoryService.createFile(newFullPath, content,user);
     }
     
     private boolean getClassify(HttpServletRequest req,HttpServletResponse resp) {

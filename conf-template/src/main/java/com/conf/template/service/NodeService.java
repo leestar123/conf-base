@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.conf.client.RuleInvokerService;
 import com.conf.template.common.Constants;
 import com.conf.template.common.ErrorCode;
 import com.conf.template.common.ErrorUtil;
@@ -27,6 +30,8 @@ import com.conf.template.db.model.ConfRuleInfo;
 @Service
 public class NodeService {
 	
+    private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
+	
 	@Autowired
 	ConfNodeInfoMapper confNodeInfoMapper;
 	
@@ -38,6 +43,14 @@ public class NodeService {
 	
 	@Autowired
 	ConfProductNodeMapper confProductNodeMapper;
+	
+    @Autowired
+    private RuleInvokerService invokerService;
+	
+    public void setInvokerService(RuleInvokerService invokerService)
+    {
+        this.invokerService = invokerService;
+    }
 
 	@Transactional
 	public Map<String, ? extends Object> createNode(Map<String, ? extends Object> data) {
@@ -131,13 +144,35 @@ public class NodeService {
 
 		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+		String org = ToolsUtil.obj2Str(data.get("org"));
+		String teller = ToolsUtil.obj2Str(data.get("teller"));
 		ConfNodeTemplate record = null;
+		//规则名称
+		String ruleName = null;
+		//规则类型
+		String ruleType = null;
+		//原始规则路径
+		String oldFullPath = null;
+		//要创建的规则路径
+		String newFullPath = null;
 		for (int i = 0; i < ruleList.size(); i++) {
 			record = new ConfNodeTemplate();
 			record.setNodeId(Integer.parseInt(nodeId));
-			record.setOrg("");
-			record.setTeller("");
+			record.setOrg(org);
+			record.setTeller(teller);
 			record.setUid(ToolsUtil.obj2Int(ruleList.get(i).get("uid"), null));
+			ruleName = ToolsUtil.obj2Str(ruleList.get(i).get("ruleName"));
+			ruleType = ToolsUtil.obj2Str(ruleList.get(i).get("ruleType"));
+			oldFullPath = ToolsUtil.obj2Str(ruleList.get(i).get("rulePath"));
+			//规则复制
+			newFullPath = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
+			try {
+				invokerService.copyFile(newFullPath, oldFullPath);
+			} catch (Exception e) {
+				logger.error("规则复制[" + newFullPath + "]失败!", e);
+	            return ErrorUtil.errorResp(ErrorCode.code_9999);
+			}
 			confNodeTemplateMapper.insertSelective(record);
 		}
 		Map<String, Object> map = new HashMap<String, Object>();

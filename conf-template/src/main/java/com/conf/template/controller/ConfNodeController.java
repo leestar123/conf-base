@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bstek.urule.Utils;
+import com.bstek.urule.console.repository.model.FileType;
 import com.conf.client.CommController;
 import com.conf.client.RuleInvokerService;
+import com.conf.template.common.Constants;
 import com.conf.template.common.ErrorCode;
 import com.conf.template.common.ErrorUtil;
 import com.conf.template.common.ToolsUtil;
@@ -297,7 +299,8 @@ public class ConfNodeController implements CommController{
         }
         logger.info("Urule创建规则[" + ruleName + "]");
         ruleName=Utils.decodeURL(ruleName).trim();
-        String path = null;       
+        String path = null;   
+        String url = Constants.RULE_URL_BASE;
         try
         {
         	path = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
@@ -309,6 +312,16 @@ public class ConfNodeController implements CommController{
             //invokerService.createFlolder(ruleName, nodeName, ruleType);
             //创建规则
             invokerService.createFile(path, ruleType);
+            FileType fileType=FileType.parse(ruleType);
+            if (FileType.DecisionTable == fileType) {
+                url += "decisiontableeditor?file=" + path;
+            } else if (FileType.DecisionTree == fileType) {
+                url += "decisiontreeeditor?file=" + path;
+            } else if (FileType.Ruleset == fileType) {
+                url += "ruleseteditor?file=" + path;
+            } else if (FileType.Scorecard == fileType) {
+                url += "scorecardeditor?file=" + path;
+            } else {}
         }
         catch (Exception e)
         {
@@ -319,7 +332,12 @@ public class ConfNodeController implements CommController{
         @SuppressWarnings("unchecked")
 		Map<String,Object> createRuleMap = (Map<String, Object>) data;
         createRuleMap.put("rulePath", path);
-        return nodeService.createRule(data);    
-        
+        Map<String, ? extends Object> result = nodeService.createRule(data);    
+        if (ErrorUtil.isSuccess(result)) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> body = (Map<String, Object>)result.get("body");
+            body.put("url", url);
+        }
+        return result;
     }
 }

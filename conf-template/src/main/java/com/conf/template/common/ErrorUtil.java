@@ -49,4 +49,19 @@ public class ErrorUtil {
 		data.put("body", body);
 		return data;
 	}
+	
+	/**
+     * 判断是否成功
+     * 
+     * @param data
+     * @return
+     */
+    public static boolean isSuccess(Map<String, ? extends Object> data)
+    {
+        boolean flag = false;
+        Object success = data.get("success");
+        if (success != null)
+            flag = (boolean)success;
+        return flag;
+    }
 }

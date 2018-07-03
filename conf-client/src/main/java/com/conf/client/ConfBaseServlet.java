@@ -2,7 +2,7 @@ package com.conf.client;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
@@ -18,6 +19,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.console.servlet.RequestHolder;
+import com.conf.client.common.ErrorUtil;
 
 public class ConfBaseServlet extends HttpServlet
 {
@@ -40,6 +42,7 @@ public class ConfBaseServlet extends HttpServlet
     }
     
     @Override
+    @SuppressWarnings({"unchecked", "deprecation"})
     protected void service(HttpServletRequest req, HttpServletResponse rep) throws ServletException, IOException
     {
         RequestHolder.set(req, rep);
@@ -52,16 +55,25 @@ public class ConfBaseServlet extends HttpServlet
         {
             Method method = clazz.getMethod(service, Map.class);
             Object result = method.invoke(controller, data);
-            HttpUtil.write(rep, JSONObject.toJSONString(result));
+            Boolean redirect = false;
+            if (Map.class.isInstance(result)) {
+                Map<String, Object> map = (Map<String, Object>)result;
+                if (ErrorUtil.isSuccess(map)) {
+                    Map<String, Object> body = (Map<String, Object>)map.get("body");
+                    String location = body.get("url") == null ? "" : body.get("url").toString();
+                    if (StringUtils.isNotBlank(location)) {
+                        redirect = true;
+                        rep.sendRedirect(location);
+                    }
+                }
+            }
+            if (!redirect)
+                HttpUtil.write(rep, JSONObject.toJSONString(result));
         }
         catch (Exception e)
-        {
+        { 
             logger.error("服务[" + service + "]执行异常!", e);
-            Map<String, Object> error = new HashMap<>();
-            error.put("code", "9999");
-            error.put("msg", "系统执行异常");
-            error.put("success", false);
-            HttpUtil.write(rep, JSONObject.toJSONString(error));
+            HttpUtil.write(rep, JSONObject.toJSONString(ErrorUtil.errorResp("9999", "系统执行异常")));
         }
     }
 }

@@ -23,4 +23,5 @@ public class Constants {
 	 */
 	public final static Integer MAX_SEQUENCE = 9999;
 	
+	public final static String RULE_URL_BASE = "http://localhost:8081/urule/";
 }

@@ -16,6 +16,4 @@
 		<property name="nodeService" ref="nodeService"></property>
 		<property name="invokerService" ref="invokerService"></property>	
 	</bean>
-	
-	<bean id="" class></bean>
 </beans>

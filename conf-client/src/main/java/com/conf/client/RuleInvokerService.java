@@ -42,10 +42,11 @@ public class RuleInvokerService
      * 
      * @param nodeName
      * @return
+     * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public boolean existCheck(String nodeName) {
-        return true;
+    public boolean existCheck(String nodeName) throws Exception {
+        return repositoryService.fileExistCheck(nodeName);
     }
     
     /**
@@ -81,10 +82,14 @@ public class RuleInvokerService
      * 
      * @param path
      * @return
+     * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public boolean deleteFile(String path) {
-        return true;
+    public void deleteFile(String path) throws Exception {
+    	HttpServletRequest req = RequestHolder.getRequest();
+        HttpServletResponse resp = RequestHolder.getResponse();
+        User user=EnvironmentUtils.getLoginUser(new RequestContext(req,resp));
+        repositoryService.deleteFile(path,user);
     }
     
     /**

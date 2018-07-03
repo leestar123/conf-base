@@ -145,8 +145,6 @@ public class NodeService {
 		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		String org = ToolsUtil.obj2Str(data.get("org"));
-		String teller = ToolsUtil.obj2Str(data.get("teller"));
 		ConfNodeTemplate record = null;
 		//规则名称
 		String ruleName = null;
@@ -159,8 +157,8 @@ public class NodeService {
 		for (int i = 0; i < ruleList.size(); i++) {
 			record = new ConfNodeTemplate();
 			record.setNodeId(Integer.parseInt(nodeId));
-			record.setOrg(org);
-			record.setTeller(teller);
+			record.setOrg("");
+			record.setTeller("");
 			record.setUid(ToolsUtil.obj2Int(ruleList.get(i).get("uid"), null));
 			ruleName = ToolsUtil.obj2Str(ruleList.get(i).get("ruleName"));
 			ruleType = ToolsUtil.obj2Str(ruleList.get(i).get("ruleType"));

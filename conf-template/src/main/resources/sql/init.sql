@@ -55,8 +55,8 @@ CREATE TABLE IF NOT EXISTS `conf_product_node` (
 CREATE TABLE IF NOT EXISTS `conf_rule_info` (
   `uid` int(12) NOT NULL AUTO_INCREMENT COMMENT '规则ID',
   `rule_name` varchar(20) NOT NULL COMMENT '规则名称',
-  `ruleType` varchar(200) NOT NULL COMMENT '规则类型',
-  `rulePath` varchar(200) NOT NULL COMMENT '规则路径，如/aa/bb.rs.xml',
+  `rule_type` varchar(200) NOT NULL COMMENT '规则类型',
+  `rule_path` varchar(200) NOT NULL COMMENT '规则路径，如/aa/bb.rs.xml',
   `remark` varchar(200) DEFAULT NULL COMMENT '规则说明',
   `clazz` varchar(200) NOT NULL COMMENT '执行类',
   `method` varchar(50) DEFAULT NULL COMMENT '执行方法',

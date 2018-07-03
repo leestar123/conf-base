@@ -28,5 +28,7 @@ public interface CommController
     public Map<String, ? extends Object> batchQueryNodeByProduct(Map<String, ? extends Object> data);
     
     public Map<String, ? extends Object> modifyNodeByProduct(Map<String, ? extends Object> data);
+    
+    public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data);
 
 }

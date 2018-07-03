@@ -85,6 +85,5 @@ public class ToolsUtil {
 		Map<String, ? extends Object> maps = threadLocal.get();
 		return maps;
 	}
-	
-	
+
 }

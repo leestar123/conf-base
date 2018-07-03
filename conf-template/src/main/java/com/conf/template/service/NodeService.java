@@ -59,6 +59,7 @@ public class NodeService {
 		return ErrorUtil.successResp(body);
 	}
 
+	@Transactional
 	public Map<String, ? extends Object> queryNodeList(Map<String, ? extends Object> data) {
 
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
@@ -90,6 +91,7 @@ public class NodeService {
 		return ErrorUtil.successResp(body);
 	}
 
+	@Transactional
 	public Map<String, ? extends Object> queryRuleByNode(Map<String, ? extends Object> data) {
 		Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null);
 		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null);
@@ -109,6 +111,7 @@ public class NodeService {
 		return ErrorUtil.successResp(body);
 	}
 
+	@Transactional
 	public Map<String, ? extends Object> queryRuleList(Map<String, ? extends Object> data) {
 		String ruleName = ToolsUtil.obj2Str(data.get("ruleName"));
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
@@ -280,5 +283,13 @@ public class NodeService {
 			}
 		Map<String, Object> map = new HashMap<String, Object>();
 		return ErrorUtil.successResp(map);
+	}
+	
+	@Transactional
+    @SuppressWarnings("unchecked")
+    public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data) {
+	    
+	    Map<String, Object> map = new HashMap<String, Object>();
+        return ErrorUtil.successResp(map);
 	}
 }

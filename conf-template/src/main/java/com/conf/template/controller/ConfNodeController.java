@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bstek.urule.Utils;
+import com.bstek.urule.console.repository.model.FileType;
 import com.conf.client.CommController;
 import com.conf.client.RuleInvokerService;
 import com.conf.template.common.ErrorCode;
@@ -263,4 +265,53 @@ public class ConfNodeController implements CommController{
 		}
 		return nodeService.modifyNodeByProduct(data);
 	}
+	
+    /**
+     * 调用urule新增规则
+     */
+	@ApiException
+    public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data)
+    {
+        String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
+        String ruleName = ToolsUtil.obj2Str(data.get("ruleName"));
+        String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+        String teller = ToolsUtil.obj2Str(data.get("teller"));
+        String org = ToolsUtil.obj2Str(data.get("org"));
+        if (StringUtils.isBlank(ruleType)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleType");
+        }
+        if (StringUtils.isBlank(ruleName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleName");
+        }
+        if (StringUtils.isBlank(nodeId)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+        }
+        if (StringUtils.isBlank(teller)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "teller");
+        }
+        if (StringUtils.isBlank(org)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "org");
+        }
+        
+        logger.info("Urule创建规则[" + ruleName + "]");
+        ruleName=Utils.decodeURL(ruleName).trim();
+               
+        try
+        {
+            //判断该规则名字是否存在
+            invokerService.fileExistCheck(ruleName);
+            //创建目录
+            invokerService.createFlolder(classify, fullFolderName, projectName, types);
+            //创建规则
+            invokerService.createFile(ruleName, ruleType);
+        }
+        catch (Exception e)
+        {
+            logger.error("创建规则[" + ruleName + "]失败!", e);
+            return ErrorUtil.errorResp(ErrorCode.code_9999);
+        }
+        
+        
+        return nodeService.createRule(data);
+    }
 }

@@ -5,10 +5,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-
 import com.bstek.urule.console.EnvironmentUtils;
 import com.bstek.urule.console.User;
 import com.bstek.urule.console.repository.RepositoryService;
+import com.bstek.urule.console.repository.model.FileType;
 import com.bstek.urule.console.servlet.RequestContext;
 import com.bstek.urule.console.servlet.RequestHolder;
 
@@ -46,6 +46,18 @@ public class RuleInvokerService
      */
     public boolean existCheck(String nodeName) {
         return true;
+    }
+    
+    /**
+     * 校验规则是否存在
+     * 
+     * @param nodeName
+     * @return
+     * @throws Exception 
+     * @see [类、类#方法、类#成员]
+     */
+    public boolean fileExistCheck(String ruleName) throws Exception {
+        return repositoryService.fileExistCheck(ruleName);
     }
     
     /**
@@ -95,9 +107,16 @@ public class RuleInvokerService
      * @param path
      * @param types
      * @return
+     * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public boolean createFile(String path, String types) {
+    public boolean createFile(String path, String types) throws Exception {
+        FileType fileType=FileType.parse(types);
+        StringBuilder content = generateContext(fileType);
+        HttpServletRequest req = RequestHolder.getRequest();
+        HttpServletResponse resp = RequestHolder.getResponse();
+        User user=EnvironmentUtils.getLoginUser(new RequestContext(req,resp));
+        repositoryService.createFile(path, content.toString(),user);
         return true;
     }
 
@@ -127,6 +146,17 @@ public class RuleInvokerService
         return true;
     }
     
+    /**
+     * 文件拷贝
+     * 
+     * @param newFullPath
+     * @param oldFullPath
+     * @see [类、类#方法、类#成员]
+     */
+    public void copyFile(String newFullPath, String oldFullPath) {
+        
+    }
+    
     private boolean getClassify(HttpServletRequest req,HttpServletResponse resp) {
         String classifyValue=req.getParameter("classify");
         if(StringUtils.isBlank(classifyValue)){
@@ -149,5 +179,116 @@ public class RuleInvokerService
             classify=Boolean.valueOf(classifyValue);
         }
         return classify;
+    }
+    
+    public  StringBuilder generateContext(FileType fileType)
+    {
+        StringBuilder content=new StringBuilder();
+        if(fileType.equals(FileType.UL)) {
+            content.append("rule \"rule01\"");
+            content.append("\n");
+            content.append("if");
+            content.append("\r\n");
+            content.append("then");
+            content.append("\r\n");
+            content.append("end");
+        }else if(fileType.equals(FileType.DecisionTable)) {
+            content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            content.append("<decision-table>");
+            content.append("<cell row=\"0\" col=\"2\" rowspan=\"1\"></cell>");
+            content.append("<cell row=\"0\" col=\"1\" rowspan=\"1\">");
+            content.append("<joint type=\"and\"/>");
+            content.append("</cell>");
+            content.append("<cell row=\"0\" col=\"0\" rowspan=\"1\">");
+            content.append("<joint type=\"and\"/>");
+            content.append("</cell>");
+            content.append("<cell row=\"1\" col=\"2\" rowspan=\"1\">");
+            content.append("</cell>");
+            content.append("<cell row=\"1\" col=\"1\" rowspan=\"1\">");
+            content.append("<joint type=\"and\"/>");
+            content.append("</cell>");
+            content.append("<cell row=\"1\" col=\"0\" rowspan=\"1\">");
+            content.append("<joint type=\"and\"/>");
+            content.append("</cell>");
+            content.append("<row num=\"0\" height=\"40\"/>");
+            content.append("<row num=\"1\" height=\"40\"/>");
+            content.append("<col num=\"0\" width=\"120\" type=\"Criteria\"/>");
+            content.append("<col num=\"1\" width=\"120\" type=\"Criteria\"/>");
+            content.append("<col num=\"2\" width=\"200\" type=\"Assignment\"/>");
+            content.append("</decision-table>");
+        }else if(fileType.equals(FileType.DecisionTree)){
+            content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            content.append("<decision-tree>");
+            content.append("<variable-tree-node></variable-tree-node>");
+            content.append("</decision-tree>");
+        }else if(fileType.equals(FileType.ScriptDecisionTable)) {
+            content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            content.append("<script-decision-table>");
+            content.append("<script-cell row=\"0\" col=\"2\" rowspan=\"1\"></script-cell>");
+            content.append("<script-cell row=\"0\" col=\"1\" rowspan=\"1\"></script-cell>");
+            content.append("<script-cell row=\"0\" col=\"0\" rowspan=\"1\"></script-cell>");
+            content.append("<script-cell row=\"1\" col=\"2\" rowspan=\"1\"></script-cell>");
+            content.append("<script-cell row=\"1\" col=\"1\" rowspan=\"1\"></script-cell>");
+            content.append("<script-cell row=\"1\" col=\"0\" rowspan=\"1\"></script-cell>");
+            content.append("<row num=\"0\" height=\"40\"/>");
+            content.append("<row num=\"1\" height=\"40\"/>");
+            content.append("<col num=\"0\" width=\"120\" type=\"Criteria\"/>");
+            content.append("<col num=\"1\" width=\"120\" type=\"Criteria\"/>");
+            content.append("<col num=\"2\" width=\"200\" type=\"Assignment\"/>");
+            content.append("</script-decision-table>");
+        }else if(fileType.equals(FileType.Scorecard)){
+            content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            content.append("<scorecard scoring-type=\"sum\" assign-target-type=\"none\">");
+            content.append("</scorecard>");
+        }else{
+            String name = getRootTagName(fileType);
+            content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            content.append("<" + name + ">");
+            content.append("</" + name + ">");
+        }
+        return content;
+    }
+    
+    private  String getRootTagName(FileType type)
+    {
+        String root = null;
+        switch(type){
+        case ActionLibrary:
+            root="action-library";
+            break;
+        case ConstantLibrary:
+            root="constant-library";
+            break;
+        case DecisionTable:
+            root="decision-table";
+            break;
+        case DecisionTree:
+            root="decision-tree";
+            break;
+        case ParameterLibrary:
+            root="parameter-library";
+            break;
+        case RuleFlow:
+            root="rule-flow";
+            break;
+        case Ruleset:
+            root="rule-set";
+            break;
+        case ScriptDecisionTable:
+            root="script-decision-table";
+            break;
+        case VariableLibrary:
+            root="variable-library";
+            break;
+        case UL:
+            root="script";
+            break;
+        case Scorecard:
+            root="scorecard";
+            break;
+        case DIR:
+            throw new IllegalArgumentException("Unsupport filetype : "+type);
+        }
+        return root;
     }
 }

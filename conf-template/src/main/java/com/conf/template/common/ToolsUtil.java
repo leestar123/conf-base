@@ -4,6 +4,8 @@ import java.text.NumberFormat;
 import java.util.Map;
 import java.util.Properties;
 
+import com.bstek.urule.RuleException;
+
 public class ToolsUtil {
 
 	private static SequenceGen gen = new SequenceGen(2L);
@@ -100,5 +102,28 @@ public class ToolsUtil {
 			path += "/" + str ;
 		}
 		return path;
+	}
+	
+	/**
+	 * 规则类型转换
+	 * @param type
+	 * @return
+	 */
+	public static String parse(String type) {
+		if (type.equals("rs.xml")) {
+			//决策集
+			return "1";
+		} else if (type.equals("dt.xml")) {
+			//决策表
+			return "2";
+		} else if (type.equals("dtree.xml")) {
+			//决策树
+			return "3";
+		} else if (type.equals("sc")) {
+			//评分表
+			return "4";
+		} else {
+			throw new RuleException("Unknow type:" + type);
+		}
 	}
 }

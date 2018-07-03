@@ -17,7 +17,47 @@ public class ConfRuleInfo {
 
     private String effect;
     
-    public Integer getUid() {
+    private String teller;
+    
+    private String org;
+    
+    private String rulePath;
+    
+    private String ruleType;
+    
+    public String getTeller() {
+		return teller;
+	}
+
+	public void setTeller(String teller) {
+		this.teller = teller;
+	}
+
+	public String getOrg() {
+		return org;
+	}
+
+	public void setOrg(String org) {
+		this.org = org;
+	}
+
+	public String getRulePath() {
+		return rulePath;
+	}
+
+	public void setRulePath(String rulePath) {
+		this.rulePath = rulePath;
+	}
+
+	public String getRuleType() {
+		return ruleType;
+	}
+
+	public void setRuleType(String ruleType) {
+		this.ruleType = ruleType;
+	}
+
+	public Integer getUid() {
         return uid;
     }
 

@@ -297,10 +297,10 @@ public class ConfNodeController implements CommController{
         }
         logger.info("Urule创建规则[" + ruleName + "]");
         ruleName=Utils.decodeURL(ruleName).trim();
-               
+        String path = null;       
         try
         {
-        	String path = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
+        	path = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
             //判断该规则名字是否存在
             if(invokerService.fileExistCheck(path)) {
             	return ErrorUtil.errorResp(ErrorCode.code_0005, path);
@@ -316,7 +316,10 @@ public class ConfNodeController implements CommController{
             return ErrorUtil.errorResp(ErrorCode.code_9999);
         }
         
+        @SuppressWarnings("unchecked")
+		Map<String,Object> createRuleMap = (Map<String, Object>) data;
+        createRuleMap.put("rulePath", path);
+        return nodeService.createRule(data);    
         
-        return nodeService.createRule(data);                      
     }
 }

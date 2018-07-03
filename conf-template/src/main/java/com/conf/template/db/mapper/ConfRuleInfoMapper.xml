@@ -9,6 +9,10 @@
     <result column="method" jdbcType="VARCHAR" property="method" />
     <result column="param" jdbcType="VARCHAR" property="param" />
     <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="teller" jdbcType="VARCHAR" property="teller" />
+    <result column="org" jdbcType="VARCHAR" property="org" />
+    <result column="rule_path" jdbcType="VARCHAR" property="rulePath" />
+    <result column="rule_type" jdbcType="VARCHAR" property="ruleType" />
   </resultMap>
   <resultMap id="EffectResultMap" type="com.conf.template.db.model.ConfRuleInfo">
     <id column="uid" jdbcType="INTEGER" property="uid" />
@@ -19,6 +23,10 @@
     <result column="param" jdbcType="VARCHAR" property="param" />
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="effect" jdbcType="VARCHAR" property="effect" />
+    <result column="teller" jdbcType="VARCHAR" property="teller" />
+    <result column="org" jdbcType="VARCHAR" property="org" />
+    <result column="rule_path" jdbcType="VARCHAR" property="rulePath" />
+    <result column="rule_type" jdbcType="VARCHAR" property="ruleType" />
   </resultMap>
   <sql id="Base_Column_List">
     You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '
@@ -93,11 +101,12 @@
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfRuleInfo">
     insert into conf_rule_info (rule_name, remark, 
-      clazz, method, param, 
+      clazz, method, param, teller,org,rule_path,rule_type
       version)
     #{ruleName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{clazz,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR}, #{param,jdbcType=VARCHAR}, 
-      #{version,jdbcType=VARCHAR})
+      #{teller,jdbcType=VARCHAR},#{org,jdbcType=VARCHAR},
+      #{rulePath,jdbcType=VARCHAR},#{ruleType,jdbcType=VARCHAR},#{version,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfRuleInfo">
      <selectKey resultType="java.lang.Integer" keyProperty="uid" order="AFTER">
@@ -123,6 +132,18 @@
       <if test="version != null">
         version,
       </if>
+      <if test="teller != null">
+        teller,
+      </if>
+      <if test="org != null">
+        org,
+      </if>
+      <if test="rulePath != null">
+        rule_path,
+      </if>
+      <if test="ruleType != null">
+        rule_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="ruleName != null">
@@ -142,6 +163,18 @@
       </if>
       <if test="version != null">
         #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="teller != null">
+        #{teller,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        #{org,jdbcType=VARCHAR},
+      </if>
+      <if test="rulePath != null">
+        #{rulePath,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleType != null">
+        #{ruleType,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -166,6 +199,18 @@
       <if test="version != null">
         version = #{version,jdbcType=VARCHAR},
       </if>
+      <if test="teller != null">
+        teller = #{teller,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        org = #{org,jdbcType=VARCHAR},
+      </if>
+      <if test="rulePath != null">
+        rule_path = #{rulePath,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleType != null">
+        rule_type = #{ruleType,jdbcType=VARCHAR},
+      </if>
     </set>
     where uid = #{uid,jdbcType=INTEGER}
   </update>
@@ -176,7 +221,11 @@
       clazz = #{clazz,jdbcType=VARCHAR},
       method = #{method,jdbcType=VARCHAR},
       param = #{param,jdbcType=VARCHAR},
-      version = #{version,jdbcType=VARCHAR}
+      version = #{version,jdbcType=VARCHAR},
+      teller = #{teller,jdbcType=VARCHAR},
+      org = #{org,jdbcType=VARCHAR},
+      rule_path = #{rulePath,jdbcType=VARCHAR},
+      rule_type = #{ruleType,jdbcType=VARCHAR}
     where uid = #{uid,jdbcType=INTEGER}
   </update>
 </mapper>

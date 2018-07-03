@@ -286,8 +286,23 @@ public class NodeService {
 	
 	@Transactional
     public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data) {
-	    
-	    Map<String, Object> map = new HashMap<String, Object>();
-        return ErrorUtil.successResp(map);
+        ConfRuleInfo record = new ConfRuleInfo();
+		String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
+        String ruleName = ToolsUtil.obj2Str(data.get("ruleName"));
+        String teller = ToolsUtil.obj2Str(data.get("teller"));
+        String org = ToolsUtil.obj2Str(data.get("org"));
+        String rulePath = ToolsUtil.obj2Str(data.get("rulePath"));
+        //类型转换
+        ruleType = ToolsUtil.parse(ruleType);
+        record.setOrg(org);
+        record.setRuleName(ruleName);
+        record.setRulePath(rulePath);
+        record.setRuleType(ruleType);
+        record.setTeller(teller);
+		//入库操作
+		confRuleInfoMapper.insertSelective(record);
+	    Map<String, Object> body = new HashMap<String, Object>();
+	    body.put("uid", record.getUid());
+        return ErrorUtil.successResp(body);
 	}
 }

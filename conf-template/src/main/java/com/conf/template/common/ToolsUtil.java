@@ -129,6 +129,26 @@ public class ToolsUtil {
 		}
 	}
 	
+	   /**
+     * 规则类型转换
+     * @param type
+     * @return
+     */
+    public static String unParse(String type) {
+        switch(type) {
+            case "1"://决策集
+                return "rs.xml";
+            case "2": //决策表
+                return "dt.xml";
+            case "3"://决策树
+                return "dtree.xml";
+            case "4"://评分表
+                return "sc";
+            default:
+                throw new RuleException("Unknow type:" + type);
+        }
+    }
+	
 	/**
 	 * 添加URL
 	 * 

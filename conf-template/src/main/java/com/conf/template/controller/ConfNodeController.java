@@ -1,5 +1,6 @@
 package com.conf.template.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,7 +8,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bstek.urule.console.repository.model.FileType;
 import com.conf.client.CommController;
+import com.conf.template.common.Constants;
 import com.conf.template.common.ErrorCode;
 import com.conf.template.common.ErrorUtil;
 import com.conf.template.common.ToolsUtil;
@@ -274,6 +277,39 @@ public class ConfNodeController implements CommController{
         }
         
         return nodeService.createRule(data);
+    }
+	
+    /**
+     * 修改urule新增规则
+     */
+    @ApiException
+    public Map<String, ? extends Object> modifyRule(Map<String, ? extends Object> data)
+    {
+        String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
+        String rulePath = ToolsUtil.obj2Str(data.get("rulePath"));
+        if (StringUtils.isBlank(ruleType)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleType");
+        }
+        if (StringUtils.isBlank(rulePath)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "rulePath");
+        }
+        String url = Constants.RULE_URL_BASE;
+        
+        ruleType = ToolsUtil.unParse(ruleType);
+        FileType fileType=FileType.parse(ruleType);
+        if (FileType.DecisionTable == fileType) {
+            url += "decisiontableeditor?file=" + rulePath;
+        } else if (FileType.DecisionTree == fileType) {
+            url += "decisiontreeeditor?file=" + rulePath;
+        } else if (FileType.Ruleset == fileType) {
+            url += "ruleseteditor?file=" + rulePath;
+        } else if (FileType.Scorecard == fileType) {
+            url += "scorecardeditor?file=" + rulePath;
+        } else {}
+        
+        Map<String, Object> body = new HashMap<String, Object>();
+        body.put("url", url);
+        return ErrorUtil.successResp(body);
     }
 	
 	/**

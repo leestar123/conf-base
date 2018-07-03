@@ -275,4 +275,21 @@ public class ConfNodeController implements CommController{
         
         return nodeService.createRule(data);
     }
+	
+	/**
+	 * 创建空决策流
+	 */
+	@ApiException
+    public Map<String, ? extends Object> ruleflowdesigner(Map<String, ? extends Object> data)
+    {
+		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+		String fileName = ToolsUtil.obj2Str(data.get("flowName"));
+		if (StringUtils.isBlank(nodeName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
+        }
+        if (StringUtils.isBlank(fileName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "flowName");
+        }
+		return nodeService.ruleflowdesigner(data);
+    }
 }

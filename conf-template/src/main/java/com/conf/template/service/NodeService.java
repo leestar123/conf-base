@@ -437,6 +437,7 @@ public class NodeService {
 		//保存知识包
 		try {
 			invokerService.saveResourcePackages(true, nodeName, xml);
+			invokerService.refreshKnowledgeCache(null, packageId, nodeName);
 		} catch (Exception e) {
 			logger.error("发布知识包[" + path + "]失败!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);

@@ -10,6 +10,8 @@
 	
 	<bean id="invokerService" class="com.conf.client.RuleInvokerService">
 		<property name="repositoryService" ref="urule.repositoryService"></property>
+		<property name="knowledgeBuilder" ref="urule.knowledgeBuilder"></property>
+		<property name="httpSessionKnowledgeCache" ref="urule.httpSessionKnowledgeCache"></property>
 	</bean>
 	
 	<bean id="confNodeCtroller" class="com.conf.template.controller.ConfNodeController">

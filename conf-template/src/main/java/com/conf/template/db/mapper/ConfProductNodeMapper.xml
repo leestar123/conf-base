@@ -14,6 +14,7 @@
   </resultMap>
   <resultMap type="com.conf.template.db.model.ConfNodeInfoAndProduct" id="NodeByProductMap">
   <id column="product_id" property="productId"/>
+  <id column="product_name" property="productName"/>
   <collection property="nodeList" select="com.conf.template.db.mapper.ConfNodeInfoMapper.queryNodeByProducts"
   									column="{productId = product_id}" fetchType="eager"></collection>
   </resultMap>
@@ -150,7 +151,7 @@
     limit #{startNum},#{pageSize}
   </select>
   <select id="batchQueryNodeByProduct" resultMap="NodeByProductMap">
-  	select DISTINCT product_id 
+  	select DISTINCT product_id ,product_name
   	from conf_product_node 
     limit #{startNum},#{pageSize}
   </select>

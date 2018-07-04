@@ -5,6 +5,8 @@ import java.util.List;
 public class ConfNodeInfoAndProduct {
 	private Integer productId;
 	
+	private String productName;
+	
 	List<ConfNodeInfo> nodeList;
 
 	public Integer getProductId() {
@@ -22,4 +24,14 @@ public class ConfNodeInfoAndProduct {
 	public void setNodeList(List<ConfNodeInfo> nodeList) {
 		this.nodeList = nodeList;
 	}
+
+    public String getProductName()
+    {
+        return productName;
+    }
+
+    public void setProductName(String productName)
+    {
+        this.productName = productName;
+    }
 }

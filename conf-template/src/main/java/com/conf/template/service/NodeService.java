@@ -402,15 +402,14 @@ public class NodeService {
 	
 	public Map<String, ? extends Object> ruleflowdesigner(Map<String, ? extends Object> data) {
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		String fileName = ToolsUtil.obj2Str(data.get("flowName"));
-		String path = nodeName + "/" + fileName + ".rl.xml";
-		//判断该决策流文件是否存在
+		String productName = ToolsUtil.obj2Str(data.get("productName"));
+		String path = nodeName + "/" + productName + ".rl.xml";
         try {
-			if(invokerService.fileExistCheck(path)) {
-			    return ErrorUtil.errorResp(ErrorCode.code_0005, path);
+            //判断该决策流文件是否存在
+			if(!invokerService.fileExistCheck(path)) {
+			    //创建决策流文件
+			    invokerService.createFile(path, "rl.xml");
 			}
-	        //创建决策流文件
-	        invokerService.createFile(path, "rl.xml");
 		} catch (Exception e) {
 			logger.error("创建空决策流[" + path + "]失败!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);

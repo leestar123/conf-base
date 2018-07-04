@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.conf.template.common.Constants;
 import com.conf.template.common.annotation.Rule;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.model.ConfRuleInfo;
@@ -32,6 +33,7 @@ public class AnnotationParsing {
         record.setClazz(className);
         //record.setMethod(m);
         record.setRuleName(rule.name());
+        record.setRuleType(Constants.RULE_TYPE_ACTION);
         record.setRemark(rule.remark());
         record.setVersion(rule.version());
         //查询表里是否存在该方法(精确查询)

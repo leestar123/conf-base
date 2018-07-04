@@ -27,4 +27,9 @@ public class Constants {
 	 * RULE基础地址
 	 */
     public final static String RULE_URL_BASE = "http://" + ToolsUtil.localIP() + ":8081/urule/";
+    
+    /**
+     * 规则类型  0-动作
+     */
+    public final static String RULE_TYPE_ACTION = "0";
 }

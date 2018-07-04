@@ -325,12 +325,12 @@ public class RuleInvokerService
     public  StringBuilder generateRLXML(String id,String packageName,String fileName,String path)
     {
     	StringBuilder content=new StringBuilder();
-    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss:SSS");
+    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     	String formatStr =formatter.format(new Date());
     	content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
         content.append("<res-packages>");
-        content.append("<res-package+id='"+id+"'+name='"+packageName+"'+create_date='"+formatStr+"'>");
-        content.append("<res-package-item++name='"+fileName+"'+path='jcr:"+path+"'+version='LATEST'/>");
+        content.append("<res-package  id='"+id+"' name='"+packageName+"' create_date='"+formatStr+"'>");
+        content.append("<res-package-item  name='"+fileName+"' path='jcr:"+path+"' version='LATEST'/>");
         content.append("</res-package></res-packages>");
     	return content;
     }

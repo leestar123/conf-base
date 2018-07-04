@@ -1,24 +1,27 @@
 package com.conf.client;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-
 import com.bstek.urule.Utils;
+import com.bstek.urule.builder.KnowledgeBase;
+import com.bstek.urule.builder.KnowledgeBuilder;
+import com.bstek.urule.builder.ResourceBase;
 import com.bstek.urule.console.EnvironmentUtils;
 import com.bstek.urule.console.User;
 import com.bstek.urule.console.repository.RepositoryService;
-import com.bstek.urule.console.repository.RepositoryServiceImpl;
 import com.bstek.urule.console.repository.model.FileType;
 import com.bstek.urule.console.servlet.RequestContext;
 import com.bstek.urule.console.servlet.RequestHolder;
+import com.bstek.urule.console.servlet.respackage.HttpSessionKnowledgeCache;
+import com.bstek.urule.runtime.KnowledgePackage;
+import com.bstek.urule.runtime.cache.CacheUtils;
 
 /**
  * 
@@ -33,17 +36,14 @@ public class RuleInvokerService
 {
     private static final String CLASSIFY_COOKIE_NAME="_lib_classify";
     
+    public static final String KB_KEY="_kb";
+    
+	public static final String VCS_KEY="_vcs";
     private RepositoryService repositoryService;
     
-    public RepositoryService getRepositoryService()
-    {
-        return repositoryService;
-    }
-
-    public void setRepositoryService(RepositoryService repositoryService)
-    {
-        this.repositoryService = repositoryService;
-    }
+    private KnowledgeBuilder knowledgeBuilder;
+    
+	private HttpSessionKnowledgeCache httpSessionKnowledgeCache;
 
     /**
      * 校验节点是否存在
@@ -161,10 +161,16 @@ public class RuleInvokerService
      * @param packageId
      * @param project
      * @return
+     * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public boolean refreshKnowledgeCache(String files, String packageId, String project) {
-        return true;
+    public void refreshKnowledgeCache(String files, String packageId, String project) throws Exception {
+        String path = project+"/"+packageId;
+        HttpServletRequest req = RequestHolder.getRequest();
+        KnowledgeBase knowledgeBase= buildKnowledgeBase(req,files);
+		KnowledgePackage knowledgePackage=knowledgeBase.getKnowledgePackage();
+		CacheUtils.getKnowledgeCache().putKnowledge(path, knowledgePackage);
+		repositoryService.loadClientConfigs(project);
     }
     
     /**
@@ -333,5 +339,50 @@ public class RuleInvokerService
         content.append("<res-package-item  name='"+fileName+"' path='jcr:"+path+"' version='LATEST'/>");
         content.append("</res-package></res-packages>");
     	return content;
+    }
+    private KnowledgeBase buildKnowledgeBase(HttpServletRequest req,String files) throws IOException{
+		files=Utils.decodeURL(files);
+		ResourceBase resourceBase=knowledgeBuilder.newResourceBase();
+		String[] paths=files.split(";");
+		for(String path:paths){
+			String[] subpaths=path.split(",");
+			path=subpaths[0];
+			String version=null;
+			if(subpaths.length>1){
+				version=subpaths[1];
+			}
+			resourceBase.addResource(path,version);
+		}
+		KnowledgeBase knowledgeBase=knowledgeBuilder.buildKnowledgeBase(resourceBase);
+		httpSessionKnowledgeCache.remove(req, KB_KEY);
+		httpSessionKnowledgeCache.put(req, KB_KEY, knowledgeBase);
+		return knowledgeBase;
+	}
+    
+	
+    public KnowledgeBuilder getKnowledgeBuilder() {
+		return knowledgeBuilder;
+	}
+
+	public void setKnowledgeBuilder(KnowledgeBuilder knowledgeBuilder) {
+		this.knowledgeBuilder = knowledgeBuilder;
+	}
+
+	public HttpSessionKnowledgeCache getHttpSessionKnowledgeCache() {
+		return httpSessionKnowledgeCache;
+	}
+
+	public void setHttpSessionKnowledgeCache(HttpSessionKnowledgeCache httpSessionKnowledgeCache) {
+		this.httpSessionKnowledgeCache = httpSessionKnowledgeCache;
+	}
+
+	public RepositoryService getRepositoryService()
+    {
+        return repositoryService;
+    }
+
+    public void setRepositoryService(RepositoryService repositoryService)
+    {
+        this.repositoryService = repositoryService;
     }
 }

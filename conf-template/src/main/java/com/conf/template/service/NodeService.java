@@ -431,13 +431,15 @@ public class NodeService {
 		//添加知识包文件名
 		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
 		//决策流文件名称
-		String flowName = ToolsUtil.obj2Str(data.get("flowName"));
-		String path = nodeName + "/" + flowName + ".rl.xml";
+		String productName = ToolsUtil.obj2Str(data.get("productName"));
+		String path = nodeName + "/" + productName + ".rl.xml";
 		String xml = invokerService.generateRLXML(packageId, packageName, fileName, path).toString();
 		//保存知识包
 		try {
-			invokerService.saveResourcePackages(true, nodeName, xml);
-			invokerService.refreshKnowledgeCache(null, packageId, nodeName);
+			invokerService.saveResourcePackages(false, nodeName, xml);
+			//Jcr文件名称
+			String files = "jcr:/" + path;
+			invokerService.refreshKnowledgeCache(files, packageId, nodeName);
 		} catch (Exception e) {
 			logger.error("发布知识包[" + path + "]失败!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);

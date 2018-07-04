@@ -338,7 +338,7 @@ public class ConfNodeController implements CommController{
 		String packageId = ToolsUtil.obj2Str(data.get("packageId"));
 		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
 		String packageName = ToolsUtil.obj2Str(data.get("packageName"));
-		String flowName = ToolsUtil.obj2Str(data.get("flowName"));
+		String productName = ToolsUtil.obj2Str(data.get("productName"));
 		if (StringUtils.isBlank(nodeName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
         }
@@ -351,8 +351,8 @@ public class ConfNodeController implements CommController{
         if (StringUtils.isBlank(packageName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "packageName");
         }
-        if (StringUtils.isBlank(flowName)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "flowName");
+        if (StringUtils.isBlank(productName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
         }
 		return nodeService.saveAndRefreshKnowledge(data);
 	}

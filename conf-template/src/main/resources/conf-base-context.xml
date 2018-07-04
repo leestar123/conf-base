@@ -18,4 +18,16 @@
 		<property name="nodeService" ref="nodeService"></property>
 <!-- 		<property name="invokerService" ref="invokerService"></property>	 -->
 	</bean>
+	
+	<bean id="annotationParsing" class="com.conf.template.scan.AnnotationParsing"/>
+	
+	<bean id="propertyConf" class="com.conf.template.common.PropertyConf">
+		<property name="scanPackageName" value="${scan.package.name}"></property>
+	</bean>
+	
+	<bean id="scanMgrImpl" class="com.conf.template.scan.impl.ScanMgrImpl" scope="singleton" init-method="firstScan">
+		<property name="annotationParsing" ref="annotationParsing"></property>
+		<property name="property" ref="propertyConf"></property>
+	</bean>
+
 </beans>

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * @author lmx
  *
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Rule {

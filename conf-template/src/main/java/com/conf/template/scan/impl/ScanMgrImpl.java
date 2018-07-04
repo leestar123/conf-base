@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.jandex.Main;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import com.conf.template.common.Constants;
+import com.conf.template.common.PropertyConf;
 import com.conf.template.scan.AnnotationParsing;
 import com.conf.template.scan.ScanMgr;
 
@@ -18,29 +16,44 @@ import com.conf.template.scan.ScanMgr;
  * @author li_mingxing
  *
  */
-@Component
 public class ScanMgrImpl implements ScanMgr{
 
-	@Autowired
 	private AnnotationParsing annotationParsing;
 	
-	List<String> classPaths = new ArrayList<String>();
+	private PropertyConf property;
+	
+	public void setAnnotationParsing(AnnotationParsing annotationParsing)
+    {
+        this.annotationParsing = annotationParsing;
+    }
+
+    public void setProperty(PropertyConf property)
+    {
+        this.property = property;
+    }
+
+
+    List<String> classPaths = new ArrayList<String>();
+	
 	public void firstScan() throws Exception {
 		//包名
-		String basePack = Constants.SCAN_PACKAGE_NAME;
+		String []basePacks = property.getScanPackageName().split(",");
         //先把包名转换为路径,首先得到项目的classpath
         String classpath = Main.class.getResource("/").toString().substring(6);  
-        //然后把我们的包名basPach转换为路径名
-        String basePackCopy = basePack.replace(".", File.separator);
-        //然后把classpath和basePack合并
-        String searchPath = classpath + basePackCopy;
-        doPath(new File(searchPath));
-        //这个时候我们已经得到了指定包下所有的类的绝对路径了。我们现在利用这些绝对路径和java的反射机制得到他们的类对象
-        for (String s : classPaths) {
-            //把 D:\work\code\20170401\search-class\target\classes\com\baibin\search\a\A.class 这样的绝对路径转换为全类名com.baibin.search.a.A
-            s = s.replace(classpath.replace("/","\\").replaceFirst("\\\\",""),"").replace("\\",".").replace(".class","");
-            Class<?> cls = Class.forName(s.substring(s.indexOf(basePack)));
-            annotationParsing.insertAnnotationInfo(cls);
+        for (String basePack : basePacks)
+        {
+            //然后把我们的包名basPach转换为路径名
+            String basePackCopy = basePack.replace(".", File.separator);
+            //然后把classpath和basePack合并
+            String searchPath = classpath + basePackCopy;
+            doPath(new File(searchPath));
+            //这个时候我们已经得到了指定包下所有的类的绝对路径了。我们现在利用这些绝对路径和java的反射机制得到他们的类对象
+            for (String s : classPaths) {
+                //把 D:\work\code\20170401\search-class\target\classes\com\baibin\search\a\A.class 这样的绝对路径转换为全类名com.baibin.search.a.A
+                s = s.replace(classpath.replace("/","\\").replaceFirst("\\\\",""),"").replace("\\",".").replace(".class","");
+                Class<?> cls = Class.forName(s.substring(s.indexOf(basePack)));
+                annotationParsing.insertAnnotationInfo(cls);
+            }
         }
 	}
 

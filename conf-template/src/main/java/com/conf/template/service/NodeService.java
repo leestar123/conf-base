@@ -290,6 +290,7 @@ public class NodeService {
 		for (ConfNodeInfoAndProduct product : productList) {
 			Map<String,Object> map = new HashMap<>();
 			map.put("productId", product.getProductId());
+			map.put("productName", product.getProductName());
 			if(null !=product.getNodeList())
 			{
 				map.put("list", product.getNodeList());

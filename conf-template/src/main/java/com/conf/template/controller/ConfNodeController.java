@@ -328,4 +328,32 @@ public class ConfNodeController implements CommController{
         }
 		return nodeService.ruleflowdesigner(data);
     }
+
+	/**
+	 * 保存并发布知识吧
+	 */
+	@Override
+	public Map<String, ? extends Object> saveAndRefreshKnowledge(Map<String, ? extends Object> data) {
+		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+		String packageId = ToolsUtil.obj2Str(data.get("packageId"));
+		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
+		String packageName = ToolsUtil.obj2Str(data.get("packageName"));
+		String flowName = ToolsUtil.obj2Str(data.get("flowName"));
+		if (StringUtils.isBlank(nodeName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
+        }
+        if (StringUtils.isBlank(packageId)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "packageId");
+        }
+        if (StringUtils.isBlank(fileName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "fileName");
+        }
+        if (StringUtils.isBlank(packageName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "packageName");
+        }
+        if (StringUtils.isBlank(flowName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "flowName");
+        }
+		return nodeService.saveAndRefreshKnowledge(data);
+	}
 }

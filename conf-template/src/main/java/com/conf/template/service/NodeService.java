@@ -420,4 +420,28 @@ public class NodeService {
 		body.put("url", url);
 		return ErrorUtil.successResp(body);
 	}
+	
+	public Map<String, ? extends Object> saveAndRefreshKnowledge(Map<String, ? extends Object> data) {
+		//知识包编码id
+		String packageId = ToolsUtil.obj2Str(data.get("packageId"));
+		//组件名称
+		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+		//知识包名
+		String packageName = ToolsUtil.obj2Str(data.get("packageName"));
+		//添加知识包文件名
+		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
+		//决策流文件名称
+		String flowName = ToolsUtil.obj2Str(data.get("flowName"));
+		String path = nodeName + "/" + flowName + ".rl.xml";
+		String xml = invokerService.generateRLXML(packageId, packageName, fileName, path).toString();
+		//保存知识包
+		try {
+			invokerService.saveResourcePackages(true, nodeName, xml);
+		} catch (Exception e) {
+			logger.error("发布知识包[" + path + "]失败!", e);
+            return ErrorUtil.errorResp(ErrorCode.code_9999);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		return ErrorUtil.successResp(map);
+	}
 }

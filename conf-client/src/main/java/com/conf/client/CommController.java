@@ -32,5 +32,7 @@ public interface CommController
     public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data);
     
     public Map<String, ? extends Object> ruleflowdesigner(Map<String, ? extends Object> data);
+    
+    public Map<String, ? extends Object> saveAndRefreshKnowledge(Map<String, ? extends Object> data);
 
 }

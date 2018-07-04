@@ -1,6 +1,8 @@
 package com.conf.client;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import com.bstek.urule.Utils;
 import com.bstek.urule.console.EnvironmentUtils;
 import com.bstek.urule.console.User;
 import com.bstek.urule.console.repository.RepositoryService;
+import com.bstek.urule.console.repository.RepositoryServiceImpl;
 import com.bstek.urule.console.repository.model.FileType;
 import com.bstek.urule.console.servlet.RequestContext;
 import com.bstek.urule.console.servlet.RequestHolder;
@@ -139,10 +142,16 @@ public class RuleInvokerService
      * @param projectName
      * @param xml
      * @return
+     * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public boolean saveResourcePackages(Boolean newVersion, String projectName, String xml) {
-        return true;
+    public void saveResourcePackages(Boolean newVersion, String projectName, String xml) throws Exception {
+    	String path=projectName+"/"+"___res__package__file__";
+        HttpServletRequest req = RequestHolder.getRequest();
+        HttpServletResponse resp = RequestHolder.getResponse();
+        User user=EnvironmentUtils.getLoginUser(new RequestContext(req,resp));
+		repositoryService.saveFile(path, xml, false,null,user);
+
     }
     
     /**
@@ -311,5 +320,18 @@ public class RuleInvokerService
             throw new IllegalArgumentException("Unsupport filetype : "+type);
         }
         return root;
+    }
+    
+    public  StringBuilder generateRLXML(String id,String packageName,String fileName,String path)
+    {
+    	StringBuilder content=new StringBuilder();
+    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss:SSS");
+    	String formatStr =formatter.format(new Date());
+    	content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        content.append("<res-packages>");
+        content.append("<res-package+id='"+id+"'+name='"+packageName+"'+create_date='"+formatStr+"'>");
+        content.append("<res-package-item++name='"+fileName+"'+path='jcr:"+path+"'+version='LATEST'/>");
+        content.append("</res-package></res-packages>");
+    	return content;
     }
 }

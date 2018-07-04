@@ -187,6 +187,7 @@ public class NodeService {
                 logger.info("规则[" + ruleName + "]无规则路径，跳过复制！");
                 continue;
             }
+            ruleType = ToolsUtil.unParse(ruleType);
             //规则复制
             newFullPath = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
             try

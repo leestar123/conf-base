@@ -28,6 +28,7 @@ public class AnnotationParsing {
 		ConfRuleInfo record = null;
 		ConfRuleInfo confRuleInfo = null;
 		String className = clazz.getName();
+		className = className.substring(className.lastIndexOf(".") + 1, className.length());
 		Rule rule = clazz.getAnnotation(Rule.class);
 		record = new ConfRuleInfo();
         record.setClazz(className);

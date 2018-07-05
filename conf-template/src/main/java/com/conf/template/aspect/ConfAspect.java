@@ -1,11 +1,11 @@
-package com.conf.template.common.aspect;
+package com.conf.template.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
-import com.conf.template.common.annotation.ConfNode;
-import com.conf.template.common.annotation.Rule;
+import com.conf.common.annotation.ConfNode;
+import com.conf.common.annotation.Rule;
 
 /**
  * 针对注解进行处理

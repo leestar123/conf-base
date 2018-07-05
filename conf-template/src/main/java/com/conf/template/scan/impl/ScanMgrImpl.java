@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.jboss.jandex.Main;
 
-import com.conf.template.common.PropertyConf;
+import com.conf.common.PropertyConf;
 import com.conf.template.scan.AnnotationParsing;
 import com.conf.template.scan.ScanMgr;
 

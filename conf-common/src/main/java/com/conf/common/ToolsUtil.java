@@ -1,12 +1,10 @@
-package com.conf.template.common;
+package com.conf.common;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.NumberFormat;
 import java.util.Map;
 import java.util.Properties;
-
-import com.bstek.urule.RuleException;
 
 public class ToolsUtil {
 
@@ -125,7 +123,7 @@ public class ToolsUtil {
 			//评分表
 			return "4";
 		} else {
-			throw new RuleException("Unknow type:" + type);
+			throw new RuntimeException("Unknow type:" + type);
 		}
 	}
 	
@@ -145,7 +143,7 @@ public class ToolsUtil {
             case "4"://评分表
                 return "sc";
             default:
-                throw new RuleException("Unknow type:" + type);
+                throw new RuntimeException("Unknow type:" + type);
         }
     }
 	

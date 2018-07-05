@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.conf.template.common.Constants;
-import com.conf.template.common.annotation.Rule;
+import com.conf.common.Constants;
+import com.conf.common.annotation.Rule;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.model.ConfRuleInfo;
 

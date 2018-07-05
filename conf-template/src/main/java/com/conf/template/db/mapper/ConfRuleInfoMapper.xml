@@ -43,6 +43,7 @@
     on t.uid = m.uid
     where t.product_id = #{productId}
     and t.node_id = #{nodeId}   
+    and t.effect = #{effect}
   </select>
   
   <select id="selectRecordListByPage"  resultMap="BaseResultMap">

@@ -9,9 +9,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.conf.template.common.ErrorCode;
-import com.conf.template.common.ErrorUtil;
-import com.conf.template.common.ToolsUtil;
+import com.conf.common.Constants;
+import com.conf.common.ErrorCode;
+import com.conf.common.ErrorUtil;
+import com.conf.common.ToolsUtil;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.model.ConfRuleInfo;
 
@@ -40,7 +41,7 @@ public class RuleService {
 		result.put("result", list);
 		
 		//根据节点名称查找对应的规则，并进行执行
-		List<ConfRuleInfo> selectRecordList = confRuleInfoMapper.selectRecordList(productId, nodeId);
+		List<ConfRuleInfo> selectRecordList = confRuleInfoMapper.selectRecordList(productId, nodeId, Constants.EFFECT_STATUS_VALID);
 		//判断是否有记录，如果没有则返回false
 		if(selectRecordList.size() == 0)
 		{

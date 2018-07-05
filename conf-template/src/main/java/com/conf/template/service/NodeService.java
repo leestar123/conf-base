@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bstek.urule.Utils;
 import com.bstek.urule.console.repository.model.FileType;
 import com.conf.client.RuleInvokerService;
-import com.conf.template.common.Constants;
-import com.conf.template.common.ErrorCode;
-import com.conf.template.common.ErrorUtil;
-import com.conf.template.common.ToolsUtil;
+import com.conf.common.Constants;
+import com.conf.common.ErrorCode;
+import com.conf.common.ErrorUtil;
+import com.conf.common.ToolsUtil;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
 import com.conf.template.db.mapper.ConfNodeTemplateMapper;
 import com.conf.template.db.mapper.ConfProductNodeMapper;
@@ -448,4 +448,24 @@ public class NodeService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		return ErrorUtil.successResp(map);
 	}
+	
+	   /**
+     * 根查询动作规则
+     * 
+     * @param data
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public Map<String, ? extends Object> queryActionRule(Map<String, ? extends Object> data)
+    {
+        //产品id
+        Integer productId = ToolsUtil.obj2Int(data.get("productId"), 0);
+        //组件名称
+        Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), 0);
+        
+        List<ConfRuleInfo> list = confRuleInfoMapper.selectRecordList(productId, nodeId, Constants.EFFECT_STATUS_VALID);
+        Map<String, Object> body = new HashMap<>();
+        body.put("list", list);
+        return ErrorUtil.successResp(body);
+    }
 }

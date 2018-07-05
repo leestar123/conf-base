@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.bstek.urule.console.repository.model.FileType;
 import com.conf.client.CommController;
-import com.conf.template.common.Constants;
-import com.conf.template.common.ErrorCode;
-import com.conf.template.common.ErrorUtil;
-import com.conf.template.common.ToolsUtil;
-import com.conf.template.common.annotation.ApiException;
+import com.conf.common.Constants;
+import com.conf.common.ErrorCode;
+import com.conf.common.ErrorUtil;
+import com.conf.common.ToolsUtil;
+import com.conf.common.annotation.ApiException;
 import com.conf.template.service.NodeService;
 
 /**
@@ -356,4 +356,28 @@ public class ConfNodeController implements CommController{
         }
 		return nodeService.saveAndRefreshKnowledge(data);
 	}
+	
+	/**
+	 * 查询动作规则
+	 * 
+	 * @param data
+	 * @return
+	 * @see [类、类#方法、类#成员]
+	 */
+    public Map<String, ? extends Object> queryActionRule(Map<String, ? extends Object> data)
+    {
+        //产品id
+        String productId = ToolsUtil.obj2Str(data.get("productId"));
+        //组件名称
+        String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+        if (StringUtils.isBlank(productId))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
+        }
+        if (StringUtils.isBlank(nodeId))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+        }
+        return nodeService.queryActionRule(data);
+    }
 }

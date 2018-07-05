@@ -65,7 +65,7 @@
 	</dependencies>
 	<modules>
 		<module>conf-template</module>
-		<module>conf-cache</module>
+		<module>conf-common</module>
 		<module>conf-client</module>
 	</modules>
 </project>

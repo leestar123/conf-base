@@ -1,4 +1,4 @@
-package com.conf.template.common;
+package com.conf.common;
 
 /**
  * 配置类

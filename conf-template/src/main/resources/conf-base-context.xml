@@ -21,7 +21,7 @@
 	
 	<bean id="annotationParsing" class="com.conf.template.scan.AnnotationParsing"/>
 	
-	<bean id="propertyConf" class="com.conf.template.common.PropertyConf">
+	<bean id="propertyConf" class="com.conf.common.PropertyConf">
 		<property name="scanPackageName" value="${scan.package.name}"></property>
 	</bean>
 	

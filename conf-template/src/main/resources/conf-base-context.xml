@@ -6,6 +6,10 @@
 	">
 	<import resource="classpath:urule-console-context.xml"/>
 	
+	<bean parent="urule.props">
+		<property name="location" value="application.properties" />
+	</bean>
+	
 	<bean id="nodeService" class="com.conf.template.service.NodeService"/>
 	
 	<bean id="invokerService" class="com.conf.client.RuleInvokerService">

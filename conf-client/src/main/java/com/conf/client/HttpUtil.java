@@ -18,39 +18,49 @@ public class HttpUtil
     private final static Logger logger = LoggerFactory.getLogger(HttpUtil.class);  
     
     @SuppressWarnings("unchecked")
-    public static Map<String, ? extends Object> getRequestData(HttpServletRequest request) {
-        if ("GET".equalsIgnoreCase(request.getMethod()) || "DELETE".equalsIgnoreCase(request.getMethod())) {
-            Map<String, String[]> map = request.getParameterMap();
-            Map<String, Object> result = new HashMap<>();
-            for (String key : map.keySet())
-            {
-                String value = request.getParameter(key);
-                result.put(key, value);
-            }
+    public static Map<String, ? extends Object> getRequestData(HttpServletRequest request)
+    {
+        //if ("GET".equalsIgnoreCase(request.getMethod()) || "DELETE".equalsIgnoreCase(request.getMethod())) {
+        Map<String, String[]> map = request.getParameterMap();
+        Map<String, Object> result = new HashMap<>();
+        for (String key : map.keySet())
+        {
+            String value = request.getParameter(key);
+            result.put(key, value);
+        }
+        if (result.entrySet().size() > 0)
             return result;
-        } else {
-            StringBuffer data = new StringBuffer();
-            BufferedReader reader = null;
-            try {
-                reader = request.getReader();
-                String line = null;
-                while (null != (line = reader.readLine())) {
-                    data.append(line);
-                }
-                return JSONObject.parseObject(data.toString(), Map.class);
-            } catch (Exception e) {
+        
+        //} else {
+        // 如果已参数方式无法获取数据,则读取流
+        StringBuffer data = new StringBuffer();
+        BufferedReader reader = null;
+        try
+        {
+            reader = request.getReader();
+            String line = null;
+            while (null != (line = reader.readLine()))
+            {
+                data.append(line);
+            }
+            return JSONObject.parseObject(data.toString(), Map.class);
+        }
+        catch (Exception e)
+        {
+            //TODO:异常处理
+        }
+        finally
+        {
+            try
+            {
+                reader.close();
+            }
+            catch (IOException e)
+            {
                 //TODO:异常处理
-            } finally {
-                try
-                {
-                    reader.close();
-                }
-                catch (IOException e)
-                {
-                    //TODO:异常处理
-                }
             }
         }
+        // }
         return null;
     }
     

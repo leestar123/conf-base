@@ -90,10 +90,10 @@
    	</if>
   </select>
   
-  <select id="selectByMethod"  parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByName"  parameterType="java.lang.String" resultMap="BaseResultMap">
  	select m.*
     from  conf_rule_info m 
-   	 where m.method = #{method,jdbcType=VARCHAR}
+   	 where m.rule_name = #{ruleName,jdbcType=VARCHAR}
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

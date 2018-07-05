@@ -31,5 +31,5 @@ public interface ConfRuleInfoMapper {
     
     int queryCountByName(@Param("ruleName")String ruleName);
     
-    ConfRuleInfo selectByMethod(String method);
+    ConfRuleInfo selectByName(String ruleName);
 }

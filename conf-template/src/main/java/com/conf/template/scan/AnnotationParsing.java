@@ -38,7 +38,7 @@ public class AnnotationParsing {
         record.setRemark(rule.remark());
         record.setVersion(rule.version());
         //查询表里是否存在该方法(精确查询)
-        confRuleInfo = confRuleInfoMapper.selectByMethod(rule.name());
+        confRuleInfo = confRuleInfoMapper.selectByName(rule.name());
         if(confRuleInfo == null){
             //入库操作
             confRuleInfoMapper.insertSelective(record);

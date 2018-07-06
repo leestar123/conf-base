@@ -339,24 +339,16 @@ public class ConfNodeController implements CommController{
 	@Override
 	public Map<String, ? extends Object> saveAndRefreshKnowledge(Map<String, ? extends Object> data) {
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		String packageId = ToolsUtil.obj2Str(data.get("packageId"));
 		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
 		String packageName = ToolsUtil.obj2Str(data.get("packageName"));
-		String productName = ToolsUtil.obj2Str(data.get("productName"));
 		if (StringUtils.isBlank(nodeName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
-        }
-        if (StringUtils.isBlank(packageId)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "packageId");
         }
         if (StringUtils.isBlank(fileName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "fileName");
         }
         if (StringUtils.isBlank(packageName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "packageName");
-        }
-        if (StringUtils.isBlank(productName)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
         }
 		return nodeService.saveAndRefreshKnowledge(data);
 	}
@@ -384,4 +376,27 @@ public class ConfNodeController implements CommController{
         }
         return nodeService.queryActionRule(data);
     }
+
+    /**
+     * 调用知识包
+     */
+	@Override
+	public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data) {
+		String packageId = ToolsUtil.obj2Str(data.get("packageId"));
+		String processId = ToolsUtil.obj2Str(data.get("processId"));
+		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+		if (StringUtils.isBlank(nodeName))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
+        }
+		if (StringUtils.isBlank(packageId))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "packageId");
+        }
+        if (StringUtils.isBlank(processId))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "processId");
+        }
+		return nodeService.excuteKnowledge(data);
+	}
 }

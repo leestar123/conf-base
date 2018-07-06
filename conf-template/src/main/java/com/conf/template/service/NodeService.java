@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.nanjingbank.api.riskmanagement.entity.PostLoanBeanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -476,6 +477,30 @@ public class NodeService {
         List<ConfRuleInfo> list = confRuleInfoMapper.selectRecordList(productId, nodeId, Constants.RULE_TYPE_ACTION, Constants.EFFECT_STATUS_VALID);
         Map<String, Object> body = new HashMap<>();
         body.put("list", list);
+        return ErrorUtil.successResp(body);
+    }
+    
+    /**
+     * 调用知识包
+     * @param data
+     * @return
+     */
+    public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data)
+    {
+    	String packageId = ToolsUtil.obj2Str(data.get("packageId"));
+		String processId = ToolsUtil.obj2Str(data.get("processId"));
+		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+		List<Object> objList = new ArrayList<Object>();
+		PostLoanBeanResult postLoanBeanResult = new PostLoanBeanResult();
+		objList.add(postLoanBeanResult);
+		List<Object> objListUnCheck = new ArrayList<Object>();
+    	try {
+			invokerService.executeProcess(nodeName+"/"+packageId, objList, objListUnCheck, processId);
+		} catch (Exception e) {
+			logger.error("调用知识包[" + processId + "]失败!", e);
+            return ErrorUtil.errorResp(ErrorCode.code_9999);
+		}
+    	Map<String, Object> body = new HashMap<>();
         return ErrorUtil.successResp(body);
     }
 }

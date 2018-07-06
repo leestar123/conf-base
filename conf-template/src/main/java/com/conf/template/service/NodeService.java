@@ -435,23 +435,24 @@ public class NodeService {
 	
 	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {
 		//知识包编码id
-		String packageId = String.valueOf(ToolsUtil.nextSeq());
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
 		//组件名称
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		//知识包名
-		String packageName = ToolsUtil.obj2Str(data.get("packageName"));
+		//String packageName = ToolsUtil.obj2Str(data.get("packageName"));
 		//添加知识包文件名
-		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
+		//String fileName = ToolsUtil.obj2Str(data.get("fileName"));
 		//决策流文件名称
 		String productName = ToolsUtil.obj2Str(data.get("productName"));
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
 		String path = nodeName + "/" + productName + ".rl.xml";
-		String xml = invokerService.generateRLXML(packageId, packageName, fileName, path).toString();
+		String xml = invokerService.generateRLXML(nodeId, nodeName, productName, path).toString();
 		//保存知识包
 		try {
 			invokerService.saveResourcePackages(false, nodeName, xml);
 			//Jcr文件名称
 			String files = "jcr:/" + path;
-			invokerService.refreshKnowledgeCache(files, packageId, nodeName);
+			invokerService.refreshKnowledgeCache(files, nodeId, nodeName);
 		} catch (Exception e) {
 			logger.error("发布知识包[" + path + "]失败!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);

@@ -335,16 +335,20 @@ public class ConfNodeController implements CommController{
 	@Override
 	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
-		String packageName = ToolsUtil.obj2Str(data.get("packageName"));
+		String productName = ToolsUtil.obj2Str(data.get("productName"));
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
 		if (StringUtils.isBlank(nodeName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
         }
-        if (StringUtils.isBlank(fileName)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "fileName");
+        if (StringUtils.isBlank(productName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
         }
-        if (StringUtils.isBlank(packageName)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "packageName");
+        if (StringUtils.isBlank(nodeId)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+        }
+        if (StringUtils.isBlank(productId)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
         }
 		return nodeService.publishKnowledge(data);
 	}

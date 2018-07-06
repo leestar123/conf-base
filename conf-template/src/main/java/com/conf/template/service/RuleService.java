@@ -41,7 +41,7 @@ public class RuleService {
 		result.put("result", list);
 		
 		//根据节点名称查找对应的规则，并进行执行
-		List<ConfRuleInfo> selectRecordList = confRuleInfoMapper.selectRecordList(productId, nodeId, Constants.EFFECT_STATUS_VALID);
+		List<ConfRuleInfo> selectRecordList = confRuleInfoMapper.selectRecordList(productId, nodeId, null, Constants.EFFECT_STATUS_VALID);
 		//判断是否有记录，如果没有则返回false
 		if(selectRecordList.size() == 0)
 		{

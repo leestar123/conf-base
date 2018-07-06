@@ -32,4 +32,5 @@ public class Constants {
      * 规则类型  0-动作
      */
     public final static String RULE_TYPE_ACTION = "0";
+    
 }

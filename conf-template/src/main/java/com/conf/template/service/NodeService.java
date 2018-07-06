@@ -423,6 +423,8 @@ public class NodeService {
 			logger.error("创建空决策流[" + path + "]失败!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
 		}
+        //保存知识包并进行发布
+        //saveAndRefreshKnowledge(data);
 		String url = Constants.RULE_URL_BASE + "ruleflowdesigner?file=" +path;
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("url", url);
@@ -432,7 +434,7 @@ public class NodeService {
 	
 	public Map<String, ? extends Object> saveAndRefreshKnowledge(Map<String, ? extends Object> data) {
 		//知识包编码id
-		String packageId = ToolsUtil.obj2Str(data.get("packageId"));
+		String packageId = String.valueOf(ToolsUtil.nextSeq());
 		//组件名称
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		//知识包名
@@ -471,7 +473,7 @@ public class NodeService {
         //组件名称
         Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), 0);
         
-        List<ConfRuleInfo> list = confRuleInfoMapper.selectRecordList(productId, nodeId, Constants.EFFECT_STATUS_VALID);
+        List<ConfRuleInfo> list = confRuleInfoMapper.selectRecordList(productId, nodeId, Constants.RULE_TYPE_ACTION, Constants.EFFECT_STATUS_VALID);
         Map<String, Object> body = new HashMap<>();
         body.put("list", list);
         return ErrorUtil.successResp(body);

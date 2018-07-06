@@ -320,11 +320,15 @@ public class ConfNodeController implements CommController{
     {
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		String productName = ToolsUtil.obj2Str(data.get("productName"));
+		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
 		if (StringUtils.isBlank(nodeName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
         }
         if (StringUtils.isBlank(productName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
+        }
+        if (StringUtils.isBlank(fileName)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "fileName");
         }
 		return nodeService.ruleflowdesigner(data);
     }

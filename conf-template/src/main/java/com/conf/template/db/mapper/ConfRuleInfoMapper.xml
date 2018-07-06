@@ -43,6 +43,9 @@
     on t.uid = m.uid
     where t.product_id = #{productId}
     and t.node_id = #{nodeId}   
+    <if test="ruleType != null">
+    	and m.rule_type = #{ruleType}
+    </if>
     and t.effect = #{effect}
   </select>
   

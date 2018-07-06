@@ -433,7 +433,7 @@ public class NodeService {
 		return ErrorUtil.successResp(body);
 	}
 	
-	public Map<String, ? extends Object> saveAndRefreshKnowledge(Map<String, ? extends Object> data) {
+	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {
 		//知识包编码id
 		String packageId = String.valueOf(ToolsUtil.nextSeq());
 		//组件名称

@@ -320,15 +320,11 @@ public class ConfNodeController implements CommController{
     {
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		String productName = ToolsUtil.obj2Str(data.get("productName"));
-		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
 		if (StringUtils.isBlank(nodeName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
         }
         if (StringUtils.isBlank(productName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
-        }
-        if (StringUtils.isBlank(fileName)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "fileName");
         }
 		return nodeService.ruleflowdesigner(data);
     }
@@ -337,7 +333,7 @@ public class ConfNodeController implements CommController{
 	 * 保存并发布知识吧
 	 */
 	@Override
-	public Map<String, ? extends Object> saveAndRefreshKnowledge(Map<String, ? extends Object> data) {
+	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		String fileName = ToolsUtil.obj2Str(data.get("fileName"));
 		String packageName = ToolsUtil.obj2Str(data.get("packageName"));
@@ -350,7 +346,7 @@ public class ConfNodeController implements CommController{
         if (StringUtils.isBlank(packageName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "packageName");
         }
-		return nodeService.saveAndRefreshKnowledge(data);
+		return nodeService.publishKnowledge(data);
 	}
 	
 	/**

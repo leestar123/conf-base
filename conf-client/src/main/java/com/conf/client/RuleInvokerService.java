@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +23,10 @@ import com.bstek.urule.console.servlet.RequestContext;
 import com.bstek.urule.console.servlet.RequestHolder;
 import com.bstek.urule.console.servlet.respackage.HttpSessionKnowledgeCache;
 import com.bstek.urule.runtime.KnowledgePackage;
+import com.bstek.urule.runtime.KnowledgeSession;
+import com.bstek.urule.runtime.KnowledgeSessionFactory;
 import com.bstek.urule.runtime.cache.CacheUtils;
+import com.bstek.urule.runtime.service.KnowledgeService;
 
 /**
  * 
@@ -44,6 +49,8 @@ public class RuleInvokerService
     private KnowledgeBuilder knowledgeBuilder;
     
 	private HttpSessionKnowledgeCache httpSessionKnowledgeCache;
+	
+	private KnowledgeService knowledgeService;
 
     /**
      * 校验节点是否存在
@@ -192,7 +199,28 @@ public class RuleInvokerService
 		inputStream.close();
 		repositoryService.createFile(newFullPath, content,user);
     }
-    
+    /**
+     * 知识包的调用
+     * @param packageId
+     * @param objList
+     * @param objListUnCheck
+     * @param processId
+     * @throws Exception
+     */
+	public void executeProcess(String packageId, List<Object> objList, List<Object> objListUnCheck, String processId)
+			throws Exception {
+		KnowledgePackage knowledgePackage;
+		knowledgePackage = knowledgeService.getKnowledge(packageId);
+		KnowledgeSession session = KnowledgeSessionFactory.newKnowledgeSession(knowledgePackage);
+		for (Object objNeedChecked : objList) {
+			session.insert(objNeedChecked);
+		}
+		for (Object objUnCkecked : objListUnCheck) {
+			session.insert(objUnCkecked);
+		}
+		session.startProcess(processId);
+	}
+	
     private boolean getClassify(HttpServletRequest req,HttpServletResponse resp) {
         String classifyValue=req.getParameter("classify");
         if(StringUtils.isBlank(classifyValue)){
@@ -385,4 +413,13 @@ public class RuleInvokerService
     {
         this.repositoryService = repositoryService;
     }
+
+	public KnowledgeService getKnowledgeService() {
+		return knowledgeService;
+	}
+
+	public void setKnowledgeService(KnowledgeService knowledgeService) {
+		this.knowledgeService = knowledgeService;
+	}
+    
 }

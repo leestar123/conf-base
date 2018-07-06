@@ -16,6 +16,7 @@
 		<property name="repositoryService" ref="urule.repositoryService"></property>
 		<property name="knowledgeBuilder" ref="urule.knowledgeBuilder"></property>
 		<property name="httpSessionKnowledgeCache" ref="urule.httpSessionKnowledgeCache"></property>
+		<property name="knowledgeService" ref="urule.knowledgeService"></property>
 	</bean>
 	
 	<bean id="confNodeCtroller" class="com.conf.template.controller.ConfNodeController">

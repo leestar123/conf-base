@@ -186,13 +186,20 @@ public class NodeService {
             {
                 logger.info("规则[" + ruleName + "]无规则路径，跳过复制！");
                 continue;
-            }
+            } 
             ruleType = ToolsUtil.unParse(ruleType);
             //规则复制
             newFullPath = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
             try
             {
-                invokerService.copyFile(newFullPath, oldFullPath);
+                if (oldFullPath.equals(newFullPath))
+                {
+                    logger.info("规则[" + ruleName + "]存在当前组件，跳过复制！");
+                }
+                else
+                {
+                    invokerService.copyFile(newFullPath, oldFullPath);
+                }
             }
             catch (Exception e)
             {
@@ -405,7 +412,7 @@ public class NodeService {
 	public Map<String, ? extends Object> ruleflowdesigner(Map<String, ? extends Object> data) {
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		String productName = ToolsUtil.obj2Str(data.get("productName"));
-		String path = nodeName + "/" + productName + ".rl.xml";
+		String path = "/" + nodeName + "/" + productName + ".rl.xml";
         try {
             //判断该决策流文件是否存在
 			if(!invokerService.fileExistCheck(path)) {
@@ -419,6 +426,7 @@ public class NodeService {
 		String url = Constants.RULE_URL_BASE + "ruleflowdesigner?file=" +path;
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("url", url);
+		
 		return ErrorUtil.successResp(body);
 	}
 	

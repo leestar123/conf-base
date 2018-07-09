@@ -183,29 +183,31 @@ public class NodeService {
             ruleName = ToolsUtil.obj2Str(ruleList.get(i).get("ruleName"));
             ruleType = ToolsUtil.obj2Str(ruleList.get(i).get("ruleType"));
             oldFullPath = ToolsUtil.obj2Str(ruleList.get(i).get("rulePath"));
-            if (StringUtils.isBlank(oldFullPath))
+            if (!Constants.RULE_TYPE_ACTION.equals(ruleType) && StringUtils.isBlank(oldFullPath))
             {
                 logger.info("规则[" + ruleName + "]无规则路径，跳过复制！");
                 continue;
-            } 
-            ruleType = ToolsUtil.unParse(ruleType);
-            //规则复制
-            newFullPath = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
-            try
-            {
-                if (oldFullPath.equals(newFullPath))
+            } else if (!Constants.RULE_TYPE_ACTION.equals(ruleType)) {
+
+                ruleType = ToolsUtil.unParse(ruleType);
+                //规则复制
+                newFullPath = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
+                try
                 {
-                    logger.info("规则[" + ruleName + "]存在当前组件，跳过复制！");
+                    if (oldFullPath.equals(newFullPath))
+                    {
+                        logger.info("规则[" + ruleName + "]存在当前组件，跳过复制！");
+                    }
+                    else
+                    {
+                        invokerService.copyFile(newFullPath, oldFullPath);
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    invokerService.copyFile(newFullPath, oldFullPath);
+                    logger.error("规则复制[" + newFullPath + "]失败!", e);
+                    return ErrorUtil.errorResp(ErrorCode.code_9999);
                 }
-            }
-            catch (Exception e)
-            {
-                logger.error("规则复制[" + newFullPath + "]失败!", e);
-                return ErrorUtil.errorResp(ErrorCode.code_9999);
             }
             confNodeTemplateMapper.insertSelective(record);
         }
@@ -411,26 +413,30 @@ public class NodeService {
 	}
 	
 	public Map<String, ? extends Object> ruleflowdesigner(Map<String, ? extends Object> data) {
-		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		String productName = ToolsUtil.obj2Str(data.get("productName"));
-		String path = "/" + nodeName + "/" + productName + ".rl.xml";
+        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        String productName = ToolsUtil.obj2Str(data.get("productName"));
+        String productId = ToolsUtil.obj2Str(data.get("productId"));
+        String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+        String path = "/" + nodeName + "/" + productName + ".rl.xml";
         try {
             //判断该决策流文件是否存在
-			if(!invokerService.fileExistCheck(path)) {
-			    //创建决策流文件
-			    invokerService.createFile(path, "rl.xml");
-			}
-		} catch (Exception e) {
-			logger.error("创建空决策流[" + path + "]失败!", e);
+            if(!invokerService.fileExistCheck(path)) {
+                //创建决策流文件
+                invokerService.createFile(path, "rl.xml");
+            }
+        } catch (Exception e) {
+            logger.error("创建空决策流[" + path + "]失败!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
-		}
+        }
         //保存知识包并进行发布
         //saveAndRefreshKnowledge(data);
-		String url = Constants.RULE_URL_BASE + "ruleflowdesigner?file=" +path;
-		Map<String, Object> body = new HashMap<String, Object>();
-		body.put("url", url);
-		
-		return ErrorUtil.successResp(body);
+        String url = Constants.RULE_URL_BASE + "ruleflowdesigner?file=".concat(path)
+            .concat("&productId=" + productId)
+            .concat("&nodeId=" + nodeId);
+        Map<String, Object> body = new HashMap<String, Object>();
+        body.put("url", url);
+        
+        return ErrorUtil.successResp(body);
 	}
 	
 	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {

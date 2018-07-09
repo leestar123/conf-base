@@ -318,15 +318,27 @@ public class ConfNodeController implements CommController{
 	@ApiException
     public Map<String, ? extends Object> ruleflowDesigner(Map<String, ? extends Object> data)
     {
-		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		String productName = ToolsUtil.obj2Str(data.get("productName"));
-		if (StringUtils.isBlank(nodeName)) {
+        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        String productName = ToolsUtil.obj2Str(data.get("productName"));
+        String productId = ToolsUtil.obj2Str(data.get("productId"));
+        String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+        if (StringUtils.isBlank(nodeName))
+        {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
         }
-        if (StringUtils.isBlank(productName)) {
+        if (StringUtils.isBlank(productName))
+        {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
         }
-		return nodeService.ruleflowdesigner(data);
+        if (StringUtils.isBlank(productId))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
+        }
+        if (StringUtils.isBlank(nodeId))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+        }
+        return nodeService.ruleflowdesigner(data);
     }
 
 	/**

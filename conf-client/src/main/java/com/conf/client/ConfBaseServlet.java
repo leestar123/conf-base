@@ -17,7 +17,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.console.servlet.RequestHolder;
-import com.conf.client.common.ErrorUtil;
+import com.conf.common.ErrorUtil;
 
 public class ConfBaseServlet extends HttpServlet
 {

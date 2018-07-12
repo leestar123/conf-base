@@ -18,10 +18,11 @@ public class ApiExceptionAspect {
 	
 	@Around("@annotation(com.conf.common.annotation.ApiException)")
 	public Object apiCheck(ProceedingJoinPoint joinPoint) {
+	    logger.info("Enter into aspect....");
 		try {
 			return joinPoint.proceed();
 		} catch (Throwable e) {
-			logger.error("执行异常方法[" + joinPoint.getSignature().getName() + "],异常信息[" + e.getMessage() + "]");
+			logger.error("Excute method[" + joinPoint.getSignature().getName() + "] exceptionally", e);
 			return ErrorUtil.errorResp(ErrorCode.code_9999);
 		}
 	}

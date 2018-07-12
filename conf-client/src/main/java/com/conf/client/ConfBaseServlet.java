@@ -45,13 +45,17 @@ public class ConfBaseServlet extends HttpServlet
         RequestHolder.set(req, rep);
         Map<String, ? extends Object> data = HttpUtil.getRequestData(req);
         StringBuffer url = req.getRequestURL();
+        logger.info("Request URL[" + url.toString() + "],receive data [" + JSONObject.toJSONString(data) + "]");
+        
         int lastIndex = url.toString().lastIndexOf("/");
         String service = url.substring(lastIndex + 1, url.length());
         Class<?> clazz = controller.getClass();
         try
         {
             Method method = clazz.getMethod(service, Map.class);
+            logger.info("Begin to excute service[" + service + "]");
             Object result = method.invoke(controller, data);
+            logger.info("excute over ,return data [" + JSONObject.toJSONString(result) + "]");
             HttpUtil.write(rep, JSONObject.toJSONString(result));
 //            Boolean redirect = false;
 //            if (Map.class.isInstance(result)) {
@@ -70,7 +74,7 @@ public class ConfBaseServlet extends HttpServlet
         }
         catch (Exception e)
         { 
-            logger.error("服务[" + service + "]执行异常!", e);
+            logger.error("Service[" + service + "] excute exceptionally!", e);
             HttpUtil.write(rep, JSONObject.toJSONString(ErrorUtil.errorResp("9999", "系统执行异常")));
         }
     }

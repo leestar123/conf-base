@@ -16,57 +16,44 @@ import java.util.List;
 public final class AnnoManageUtil
 {
     /**
-     * 获取当前包路径下指定的Controller注解类型的文件
+     * 获取当前包路径下指定的注解类型的文件
      * @param packageName 包名
      * @param annotation 注解类型
      * @return 文件
+     * @throws IOException 
+     * @throws ClassNotFoundException 
      */
-    public static  List<Class<?>> getPackageController(String packageName, Class<? extends Annotation> annotation)
+    public static List<Class<?>> getPackageAnnotaion(String packageName, Class<? extends Annotation> annotation)
+        throws ClassNotFoundException, IOException, UnsupportedEncodingException
     {
         List<Class<?>> classList = new ArrayList<Class<?>>();
- 
+        
         String packageDirName = packageName.replace('.', '/');
- 
+        
         Enumeration<URL> dirs = null;
- 
+        
         //获取当前目录下面的所有的子目录的url
-        try
-        {
-            dirs = Thread.currentThread().getContextClassLoader().getResources(packageDirName);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
- 
+        dirs = Thread.currentThread().getContextClassLoader().getResources(packageDirName);
+        
         while (dirs.hasMoreElements())
         {
             URL url = dirs.nextElement();
- 
+            
             //得到但钱url的类型
             String protocol = url.getProtocol();
- 
+            
             //如果当前类型是文件类型
             if ("file".equals(protocol))
             {
                 //获取包的物理路径
-                String filePath = null;
-                try
-                {
-                    filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-                }
-                catch (UnsupportedEncodingException e)
-                {
-                    e.printStackTrace();
-                }
- 
+                 String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
+                
                 filePath = filePath.substring(1);
-                getFilePathClasses(packageName,filePath,classList,annotation);
+                getFilePathClasses(packageName, filePath, classList, annotation);
             }
         }
- 
- 
-            return classList;
+        
+        return classList;
     }
  
     /**
@@ -76,38 +63,24 @@ public final class AnnoManageUtil
      * @param classList
      * @param annotation 注解类型
      */
-    private static void getFilePathClasses(String packageName,String filePath,List<Class<?>> classList,
-                                           Class<? extends Annotation> annotation)
+    private static void getFilePathClasses(String packageName, String filePath, List<Class<?>> classList,
+        Class<? extends Annotation> annotation)
+        throws IOException, ClassNotFoundException
     {
         Path dir = Paths.get(filePath);
- 
+        
         DirectoryStream<Path> stream = null;
-        try
-        {
-            //获得当前目录下的文件的stream流
-            stream = Files.newDirectoryStream(dir);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
- 
-        for(Path path : stream)
+        //获得当前目录下的文件的stream流
+        stream = Files.newDirectoryStream(dir);
+        
+        for (Path path : stream)
         {
             String fileName = String.valueOf(path.getFileName());
- 
+            
             String className = fileName.substring(0, fileName.length() - 6);
- 
-            Class<?> classes = null;
-            try
-            {
-                classes = Thread.currentThread().getContextClassLoader().loadClass(packageName + "." + className);
-            }
-            catch (ClassNotFoundException e)
-            {
-                e.printStackTrace();
-            }
- 
+            
+            Class<?> classes = Thread.currentThread().getContextClassLoader().loadClass(packageName + "." + className);
+            
             //判断该注解类型是不是所需要的类型
             if (null != classes && null != classes.getAnnotation(annotation))
             {

@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.bstek.urule.Utils;
 import com.bstek.urule.builder.KnowledgeBase;
 import com.bstek.urule.builder.KnowledgeBuilder;
@@ -44,6 +47,7 @@ public class RuleInvokerService
     public static final String KB_KEY="_kb";
     
 	public static final String VCS_KEY="_vcs";
+	
     private RepositoryService repositoryService;
     
     private KnowledgeBuilder knowledgeBuilder;
@@ -120,8 +124,7 @@ public class RuleInvokerService
     public boolean createFlolder(String fullFolderName, String projectName, String types) {
         HttpServletRequest req = RequestHolder.getRequest();
         HttpServletResponse resp = RequestHolder.getResponse();
-        boolean classify = getClassify(req,resp);
-        return true;
+        return getClassify(req,resp);
     }
     
     /**

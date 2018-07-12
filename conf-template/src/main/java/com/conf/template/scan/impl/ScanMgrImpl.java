@@ -35,7 +35,7 @@ public class ScanMgrImpl implements ScanMgr{
 		String []basePacks = property.getScanPackageName().split(",");
         for (String basePack : basePacks)
         {
-            List<Class<?>> list = AnnoManageUtil.getPackageController(basePack, Rule.class);
+            List<Class<?>> list = AnnoManageUtil.getPackageAnnotaion(basePack, Rule.class);
             for (Class<?> cls : list) {
                 annotationParsing.insertAnnotationInfo(cls);
             }

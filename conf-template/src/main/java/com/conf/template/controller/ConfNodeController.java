@@ -136,10 +136,10 @@ public class ConfNodeController implements CommController{
 	 * @return
 	 */
 	@ApiException
+	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
 		
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
-		@SuppressWarnings("unchecked")
 		List<String> ruleList = (List<String>) data.get("ruleList");
 		if (StringUtils.isBlank(nodeId)) {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
@@ -173,9 +173,9 @@ public class ConfNodeController implements CommController{
 	 * @return
 	 */
 	@ApiException
+	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> addNodeByProduct(Map<String, ? extends Object> data) {
 		String productId = ToolsUtil.obj2Str(data.get("productId"));
-		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> nodeList = (List<Map<String, Object>>) data.get("nodeList");
 		if (StringUtils.isBlank(productId)) {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
@@ -194,9 +194,9 @@ public class ConfNodeController implements CommController{
 	 * @return
 	 */
 	@ApiException
+	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> deleteNodeByProduct(Map<String, ? extends Object> data) {
 		String productId = ToolsUtil.obj2Str(data.get("productId"));
-		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> nodeList = (List<Map<String, Object>>) data.get("nodeList");
 		if (StringUtils.isBlank(productId)) {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");

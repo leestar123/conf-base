@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.Utils;
 import com.bstek.urule.console.repository.model.FileType;
 import com.conf.client.RuleInvokerService;
@@ -67,21 +68,25 @@ public class NodeService {
         confNodeInfo.setRemark((String)data.get("remark"));
         confNodeInfo.setTeller((String)data.get("teller"));
         confNodeInfo.setVersion("");
+        logger.info("Begin to create node[" + confNodeInfo.getNodeName() + "]!");
         
         try
         {
-            logger.info("Urule创建空项目[" + confNodeInfo.getNodeName() + "]");
+            logger.info("Begin to  create empty project[" + confNodeInfo.getNodeName() + "] on Urule system");
             invokerService.createProject(confNodeInfo.getNodeName());
+            logger.info("End to  create empty project!");
         }
         catch (Exception e)
         {
-            logger.error("创建组件[" + confNodeInfo.getNodeName() + "]失败!", e);
+            logger.error("reate empty project[" + confNodeInfo.getNodeName() + "] failly!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
         }
         
+        logger.error("Begin to save node info, object is [" + JSONObject.toJSONString(confNodeInfo) + "]!");
         int result = confNodeInfoMapper.insertSelective(confNodeInfo);
         if (result != 1)
         {
+            logger.error("Save node failly, because result doesn`t equal one");
             return ErrorUtil.errorResp(ErrorCode.code_0002);
         }
         Map<String, Object> body = new HashMap<String, Object>();
@@ -91,7 +96,7 @@ public class NodeService {
 
 	@Transactional
 	public Map<String, ? extends Object> queryNodeList(Map<String, ? extends Object> data) {
-
+	    logger.info("Begin to query node list!");
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		String nodeType = ToolsUtil.obj2Str(data.get("nodeType"));
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
@@ -107,22 +112,22 @@ public class NodeService {
 	}
 
 	@Transactional
-	public Map<String, ? extends Object> deleteNode(Map<String, ? extends Object> data) {
-
-		if (!ToolsUtil.obj2Str(data.get("nodeId")).contains(",")) {
-			confNodeInfoMapper.deleteByPrimaryKey(Integer.parseInt(ToolsUtil.obj2Str(data.get("nodeId"))));
-		} else {
-			String[] str = ToolsUtil.obj2Str(data.get("nodeId")).split(",");
-			for (int i = 0; i < str.length; i++) {
-				confNodeInfoMapper.deleteByPrimaryKey(Integer.parseInt(str[i]));
-			}
-		}
-		Map<String, Object> body = new HashMap<String, Object>();
-		return ErrorUtil.successResp(body);
-	}
+    public Map<String, ? extends Object> deleteNode(Map<String, ? extends Object> data)
+    {
+        logger.info("Begin to delete node!");
+        String[] str = ToolsUtil.obj2Str(data.get("nodeId")).split(",");
+        for (String nodeId : str)
+        {
+            logger.info("Now delete node[" + nodeId + "]!");
+            confNodeInfoMapper.deleteByPrimaryKey(Integer.parseInt(nodeId));
+        }
+        Map<String, Object> body = new HashMap<String, Object>();
+        return ErrorUtil.successResp(body);
+    }
 
 	@Transactional
 	public Map<String, ? extends Object> queryRuleByNode(Map<String, ? extends Object> data) {
+	    logger.info("Begin to query rule by node!");
 		Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null);
 		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null);
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
@@ -130,8 +135,10 @@ public class NodeService {
 		int startNum = (pageNum - 1) * pageSize;
 		List<ConfRuleInfo> list = null;
 		if (productId == null) {
+		    logger.info("Field productId is null, query rule without, field productId!");
 			list = confRuleInfoMapper.selectRecordListByPage(nodeId, startNum, pageSize);
 		} else {
+		    logger.info("Begin to query rule by node!");
 			list = confRuleInfoMapper.selectEffectRecordListByPage(productId, nodeId, startNum, pageSize);
 		}
 		int totalNum = confRuleInfoMapper.queryCountByNodeId(nodeId);
@@ -357,117 +364,142 @@ public class NodeService {
 	}
 	
 	@Transactional
-    public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data) {
+    public Map<String, ? extends Object> createRule(Map<String, ? extends Object> data)
+    {
         ConfRuleInfo record = new ConfRuleInfo();
-		String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
+        String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
         String ruleName = ToolsUtil.obj2Str(data.get("ruleName"));
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
         String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
         
-        logger.info("Urule创建规则[" + ruleName + "]");
-        ruleName=Utils.decodeURL(ruleName).trim();
-        String path = null;   
+        ruleName = Utils.decodeURL(ruleName).trim();
+        String path = null;
         String url = Constants.RULE_URL_BASE;
         try
         {
             path = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
+            logger.info("Rule path is [" + ruleName + "]");
             //判断该规则名字是否存在
-            if(invokerService.fileExistCheck(path)) {
+            if (invokerService.fileExistCheck(path))
+            {
                 return ErrorUtil.errorResp(ErrorCode.code_0005, path);
             }
-            //创建目录
-            //invokerService.createFlolder(ruleName, nodeName, ruleType);
-            //创建规则
+            
+            logger.info("Begin to create rule[" + ruleName + "] on Urule of system");
             invokerService.createFile(path, ruleType);
-            FileType fileType=FileType.parse(ruleType);
-            if (FileType.DecisionTable == fileType) {
+            FileType fileType = FileType.parse(ruleType);
+            if (FileType.DecisionTable == fileType)
+            {
                 url += "decisiontableeditor?file=" + path;
-            } else if (FileType.DecisionTree == fileType) {
+            }
+            else if (FileType.DecisionTree == fileType)
+            {
                 url += "decisiontreeeditor?file=" + path;
-            } else if (FileType.Ruleset == fileType) {
+            }
+            else if (FileType.Ruleset == fileType)
+            {
                 url += "ruleseteditor?file=" + path;
-            } else if (FileType.Scorecard == fileType) {
+            }
+            else if (FileType.Scorecard == fileType)
+            {
                 url += "scorecardeditor?file=" + path;
-            } else {}
+            }
+            else
+            {
+            }
         }
         catch (Exception e)
         {
-            logger.error("创建规则[" + ruleName + "]失败!", e);
+            logger.error("Create urle[" + ruleName + "] failly!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
         }
         
-        //类型转换
-        ruleType = ToolsUtil.parse(ruleType);
         record.setOrg(org);
         record.setRuleName(ruleName);
         record.setRulePath(path);
+        ruleType = ToolsUtil.parse(ruleType);
         record.setRuleType(ruleType);
         record.setTeller(teller);
-		//入库操作
-		confRuleInfoMapper.insertSelective(record);
-	    Map<String, Object> body = new HashMap<String, Object>();
-	    body.put("uid", record.getUid());
-	    body.put("url", url);
+        
+        logger.info("Begin to save rule[" + ruleName + "], Object is[" + JSONObject.toJSONString(record) + "]!");
+        confRuleInfoMapper.insertSelective(record);
+        
+        Map<String, Object> body = new HashMap<String, Object>();
+        body.put("uid", record.getUid());
+        body.put("url", url);
         return ErrorUtil.successResp(body);
-	}
+    }
 	
-	public Map<String, ? extends Object> ruleflowdesigner(Map<String, ? extends Object> data) {
+    public Map<String, ? extends Object> ruleflowdesigner(Map<String, ? extends Object> data)
+    {
         String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
         String productName = ToolsUtil.obj2Str(data.get("productName"));
         String productId = ToolsUtil.obj2Str(data.get("productId"));
         String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
         String path = "/" + nodeName + "/" + productName + ".rl.xml";
-        try {
+        try
+        {
+            logger.info("Check Node ["+path+"] whether or not exist");
             //判断该决策流文件是否存在
-            if(!invokerService.fileExistCheck(path)) {
+            if (!invokerService.fileExistCheck(path))
+            {
+                logger.info("Node ["+path+"] don`t exist,bgin to create flow file!");
                 //创建决策流文件
                 invokerService.createFile(path, "rl.xml");
+                logger.info("create urule flow file successlly!");
             }
-        } catch (Exception e) {
-            logger.error("创建空决策流[" + path + "]失败!", e);
+        }
+        catch (Exception e)
+        {
+            logger.error("create urule flow file failly!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
         }
-        //保存知识包并进行发布
-        //saveAndRefreshKnowledge(data);
-        String url = Constants.RULE_URL_BASE + "ruleflowdesigner?file=".concat(path)
-            .concat("&productId=" + productId)
-            .concat("&nodeId=" + nodeId);
+        String url = Constants.RULE_URL_BASE
+            + "ruleflowdesigner?file=".concat(path).concat("&productId=" + productId).concat("&nodeId=" + nodeId);
         Map<String, Object> body = new HashMap<String, Object>();
         body.put("url", url);
         
         return ErrorUtil.successResp(body);
-	}
+    }
 	
-	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {
-		//知识包编码id
-		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
-		//组件名称
-		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		//知识包名
-		//String packageName = ToolsUtil.obj2Str(data.get("packageName"));
-		//添加知识包文件名
-		//String fileName = ToolsUtil.obj2Str(data.get("fileName"));
-		//决策流文件名称
-		String productName = ToolsUtil.obj2Str(data.get("productName"));
-		String productId = ToolsUtil.obj2Str(data.get("productId"));
-		String path = nodeName + "/" + productName + ".rl.xml";
-		String xml = invokerService.generateRLXML(nodeId, nodeName, productName, path).toString();
-		//保存知识包
-		try {
-			invokerService.saveResourcePackages(false, nodeName, xml);
-			//Jcr文件名称
-			String files = "jcr:/" + path;
-			invokerService.refreshKnowledgeCache(files, nodeId, nodeName);
-		} catch (Exception e) {
-			logger.error("发布知识包[" + path + "]失败!", e);
+    public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data)
+    {
+        logger.info("Begin to publish knowledge!");
+        //知识包编码id
+        String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+        //组件名称
+        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        //决策流文件名称
+        String productName = ToolsUtil.obj2Str(data.get("productName"));
+        //String productId = ToolsUtil.obj2Str(data.get("productId"));
+        
+        String path = nodeName + "/" + productName + ".rl.xml";
+        logger.info("Begin to generate RLXML for rule flow[" + path + "] !");
+        String xml = invokerService.generateRLXML(nodeId, nodeName, productName, path).toString();
+        logger.debug("RLXML context is [" + xml + "] !");
+        //保存知识包
+        try
+        {
+            logger.info("Begin to save packages!");
+            invokerService.saveResourcePackages(false, nodeName, xml);
+            logger.info("End to save packages!");
+            
+            String files = "jcr:/" + path;
+            logger.info("Begin to refresh packages, file path is [" + files + "] !");
+            invokerService.refreshKnowledgeCache(files, nodeId, nodeName);
+            logger.info("End to refresh packages!");
+        }
+        catch (Exception e)
+        {
+            logger.error("Publish knowledge [" + path + "] failly!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
-		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		return ErrorUtil.successResp(map);
-	}
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        return ErrorUtil.successResp(map);
+    }
 	
-	   /**
+	/**
      * 根查询动作规则
      * 
      * @param data
@@ -476,6 +508,7 @@ public class NodeService {
      */
     public Map<String, ? extends Object> queryActionRule(Map<String, ? extends Object> data)
     {
+        logger.info("Begin to query action rules!");
         //产品id
         Integer productId = ToolsUtil.obj2Int(data.get("productId"), 0);
         //组件名称
@@ -494,20 +527,26 @@ public class NodeService {
      */
     public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data)
     {
-    	String packageId = ToolsUtil.obj2Str(data.get("packageId"));
-		String processId = ToolsUtil.obj2Str(data.get("processId"));
-		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		List<Object> objList = new ArrayList<Object>();
-		PostLoanBeanResult postLoanBeanResult = new PostLoanBeanResult();
-		objList.add(postLoanBeanResult);
-		List<Object> objListUnCheck = new ArrayList<Object>();
-    	try {
-			invokerService.executeProcess(nodeName+"/"+packageId, objList, objListUnCheck, processId);
-		} catch (Exception e) {
-			logger.error("调用知识包[" + processId + "]失败!", e);
+        logger.info("Begin to excute knowledge service!");
+        String packageId = ToolsUtil.obj2Str(data.get("packageId"));
+        String processId = ToolsUtil.obj2Str(data.get("processId"));
+        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        List<Object> objList = new ArrayList<Object>();
+        PostLoanBeanResult postLoanBeanResult = new PostLoanBeanResult();
+        objList.add(postLoanBeanResult);
+        List<Object> objListUnCheck = new ArrayList<Object>();
+        try
+        {
+            logger.info("Excute knowledge service actually, file is [" + nodeName + "/" + packageId + "]!");
+            invokerService.executeProcess(nodeName + "/" + packageId, objList, objListUnCheck, processId);
+            logger.info("End to excute knowledge service");
+        }
+        catch (Exception e)
+        {
+            logger.error("Excute knowledge [" + processId + "] failly!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
-		}
-    	Map<String, Object> body = new HashMap<>();
+        }
+        Map<String, Object> body = new HashMap<>();
         return ErrorUtil.successResp(body);
     }
 }

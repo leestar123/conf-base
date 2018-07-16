@@ -24,6 +24,8 @@
 <!-- 		<property name="invokerService" ref="invokerService"></property>	 -->
 	</bean>
 	
+	<bean id="httpAopProcess" class="com.conf.template.process.DefaultHttpAopProcess"/>
+	
 	<bean id="annotationParsing" class="com.conf.template.scan.AnnotationParsing"/>
 	
 	<bean id="propertyConf" class="com.conf.common.PropertyConf">

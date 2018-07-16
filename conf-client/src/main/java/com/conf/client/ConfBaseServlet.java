@@ -38,7 +38,8 @@ public class ConfBaseServlet extends HttpServlet
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         WebApplicationContext applicationContext=getWebApplicationContext(config);
-        controller =applicationContext.getBean(CommController.class);
+        controller = applicationContext.getBean(CommController.class);
+        process = applicationContext.getBean(HttpAopProcess.class);
     }
     
     protected WebApplicationContext getWebApplicationContext(ServletConfig config){

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dom4j.Document;
+import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +62,48 @@ public class ConfBaseService
 
     private ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
     
-	    /**
+    /**
+     * 查询录入阶段的详细信息
+     * 
+     * @param data
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    @SuppressWarnings("unchecked")
+    @Transactional
+    public Map<String, ? extends Object> queryFlowDetail(Map<String, ? extends Object> data)
+    {
+        String flowPath = ToolsUtil.obj2Str(data.get("flowPath"));
+        try {
+            List<String> nameList = new ArrayList<>();
+            List<String> beanList = new ArrayList<>();
+            
+            Document document = invokerService.getFileSource(flowPath);
+            Element root = document.getRootElement();
+            //查询规则
+            List<Element> ruleList = root.elements("rule");
+            for (Element element : ruleList)
+            {
+                String file = element.attributeValue("file");
+                file = file.substring(file.lastIndexOf("/") +  1, file.length());
+                file.substring(0, file.indexOf("."));
+                nameList.add(file);
+            }
+            //查询动作
+            List<Element> actionList = root.elements("action");
+            for (Element element : actionList)
+            {
+                String bean = element.attributeValue("action-bean");
+                beanList.add(bean);
+            }
+            
+        } catch (Exception e) {
+            
+        }
+        return null;
+    }
+    
+    /**
      * 查询调用日志
      * 
      * @param data

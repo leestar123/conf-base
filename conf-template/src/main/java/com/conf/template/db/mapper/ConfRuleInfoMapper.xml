@@ -232,4 +232,17 @@
       rule_type = #{ruleType,jdbcType=VARCHAR}
     where uid = #{uid,jdbcType=INTEGER}
   </update>
+  <select id="selectList" resultMap="BaseResultMap">
+  	select  <include refid="Base_Column_List" />
+    from conf_rule_info where rule_name in
+     <foreach item="item" index="index" collection="ruleNames" open="("
+            separator="," close=")">
+            #{item} 
+     </foreach>
+     and clazz in
+     <foreach item="item" index="index" collection="beans" open="("
+            separator="," close=")">
+            #{item} 
+     </foreach>
+  </select>
 </mapper>

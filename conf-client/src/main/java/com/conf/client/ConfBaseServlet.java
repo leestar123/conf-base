@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
@@ -20,6 +21,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.console.servlet.RequestHolder;
 import com.conf.client.process.HttpAopProcess;
 import com.conf.common.ErrorUtil;
+import com.conf.common.ToolsUtil;
 
 public class ConfBaseServlet extends HttpServlet
 {
@@ -47,6 +49,7 @@ public class ConfBaseServlet extends HttpServlet
     @SuppressWarnings("unchecked")
     protected void service(HttpServletRequest req, HttpServletResponse rep) throws ServletException, IOException
     {
+        MDC.put("serialNo", ToolsUtil.nextSeq());
         RequestHolder.set(req, rep);
         Map<String, ? extends Object> data = HttpUtil.getRequestData(req);
         StringBuffer url = req.getRequestURL();

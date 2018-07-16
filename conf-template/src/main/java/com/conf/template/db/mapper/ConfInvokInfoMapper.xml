@@ -138,4 +138,23 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectTotalRecord" resultType="java.lang.Integer">
+  	select count(1) from conf_invok_info t
+  	<where>
+	  <if test="service != null">
+	        and t.service like '%${service}%' 
+	   </if>
+   	</where>
+  </select>
+  <select id="selectRecordWithPage" resultMap="BaseResultMap">
+  	select t.* from conf_invok_info t
+  	<where>
+	  <if test="service != null">
+	        and t.service like '%${service}%' 
+	   </if>
+   	</where>  
+   	order by t.id desc
+   	limit #{startNum},#{pageSize}
+  </select>
+  
 </mapper>

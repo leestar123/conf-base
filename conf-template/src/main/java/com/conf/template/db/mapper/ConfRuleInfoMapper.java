@@ -32,4 +32,6 @@ public interface ConfRuleInfoMapper {
     int queryCountByName(@Param("ruleName")String ruleName);
     
     ConfRuleInfo selectByName(String ruleName);
+    
+    ConfRuleInfo selectList(@Param(value = "ruleNames")List<String> ruleNames, @Param(value = "beans")List<String> beans);
 }

@@ -3,6 +3,7 @@ package com.conf.template.process;
 import java.util.Date;
 import java.util.Map;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSONObject;
@@ -24,7 +25,7 @@ public class DefaultHttpAopProcess implements HttpAopProcess
     public void beforeProcess(Map<String, ? extends Object> data)
     {
         //设置请求报文及请求时间
-        dto.setSerialNo(ToolsUtil.nextSeq() + "");
+        dto.setSerialNo(MDC.get("serialNo") + "");
         dto.setRequest(JSONObject.toJSONString(data));
         dto.setCreateTime(new Date(System.currentTimeMillis()));
     }

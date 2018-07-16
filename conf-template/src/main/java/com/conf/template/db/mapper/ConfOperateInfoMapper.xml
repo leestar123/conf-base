@@ -172,4 +172,28 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectTotalRecord" resultType="java.lang.Integer">
+  	select count(1) from conf_invok_info t
+  	<where>
+	   <if test="operateType != null">
+	        and t.operate_type like '%${operateType}%' 
+	   </if>
+	   <if test="operateModule != null">
+	        and t.operate_module like '%${operateModule}%' 
+	   </if>
+   	</where>
+  </select>
+  <select id="selectRecordWithPage" resultMap="BaseResultMap">
+  	select t.* from conf_invok_info t
+  	<where>
+	   <if test="operateType != null">
+	        and t.operate_type like '%${operateType}%' 
+	   </if>
+	   <if test="operateModule != null">
+	        and t.operate_module like '%${operateModule}%' 
+	   </if>
+   	</where>  
+   	order by t.id desc
+   	limit #{startNum},#{pageSize}
+  </select>
 </mapper>

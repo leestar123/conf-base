@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.conf.client.RuleInvokerService;
 import com.conf.common.Constants;
 import com.conf.common.ErrorCode;
@@ -59,7 +60,7 @@ public class ConfBaseService
 
     private ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
     
-    /**
+	    /**
      * 查询调用日志
      * 
      * @param data
@@ -199,4 +200,66 @@ public class ConfBaseService
         }
         return ErrorUtil.successResp(body);
     }
+	
+    /**
+     * 阶段创建
+     * @param data
+     * @return
+     */
+	@Transactional
+    public Map<String, ? extends Object> createConfStepInfo(Map<String, ? extends Object> data)
+    {
+        // 参数拼装
+		ConfStepInfo confStepInfo = new ConfStepInfo();
+		confStepInfo.setNodeId((Integer)data.get("nodeId")); // 组件编号
+		confStepInfo.setStepName((String)data.get("stepName")); // 阶段名称
+		confStepInfo.setRemark((String)data.get("remark")); // 组件描述
+		confStepInfo.setTeller((String)data.get("teller")); // 操作柜员
+		confStepInfo.setOrg((String)data.get("org")); // 操作机构
+		
+		// 调用urule创建工程
+        try
+        {
+            logger.info("Begin to  create empty project[" + confStepInfo.getStepName() + "] on Urule system");
+            invokerService.createProject(confStepInfo.getStepName());
+            logger.info("End to  create empty project!");
+        }
+        catch (Exception e)
+        {
+            logger.error("reate empty project[" + confStepInfo.getStepName() + "] failly!", e);
+            return ErrorUtil.errorResp(ErrorCode.code_9999);
+        }
+        logger.error("Begin to save node info, object is [" + JSONObject.toJSONString(confStepInfo) + "]!");
+        
+        // 保存数据
+        int result = confStepInfoMapper.insertSelective(confStepInfo);
+        if (result != 1)
+        {
+            logger.error("Save node failly, because result doesn`t equal one");
+            return ErrorUtil.errorResp(ErrorCode.code_0002);
+        }
+        Map<String, Object> body = new HashMap<>();
+        body.put("nodeId", confStepInfo.getNodeId());
+        return ErrorUtil.successResp(body);
+    }
+	
+	/**
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public Map<String, ? extends Object> queryStep(Map<String, ? extends Object> data) {
+		String nodeName = ToolsUtil.obj2Str(data.get("nodeName")); // 节点名称
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId")); // 节点编号
+		String stepId = ToolsUtil.obj2Str(data.get("stepId")); // 阶段编号
+		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10); // 分页大小
+		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);// 当前页数
+		int startNum = (pageNum - 1) * pageSize;
+		List<ConfStepInfo> list = confStepInfoMapper.queryStepList(nodeId, nodeName, stepId, startNum, pageSize);
+		int totalNum = confStepInfoMapper.queryCount(nodeId, nodeName, stepId);
+		Map<String, Object> body = new HashMap<>();
+		body.put("totalNum", totalNum);
+		body.put("list", list);
+		return ErrorUtil.successResp(body);
+	}
 }

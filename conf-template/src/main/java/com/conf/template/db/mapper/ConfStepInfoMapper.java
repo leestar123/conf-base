@@ -2,6 +2,7 @@ package com.conf.template.db.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import com.conf.template.db.dto.ConfStepAndFLowInfo;
 import com.conf.template.db.model.ConfStepInfo;
 
@@ -17,6 +18,16 @@ public interface ConfStepInfoMapper {
     int updateByPrimaryKeySelective(ConfStepInfo record);
 
     int updateByPrimaryKey(ConfStepInfo record);
+	
+    List<ConfStepAndFLowInfo> selectStepAndFlowInfo(Integer nodeId);    
+
+    List<ConfStepInfo> queryStepList(@Param("nodeId") String nodeId,
+			@Param("nodeName") String nodeName,
+			@Param("stepId") String stepId,
+			@Param("startNum") Integer startNum,
+			@Param("pageSize") Integer pageSize);
     
-    List<ConfStepAndFLowInfo> selectStepAndFlowInfo(Integer nodeId);
+    int queryCount(@Param("nodeId") String nodeId,
+    		@Param("nodeName") String nodeName,
+			@Param("stepId") String stepId);
 }

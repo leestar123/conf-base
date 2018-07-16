@@ -140,4 +140,36 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where step_id = #{stepId,jdbcType=INTEGER}
   </update>
+  
+  <select id="queryCount" resultType="java.lang.Integer">
+  select count(1) from conf_step_info t
+  <where>
+	  <if test="nodeId!=null and nodeId!=''">
+	        and t.node_id like '%${nodeId}%' 
+	   </if>
+	   <if test="nodeName!=null and nodeName!=''">
+	        and t.node_name like '%${nodeName}%'
+	   </if>
+	   <if test="stepId!=null and stepId!=''">
+	        and t.step_id = #{stepId}
+	   </if>
+   </where>
+  </select>
+  
+  <select id="queryStepList" resultMap="BaseResultMap">
+  select t.* from conf_step_info t
+  <where>
+	  <if test="nodeId!=null and nodeId!=''">
+	        and t.node_id like '%${nodeId}%' 
+	   </if>
+	   <if test="nodeName!=null and nodeName!=''">
+	        and t.node_name like '%${nodeName}%'
+	   </if>
+	   <if test="stepId!=null and stepId!=''">
+	        and t.step_id = #{stepId}
+	   </if>
+   </where>  
+   order by t.node_id desc
+   limit #{startNum},#{pageSize}
+  </select>
 </mapper>

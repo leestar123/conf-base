@@ -150,4 +150,47 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="queryCount" resultType="java.lang.Integer">
+  select count(1) from conf_step_info t
+  <where>
+	  <if test="nodeId!=null and nodeId!=''">
+	        and t.node_id like '%${nodeId}%' 
+	   </if>
+	   <if test="nodeName!=null and nodeName!=''">
+	        and t.node_name like '%${nodeName}%'
+	   </if>
+	   <if test="stepId!=null and stepId!=''">
+	        and t.step_id = #{stepId}
+	   </if>
+   </where>
+  </select>
+  
+  <select id="queryStep" resultMap="BaseResultMap">
+  select t.* from conf_step_info t
+  <where>
+	  <if test="nodeId!=null and nodeId!=''">
+	        and t.node_id like '%${nodeId}%' 
+	   </if>
+	   <if test="nodeName!=null and nodeName!=''">
+	        and t.node_name like '%${nodeName}%'
+	   </if>
+	   <if test="stepId!=null and stepId!=''">
+	        and t.step_id = #{stepId}
+	   </if>
+   </where>  
+   order by t.node_id desc
+   limit #{startNum},#{pageSize}
+  </select>
+  <select id="queryStepList" resultMap="BaseResultMap">
+  select s.step_id, s.step_name from conf_step_info s, conf_product_step p
+  <where>
+      s.step_id = p.step_id
+	  <if test="productId!=null and productId!=''">
+	        and p.product_id = #{productId} 
+	   </if>
+	   <if test="nodeId!=null and nodeId!=''">
+	        and s.node_id = #{nodeId}
+	   </if>
+   </where>  
+  </select>
 </mapper>

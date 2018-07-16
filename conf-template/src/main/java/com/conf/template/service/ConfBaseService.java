@@ -25,10 +25,12 @@ import com.conf.template.db.mapper.ConfFlowInfoMapper;
 import com.conf.template.db.mapper.ConfInvokInfoMapper;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
 import com.conf.template.db.mapper.ConfOperateInfoMapper;
+import com.conf.template.db.mapper.ConfProductStepMapper;
 import com.conf.template.db.mapper.ConfStepInfoMapper;
 import com.conf.template.db.model.ConfFlowInfo;
 import com.conf.template.db.model.ConfInvokInfo;
 import com.conf.template.db.model.ConfNodeInfo;
+import com.conf.template.db.model.ConfProductStep;
 import com.conf.template.db.model.ConfStepInfo;
 
 @Service
@@ -54,6 +56,9 @@ public class ConfBaseService
     
     @Autowired
     private RuleInvokerService invokerService;
+    
+    @Autowired
+    private ConfProductStepMapper confProductStepMapper;
     
     public void setInvokerService(RuleInvokerService invokerService)
     {
@@ -287,7 +292,7 @@ public class ConfBaseService
     }
 	
 	/**
-	 * 
+	 * 阶段查询
 	 * @param data
 	 * @return
 	 */
@@ -298,10 +303,54 @@ public class ConfBaseService
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10); // 分页大小
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);// 当前页数
 		int startNum = (pageNum - 1) * pageSize;
-		List<ConfStepInfo> list = confStepInfoMapper.queryStepList(nodeId, nodeName, stepId, startNum, pageSize);
+		List<ConfStepInfo> list = confStepInfoMapper.queryStep(nodeId, nodeName, stepId, startNum, pageSize);
 		int totalNum = confStepInfoMapper.queryCount(nodeId, nodeName, stepId);
 		Map<String, Object> body = new HashMap<>();
 		body.put("totalNum", totalNum);
+		body.put("list", list);
+		return ErrorUtil.successResp(body);
+	}
+	
+	 /**
+     * 产品或业务类型绑定阶段流程
+     * @param data
+     * @return
+     */
+	@Transactional
+    public Map<String, ? extends Object> addFlowByProduct(Map<String, ? extends Object> data)
+    {
+        // 参数拼装
+		ConfProductStep confProductStep = new ConfProductStep();
+		confProductStep.setProductName((String)data.get("productName")); // 产品名称
+		confProductStep.setProductId((Integer)data.get("productId")); // 产品编号
+		confProductStep.setBusinessType((String)data.get("businessType")); // 业务类型
+		confProductStep.setStepId((Integer)data.get("stepId")); // 阶段编号
+		confProductStep.setFlowId((Integer)data.get("flowId")); // 流程编号
+		confProductStep.setTeller((String)data.get("teller")); // 操作柜员
+		confProductStep.setOrg((String)data.get("org")); // 操作机构
+        
+        // 保存数据
+        int result = confProductStepMapper.insertSelective(confProductStep);
+        if (result != 1)
+        {
+            logger.error("Save node failly, because result doesn`t equal one");
+            return ErrorUtil.errorResp(ErrorCode.code_0002);
+        }
+        Map<String, Object> body = new HashMap<>();
+        body.put("productId", confProductStep.getProductId());
+        return ErrorUtil.successResp(body);
+    }
+	
+	/**
+	 * 查询阶段列表
+	 * @param data
+	 * @return
+	 */
+	public Map<String, ? extends Object> queryStepList(Map<String, ? extends Object> data) {
+		String productId = ToolsUtil.obj2Str(data.get("productId")); // 节点名称
+		String nodeId = ToolsUtil.obj2Str(data.get("nodeId")); // 节点编号
+		List<ConfStepInfo> list = confStepInfoMapper.queryStepList(productId, nodeId);
+		Map<String, Object> body = new HashMap<>();
 		body.put("list", list);
 		return ErrorUtil.successResp(body);
 	}

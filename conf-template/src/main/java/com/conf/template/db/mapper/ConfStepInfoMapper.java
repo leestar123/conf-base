@@ -21,13 +21,13 @@ public interface ConfStepInfoMapper {
 	
     List<ConfStepAndFLowInfo> selectStepAndFlowInfo(Integer nodeId);    
 
-    List<ConfStepInfo> queryStepList(@Param("nodeId") String nodeId,
+    List<ConfStepInfo> queryStep(@Param("nodeId") String nodeId,
 			@Param("nodeName") String nodeName,
 			@Param("stepId") String stepId,
 			@Param("startNum") Integer startNum,
 			@Param("pageSize") Integer pageSize);
     
-    int queryCount(@Param("nodeId") String nodeId,
-    		@Param("nodeName") String nodeName,
-			@Param("stepId") String stepId);
+    int queryCount(@Param("nodeId") String nodeId, @Param("nodeName") String nodeName, @Param("stepId") String stepId);
+    
+    List<ConfStepInfo> queryStepList(@Param("productId") String productId, @Param("nodeId") String nodeId);
 }

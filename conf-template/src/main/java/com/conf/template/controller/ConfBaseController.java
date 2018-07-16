@@ -19,7 +19,7 @@ public class ConfBaseController
 	private ConfBaseService confBaseService;
 	
 	/**
-	 * �׶δ���
+	 * 阶段创建
 	 * 
 	 * @param data
 	 * @return
@@ -57,7 +57,7 @@ public class ConfBaseController
     }
 	
 	/**
-	 * �׶β�ѯ
+	 * 阶段查询
 	 * @param data
 	 * @return
 	 */
@@ -65,5 +65,64 @@ public class ConfBaseController
 	public Map<String, ? extends Object> queryStep(Map<String, ? extends Object> data) {
 				
 		return confBaseService.queryStep(data);
+	}
+	
+	/**
+	 * 产品或业务类型绑定阶段流程
+	 * 
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+    public Map<String, ? extends Object> addFlowByProduct(Map<String, ? extends Object> data)
+    {
+		String productName = ToolsUtil.obj2Str(data.get("productName"));
+		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		String businessType = ToolsUtil.obj2Str(data.get("businessType"));
+		String stepId = ToolsUtil.obj2Str(data.get("stepId"));
+        String flowId = ToolsUtil.obj2Str(data.get("flowId"));
+        String teller = ToolsUtil.obj2Str(data.get("teller"));
+        String org = ToolsUtil.obj2Str(data.get("org"));
+        if (StringUtils.isBlank(productName))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
+        }
+        if (StringUtils.isBlank(productId))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
+        }
+        if (StringUtils.isBlank(businessType))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "businessType");
+        }
+        if (StringUtils.isBlank(stepId))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "stepId");
+        }
+        if (StringUtils.isBlank(flowId))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "flowId");
+        }
+        if (StringUtils.isBlank(teller))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "teller");
+        }
+        if (StringUtils.isBlank(org))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "org");
+        }
+        
+        return confBaseService.addFlowByProduct(data);
+    }
+	
+	/**
+	 * 查询阶段列表
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+	public Map<String, ? extends Object> queryStepList(Map<String, ? extends Object> data) {
+				
+		return confBaseService.queryStepList(data);
 	}
 }

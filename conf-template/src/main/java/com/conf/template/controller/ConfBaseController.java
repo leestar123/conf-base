@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.conf.client.CommController;
 import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
@@ -13,7 +14,7 @@ import com.conf.common.annotation.ApiException;
 import com.conf.template.service.ConfBaseService;
 
 @Component
-public class ConfBaseController
+public class ConfBaseController implements CommController
 {
 	@Autowired
 	private ConfBaseService confBaseService;
@@ -125,4 +126,10 @@ public class ConfBaseController
 				
 		return confBaseService.queryStepList(data);
 	}
+
+    @Override
+    public String url()
+    {
+        return "/conf";
+    }
 }

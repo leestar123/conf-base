@@ -12,6 +12,8 @@
 	
 	<bean id="nodeService" class="com.conf.template.service.NodeService"/>
 	
+	<bean id="confBaseService" class="com.conf.template.service.ConfBaseService"/>
+	
 	<bean id="invokerService" class="com.conf.client.RuleInvokerService">
 		<property name="repositoryService" ref="urule.repositoryService"></property>
 		<property name="knowledgeBuilder" ref="urule.knowledgeBuilder"></property>
@@ -22,6 +24,10 @@
 	<bean id="confNodeCtroller" class="com.conf.template.controller.ConfNodeController">
 		<property name="nodeService" ref="nodeService"></property>
 <!-- 		<property name="invokerService" ref="invokerService"></property>	 -->
+	</bean>
+	
+	<bean id="confBaseCtroller" class="com.conf.template.controller.ConfBaseController">
+		<property name="confBaseService" ref="confBaseService"></property>
 	</bean>
 	
 	<bean id="httpAopProcess" class="com.conf.template.process.DefaultHttpAopProcess"/>

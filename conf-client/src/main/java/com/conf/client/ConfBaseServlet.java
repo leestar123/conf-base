@@ -2,6 +2,7 @@ package com.conf.client;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class ConfBaseServlet extends HttpServlet
 
     private static final long serialVersionUID = -3925944343406551909L;
     
-    private CommController controller;
+    private Map<String, CommController> handlerMap = new HashMap<String,CommController>();;
     
     private HttpAopProcess process;
     
@@ -38,7 +39,14 @@ public class ConfBaseServlet extends HttpServlet
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         WebApplicationContext applicationContext=getWebApplicationContext(config);
-        controller = applicationContext.getBean(CommController.class);
+        Collection<CommController> handlers=applicationContext.getBeansOfType(CommController.class).values();
+        for(CommController handler:handlers){
+            String url=handler.url();
+            if(handlerMap.containsKey(url)){
+                throw new RuntimeException("Handler ["+url+"] already exist.");
+            }
+            handlerMap.put(url, handler);
+        }
         process = applicationContext.getBean(HttpAopProcess.class);
     }
     
@@ -58,6 +66,9 @@ public class ConfBaseServlet extends HttpServlet
         
         int lastIndex = url.toString().lastIndexOf("/");
         String service = url.substring(lastIndex + 1, url.length());
+        
+        String fullPath = url.toString().substring(0, lastIndex);
+        CommController controller = handlerMap.get(fullPath.substring(fullPath.lastIndexOf("/"), fullPath.length()));
         Class<?> clazz = controller.getClass();
         Object result = null;
         try

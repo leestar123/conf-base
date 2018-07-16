@@ -344,7 +344,7 @@ public class ConfNodeController implements CommController{
 	/**
 	 * 保存并发布知识吧
 	 */
-	@Override
+	@ApiException
 	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {
 		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
 		String productName = ToolsUtil.obj2Str(data.get("productName"));
@@ -372,6 +372,7 @@ public class ConfNodeController implements CommController{
 	 * @return
 	 * @see [类、类#方法、类#成员]
 	 */
+	@ApiException
     public Map<String, ? extends Object> queryActionRule(Map<String, ? extends Object> data)
     {
         //产品id
@@ -392,7 +393,7 @@ public class ConfNodeController implements CommController{
     /**
      * 调用知识包
      */
-	@Override
+    @ApiException
 	public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data) {
 		String packageId = ToolsUtil.obj2Str(data.get("packageId"));
 		String processId = ToolsUtil.obj2Str(data.get("processId"));
@@ -411,4 +412,10 @@ public class ConfNodeController implements CommController{
         }
 		return nodeService.excuteKnowledge(data);
 	}
+
+    @Override
+    public String url()
+    {
+        return "/node";
+    }
 }

@@ -19,6 +19,22 @@
   									column="{stepId = step_id}" fetchType="eager"></collection>
   </resultMap>
   
+  <resultMap type="com.conf.template.db.dto.ConfProductAndStepAndFLow" id="ConfResultMap">
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="step_id" jdbcType="INTEGER" property="stepId" />
+    <result column="flow_id" jdbcType="INTEGER" property="flowId" />
+    <result column="teller" jdbcType="VARCHAR" property="teller" />
+    <result column="org" jdbcType="VARCHAR" property="org" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <association property="confStepInfo" javaType="com.conf.template.db.model.ConfStepInfo">
+            <id property="stepName" column="step_name" />
+        </association>
+        <association property="confFlowInfo" javaType="com.conf.template.db.model.ConfFlowInfo">
+            <id property="flowName" column="flow_name" />
+        </association>
+    </resultMap>
+  
   <sql id="Base_Column_List">
     step_id, node_id, step_name, remark, teller, org, create_time, update_time
   </sql>
@@ -156,7 +172,7 @@
    </where>
   </select>
   
-  <select id="queryStepList" resultMap="BaseResultMap">
+  <select id="queryStep" resultMap="BaseResultMap">
   select t.* from conf_step_info t
   <where>
 	  <if test="nodeId!=null and nodeId!=''">
@@ -171,5 +187,37 @@
    </where>  
    order by t.node_id desc
    limit #{startNum},#{pageSize}
+  </select>
+  <select id="queryStepList" resultMap="BaseResultMap">
+  select s.step_id, s.step_name from conf_step_info s, conf_product_step p
+  <where>
+      s.step_id = p.step_id
+	  <if test="productId!=null and productId!=''">
+	        and p.product_id = #{productId} 
+	   </if>
+	   <if test="nodeId!=null and nodeId!=''">
+	        and s.node_id = #{nodeId}
+	   </if>
+   </where>  
+  </select>
+  
+  <select id="queryNodeConfList" resultMap="ConfResultMap">
+  select ps.product_id, ps.product_name, si.step_name, fi.flow_name, ps.teller, ps.org, ps.create_time from 
+  conf_rule_info r, conf_product_step ps, conf_product_node pn, conf_step_info si, conf_flow_info fi
+  <where>
+      where r.uid = pn.uid and ps.product_id = pn.product_id and ps.step_id = si.step_id and ps.flow_id = fi.flow_id
+	  <if test="productId!=null and productId!=''">
+	        and ps.product_id = #{productId} 
+	   </if>
+	   <if test="productName!=null and productName!=''">
+	        and ps.product_name = #{productName} 
+	   </if>
+	   <if test="stepId!=null and stepId!=''">
+	        and si.step_id = #{stepId}
+	   </if>
+	    <if test="useable!=null and useable!=''">
+	        and r.useable = #{useable}
+	   </if>
+   </where>  
   </select>
 </mapper>

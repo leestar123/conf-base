@@ -20,6 +20,7 @@ import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
 import com.conf.common.dto.ConfOperateInfoDto;
+import com.conf.template.db.dto.ConfProductAndStepAndFLow;
 import com.conf.template.db.dto.ConfStepAndFLowInfo;
 import com.conf.template.db.mapper.ConfFlowInfoMapper;
 import com.conf.template.db.mapper.ConfInvokInfoMapper;
@@ -350,6 +351,23 @@ public class ConfBaseService
 		String productId = ToolsUtil.obj2Str(data.get("productId")); // 节点名称
 		String nodeId = ToolsUtil.obj2Str(data.get("nodeId")); // 节点编号
 		List<ConfStepInfo> list = confStepInfoMapper.queryStepList(productId, nodeId);
+		Map<String, Object> body = new HashMap<>();
+		body.put("list", list);
+		return ErrorUtil.successResp(body);
+	}
+	
+	/**
+	 * 节点查配置查询
+	 * @param data
+	 * @return
+	 */
+	public Map<String, ? extends Object> queryNodeConfList(Map<String, ? extends Object> data) {
+		
+		String productName = ToolsUtil.obj2Str(data.get("productName")); // 节点名称
+		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null); // 节点编号
+		Integer stepId = ToolsUtil.obj2Int(data.get("stepId"), null); // 节点编号
+		String useable = ToolsUtil.obj2Str(data.get("useable")); // 节点编号
+		List<ConfProductAndStepAndFLow> list = confStepInfoMapper.queryNodeConfList(productName, productId, stepId, useable);
 		Map<String, Object> body = new HashMap<>();
 		body.put("list", list);
 		return ErrorUtil.successResp(body);

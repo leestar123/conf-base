@@ -126,10 +126,21 @@ public class ConfBaseController implements CommController
 				
 		return confBaseService.queryStepList(data);
 	}
-
+	
     @Override
     public String url()
     {
         return "/conf";
     }
+	
+	/**
+	 * 节点查配置查询
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+	public Map<String, ? extends Object> queryNodeConfList(Map<String, ? extends Object> data) {
+				
+		return confBaseService.queryNodeConfList(data);
+	}
 }

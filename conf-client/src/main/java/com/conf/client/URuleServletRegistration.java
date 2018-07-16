@@ -27,6 +27,14 @@ public class URuleServletRegistration {
 	@Bean
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public ServletRegistrationBean registerConfServlet(){
-	    return new ServletRegistrationBean(new ConfBaseServlet(), "/node/*");
+	    return new ServletRegistrationBean(new ConfNodeServlet(), "/node/*");
 	}
+	
+    @Bean
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public ServletRegistrationBean registerBaseServlet()
+    {
+        return new ServletRegistrationBean(new ConfBaseServlet(), "/conf/*");
+    }
+	
 }

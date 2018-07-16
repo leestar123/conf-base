@@ -2,6 +2,7 @@ package com.conf.client;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -17,6 +18,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.console.servlet.RequestHolder;
+import com.conf.client.process.HttpAopProcess;
 import com.conf.common.ErrorUtil;
 
 public class ConfBaseServlet extends HttpServlet
@@ -25,6 +27,8 @@ public class ConfBaseServlet extends HttpServlet
     private static final long serialVersionUID = -3925944343406551909L;
     
     private CommController controller;
+    
+    private HttpAopProcess process;
     
     private final static Logger logger = LoggerFactory.getLogger(ConfBaseServlet.class);
     
@@ -40,6 +44,7 @@ public class ConfBaseServlet extends HttpServlet
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     protected void service(HttpServletRequest req, HttpServletResponse rep) throws ServletException, IOException
     {
         RequestHolder.set(req, rep);
@@ -50,11 +55,13 @@ public class ConfBaseServlet extends HttpServlet
         int lastIndex = url.toString().lastIndexOf("/");
         String service = url.substring(lastIndex + 1, url.length());
         Class<?> clazz = controller.getClass();
+        Object result = null;
         try
         {
+            process.beforeProcess(data);
             Method method = clazz.getMethod(service, Map.class);
             logger.info("Begin to excute service[" + service + "]");
-            Object result = method.invoke(controller, data);
+            result = method.invoke(controller, data);
             logger.info("excute over ,return data [" + JSONObject.toJSONString(result) + "]");
             HttpUtil.write(rep, JSONObject.toJSONString(result));
 //            Boolean redirect = false;
@@ -76,6 +83,9 @@ public class ConfBaseServlet extends HttpServlet
         { 
             logger.error("Service[" + service + "] excute exceptionally!", e);
             HttpUtil.write(rep, JSONObject.toJSONString(ErrorUtil.errorResp("9999", "系统执行异常")));
+        } finally {
+            Map<String, ? extends Object> value = result == null ? new HashMap<>() : (Map<String, ? extends Object>)result;
+            process.afterPorcess(value);
         }
     }
 }

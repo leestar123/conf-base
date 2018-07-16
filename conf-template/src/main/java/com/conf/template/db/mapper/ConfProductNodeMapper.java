@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.conf.template.db.model.ConfNodeInfoAndProduct;
+import com.conf.template.db.dto.ConfNodeInfoAndProduct;
 import com.conf.template.db.model.ConfProductNode;
 
 public interface ConfProductNodeMapper {

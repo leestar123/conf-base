@@ -12,7 +12,7 @@
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="org" jdbcType="VARCHAR" property="org" />
   </resultMap>
-  <resultMap type="com.conf.template.db.model.ConfNodeInfoAndProduct" id="NodeByProductMap">
+  <resultMap type="com.conf.template.db.dto.ConfNodeInfoAndProduct" id="NodeByProductMap">
   <id column="product_id" property="productId"/>
   <id column="product_name" property="productName"/>
   <collection property="nodeList" select="com.conf.template.db.mapper.ConfNodeInfoMapper.queryNodeByProducts"

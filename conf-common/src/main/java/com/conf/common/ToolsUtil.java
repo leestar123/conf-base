@@ -6,11 +6,15 @@ import java.text.NumberFormat;
 import java.util.Map;
 import java.util.Properties;
 
+import com.conf.common.dto.ConfOperateInfoDto;
+
 public class ToolsUtil {
 
 	private static SequenceGen gen = new SequenceGen(2L);
 	
 	static ThreadLocal<Map<String,? extends Object>> threadLocal =new ThreadLocal<Map<String, ? extends Object>>();  
+	
+	static ThreadLocal<ConfOperateInfoDto> operateLocal =new ThreadLocal<>(); 
 	
 	public static int sequence =0;
 	/**
@@ -89,6 +93,30 @@ public class ToolsUtil {
 	}
 	
 	/**
+	 * 
+	 * <一句话功能简述>
+	 * <功能详细描述>
+	 * @return
+	 * @see [类、类#方法、类#成员]
+	 */
+	public static ConfOperateInfoDto operateLocalGet()
+    {
+        return operateLocal.get();
+    }
+
+	/**
+	 * 
+	 * <一句话功能简述>
+	 * <功能详细描述>
+	 * @param operateLocal
+	 * @see [类、类#方法、类#成员]
+	 */
+    public static void operateLocalSet(ConfOperateInfoDto value)
+    {
+        operateLocal.set(value);
+    }
+
+    /**
 	 * 组装路径
 	 * 
 	 * @param name

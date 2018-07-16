@@ -11,6 +11,14 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+   
+  <resultMap type="com.conf.template.db.dto.ConfStepAndFLowInfo" id="StepAndFlowMap">
+  	<id column="step_id" property="stepId"/>
+  	<id column="step_name" property="stepName"/>
+  	<collection property="flowList" select="com.conf.template.db.mapper.ConfFlowInfoMapper.selectBySelective"
+  									column="{stepId = step_id}" fetchType="eager"></collection>
+  </resultMap>
+  
   <sql id="Base_Column_List">
     step_id, node_id, step_name, remark, teller, org, create_time, update_time
   </sql>
@@ -20,6 +28,13 @@
     from conf_step_info
     where step_id = #{stepId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectStepAndFlowInfo" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select step_id, step_name
+    from conf_step_info
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from conf_step_info
     where step_id = #{stepId,jdbcType=INTEGER}

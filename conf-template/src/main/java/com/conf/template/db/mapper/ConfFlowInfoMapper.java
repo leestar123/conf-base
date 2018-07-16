@@ -11,6 +11,8 @@ public interface ConfFlowInfoMapper {
 
     ConfFlowInfo selectByPrimaryKey(Integer flowId);
 
+    ConfFlowInfo selectBySelective(ConfFlowInfo record);
+    
     int updateByPrimaryKeySelective(ConfFlowInfo record);
 
     int updateByPrimaryKey(ConfFlowInfo record);

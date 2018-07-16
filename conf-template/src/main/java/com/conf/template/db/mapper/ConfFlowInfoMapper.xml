@@ -21,6 +21,28 @@
     from conf_flow_info
     where flow_id = #{flowId,jdbcType=INTEGER}
   </select>
+  <select id="selectBySelective" parameterType="com.conf.template.db.model.ConfFlowInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_flow_info
+    <where>
+      <if test="stepId != null">
+        and step_id = #{stepId,jdbcType=INTEGER},
+      </if>
+      <if test="flowName != null">
+        and flow_name = #{flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="flowPath != null">
+        and flow_path = #{flowPath,jdbcType=VARCHAR},
+      </if>
+      <if test="teller != null">
+        and teller = #{teller,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        and org = #{org,jdbcType=VARCHAR},
+      </if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from conf_flow_info
     where flow_id = #{flowId,jdbcType=INTEGER}
@@ -36,6 +58,9 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfFlowInfo">
+     <selectKey resultType="java.lang.Integer" keyProperty="flowId" order="AFTER">
+   		SELECT LAST_INSERT_ID()
+     </selectKey>
     insert into conf_flow_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="flowId != null">

@@ -1,6 +1,8 @@
-package com.conf.template.db.model;
+package com.conf.template.db.dto;
 
 import java.util.List;
+
+import com.conf.template.db.model.ConfNodeInfo;
 
 public class ConfNodeInfoAndProduct {
 	private Integer productId;

@@ -33,4 +33,25 @@ public class Constants {
      */
     public final static String RULE_TYPE_ACTION = "0";
     
+    /**
+     * 操作类型  1-增加 2-删除 3-修改
+     */
+    public final static Integer OPERATE_TYPE_ADD = 1;
+    
+    public final static Integer OPERATE_TYPE_DEl = 2;
+    
+    public final static Integer OPERATE_TYPE_MOD = 3;
+    
+    /**
+     * 操作模块 1-组件 2-节点 3-阶段 4-流程 5-产品
+     */
+    public final static Integer OPERATE_MODULE_RULE = 1;
+    
+    public final static Integer OPERATE_MODULE_NODE = 2;
+    
+    public final static Integer OPERATE_MODULE_STEP = 3;
+    
+    public final static Integer OPERATE_MODULE_FLOW = 4;
+    
+    public final static Integer OPERATE_MODULE_PRODUCT = 5;
 }

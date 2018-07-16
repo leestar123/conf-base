@@ -3,6 +3,7 @@
 <mapper namespace="com.conf.template.db.mapper.ConfOperateInfoMapper">
   <resultMap id="BaseResultMap" type="com.conf.template.db.model.ConfOperateInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="serial_no" jdbcType="VARCHAR" property="serialNo" />
     <result column="operate_type" jdbcType="INTEGER" property="operateType" />
     <result column="operate_module" jdbcType="INTEGER" property="operateModule" />
     <result column="module_id" jdbcType="INTEGER" property="moduleId" />
@@ -15,7 +16,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, operate_type, operate_module, module_id, module_name, request, success, teller, 
+    id, serialNo, operate_type, operate_module, module_id, module_name, request, success, teller, 
     org, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -29,11 +30,11 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfOperateInfo">
-    insert into conf_operate_info (id, operate_type, operate_module, 
+    insert into conf_operate_info (id, serialNo, operate_type, operate_module, 
       module_id, module_name, request, 
       success, teller, org, 
       create_time, update_time)
-    values (#{id,jdbcType=INTEGER}, #{operateType,jdbcType=INTEGER}, #{operateModule,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{serialNo,jdbcType=VARCHAR}, #{operateType,jdbcType=INTEGER}, #{operateModule,jdbcType=INTEGER}, 
       #{moduleId,jdbcType=INTEGER}, #{moduleName,jdbcType=VARCHAR}, #{request,jdbcType=VARCHAR}, 
       #{success,jdbcType=INTEGER}, #{teller,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
@@ -43,6 +44,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="serialNo != null">
+        serial_no,
       </if>
       <if test="operateType != null">
         operate_type,
@@ -79,6 +83,9 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
+      <if test="serialNo != null">
+        #{serialNo,jdbcType=VARCHAR},
+      </if>
       <if test="operateType != null">
         #{operateType,jdbcType=INTEGER},
       </if>
@@ -114,6 +121,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.conf.template.db.model.ConfOperateInfo">
     update conf_operate_info
     <set>
+      <if test="serialNo != null">
+        serial_no = #{serialNo,jdbcType=VARCHAR},
+      </if>
       <if test="operateType != null">
         operate_type = #{operateType,jdbcType=INTEGER},
       </if>
@@ -149,7 +159,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.conf.template.db.model.ConfOperateInfo">
     update conf_operate_info
-    set operate_type = #{operateType,jdbcType=INTEGER},
+    set serial_no = #{serialNo,jdbcType=VARCHAR},
+      operate_type = #{operateType,jdbcType=INTEGER},
       operate_module = #{operateModule,jdbcType=INTEGER},
       module_id = #{moduleId,jdbcType=INTEGER},
       module_name = #{moduleName,jdbcType=VARCHAR},

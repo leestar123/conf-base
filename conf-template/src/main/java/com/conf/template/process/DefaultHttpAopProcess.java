@@ -24,6 +24,7 @@ public class DefaultHttpAopProcess implements HttpAopProcess
     public void beforeProcess(Map<String, ? extends Object> data)
     {
         //设置请求报文及请求时间
+        dto.setSerialNo(ToolsUtil.nextSeq() + "");
         dto.setRequest(JSONObject.toJSONString(data));
         dto.setCreateTime(new Date(System.currentTimeMillis()));
     }

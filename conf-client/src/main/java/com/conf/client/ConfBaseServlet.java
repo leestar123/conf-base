@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -50,7 +50,7 @@ public class ConfBaseServlet extends HttpServlet
     @SuppressWarnings("unchecked")
     protected void service(HttpServletRequest req, HttpServletResponse rep) throws ServletException, IOException
     {
-        MDC.put("serialNo", ToolsUtil.nextSeq());
+        MDC.put("serialNo", ToolsUtil.nextSeq() + "");
         RequestHolder.set(req, rep);
         Map<String, ? extends Object> data = HttpUtil.getRequestData(req);
         StringBuffer url = req.getRequestURL();

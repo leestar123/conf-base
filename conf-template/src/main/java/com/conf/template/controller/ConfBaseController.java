@@ -19,6 +19,10 @@ public class ConfBaseController implements CommController
 	@Autowired
 	private ConfBaseService confBaseService;
 	
+	public void setConfBaseService(ConfBaseService confBaseService) {
+		this.confBaseService = confBaseService;
+	}
+
 	/**
 	 * 阶段创建
 	 * 

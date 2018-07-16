@@ -22,6 +22,8 @@ import com.conf.common.Constants;
 import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
+import com.conf.common.dto.ConfOperateInfoDto;
+import com.conf.common.dto.ModuleInfo;
 import com.conf.template.db.dto.ConfNodeInfoAndProduct;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
 import com.conf.template.db.mapper.ConfNodeTemplateMapper;
@@ -52,6 +54,8 @@ public class NodeService {
     @Autowired
     private RuleInvokerService invokerService;
 	
+    private ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
+    
     public void setInvokerService(RuleInvokerService invokerService)
     {
         this.invokerService = invokerService;
@@ -69,6 +73,14 @@ public class NodeService {
         confNodeInfo.setTeller((String)data.get("teller"));
         confNodeInfo.setVersion("");
         logger.info("Begin to create node[" + confNodeInfo.getNodeName() + "]!");
+        
+        local.setOperateType(Constants.OPERATE_TYPE_ADD);
+        local.setOperateModule(Constants.OPERATE_MODULE_NODE);
+        ModuleInfo module = new ModuleInfo();
+        module.setModuleName(confNodeInfo.getNodeName());
+        List<ModuleInfo> list = new ArrayList<>();
+        list.add(module);
+        local.setModule(list);
         
         try
         {
@@ -91,6 +103,7 @@ public class NodeService {
         }
         Map<String, Object> body = new HashMap<String, Object>();
         body.put("nodeId", confNodeInfo.getNodeId());
+        module.setModuleId(confNodeInfo.getNodeId());
         return ErrorUtil.successResp(body);
     }
 
@@ -180,6 +193,10 @@ public class NodeService {
         String oldFullPath = null;
         //要创建的规则路径
         String newFullPath = null;
+        
+        local.setOperateType(Constants.OPERATE_TYPE_ADD);
+        local.setOperateModule(Constants.OPERATE_MODULE_NODE);
+        
         for (int i = 0; i < ruleList.size(); i++)
         {
             record = new ConfNodeTemplate();
@@ -190,6 +207,12 @@ public class NodeService {
             ruleName = ToolsUtil.obj2Str(ruleList.get(i).get("ruleName"));
             ruleType = ToolsUtil.obj2Str(ruleList.get(i).get("ruleType"));
             oldFullPath = ToolsUtil.obj2Str(ruleList.get(i).get("rulePath"));
+            
+            ModuleInfo module = new ModuleInfo();
+            module.setModuleName(ruleName);
+            List<ModuleInfo> list = new ArrayList<>();
+            list.add(module);
+            local.setModule(list);
             if (!Constants.RULE_TYPE_ACTION.equals(ruleType) && StringUtils.isBlank(oldFullPath))
             {
                 logger.info("规则[" + ruleName + "]无规则路径，跳过复制！");
@@ -217,6 +240,7 @@ public class NodeService {
                 }
             }
             confNodeTemplateMapper.insertSelective(record);
+            module.setModuleId(record.getId());
         }
         Map<String, Object> map = new HashMap<String, Object>();
         return ErrorUtil.successResp(map);
@@ -225,11 +249,21 @@ public class NodeService {
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
-
+        local.setOperateType(Constants.OPERATE_TYPE_DEl);
+        local.setOperateModule(Constants.OPERATE_MODULE_BUND_NODERULE);
+        
 		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
-		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
+		Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null);
 		for (Map<String, Object> map : ruleList) {
-			confNodeTemplateMapper.deleteByIdAndUid(Integer.valueOf(nodeId), ToolsUtil.obj2Int(map.get("uid"), null));
+		    Integer uid = ToolsUtil.obj2Int(map.get("uid"), null);
+		    ConfNodeTemplate template = confNodeTemplateMapper.selectByNodIdAndUid(nodeId, uid);
+            ModuleInfo module = new ModuleInfo();
+            module.setModuleName("");
+            module.setModuleId(template.getId());
+            List<ModuleInfo> list = new ArrayList<>();
+            list.add(module);
+            local.setModule(list);
+			confNodeTemplateMapper.deleteByIdAndUid(nodeId, uid);
 		}
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -376,6 +410,14 @@ public class NodeService {
         ruleName = Utils.decodeURL(ruleName).trim();
         String path = null;
         String url = Constants.RULE_URL_BASE;
+        
+        local.setOperateType(Constants.OPERATE_TYPE_ADD);
+        local.setOperateModule(Constants.OPERATE_MODULE_RULE);
+        ModuleInfo module = new ModuleInfo();
+        module.setModuleName(ruleName);
+        List<ModuleInfo> list = new ArrayList<>();
+        list.add(module);
+        local.setModule(list);
         try
         {
             path = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
@@ -428,6 +470,7 @@ public class NodeService {
         Map<String, Object> body = new HashMap<String, Object>();
         body.put("uid", record.getUid());
         body.put("url", url);
+        module.setModuleId(record.getUid());
         return ErrorUtil.successResp(body);
     }
 	

@@ -4,7 +4,9 @@ import java.util.Date;
 
 public class ConfOperateInfo {
     private Integer id;
-
+    
+    private String serialNo;
+    
     private Integer operateType;
 
     private Integer operateModule;
@@ -112,4 +114,12 @@ public class ConfOperateInfo {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+	public String getSerialNo() {
+		return serialNo;
+	}
+
+	public void setSerialNo(String serialNo) {
+		this.serialNo = serialNo;
+	}
 }

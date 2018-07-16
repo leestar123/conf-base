@@ -27,7 +27,13 @@
     where node_id = #{nodeId}
     and uid = #{uid}
   </delete>
-  
+  <select id="selectByNodIdAndUid" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from conf_node_template
+    where node_id = #{nodeId}
+    and uid = #{uid}
+  </select>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfNodeTemplate">
     insert into conf_node_template (node_id, uid, 
       teller, org)

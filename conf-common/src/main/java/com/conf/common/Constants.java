@@ -2,6 +2,10 @@ package com.conf.common;
 
 public class Constants {
 	
+    public static String TELLER = "teller";
+    
+    public static String ORG = "org";
+    
 	public final static String SCAN_PACKAGE_NAME = "com.conf.template.rule";
 	
 	public final static String SYSTEM_ERROR_CODE = "9999";
@@ -34,7 +38,7 @@ public class Constants {
     public final static String RULE_TYPE_ACTION = "0";
     
     /**
-     * 操作类型  1-增加 2-删除 3-修改
+     * 操作类型  1-增加 2-删除 3-修改 
      */
     public final static Integer OPERATE_TYPE_ADD = 1;
     
@@ -43,7 +47,12 @@ public class Constants {
     public final static Integer OPERATE_TYPE_MOD = 3;
     
     /**
-     * 操作模块 1-组件 2-节点 3-阶段 4-流程 5-产品
+     * 操作模块  1-组件（conf_rule_info）
+     *       2-节点(conf_node_info)
+     *       3-阶段(conf_step_info)
+     *       4-流程(conf_flow_info) 
+     *       5-节点绑定规则(conf_node_template) 
+     *       6-产品关联(conf_productstep)
      */
     public final static Integer OPERATE_MODULE_RULE = 1;
     
@@ -53,5 +62,7 @@ public class Constants {
     
     public final static Integer OPERATE_MODULE_FLOW = 4;
     
-    public final static Integer OPERATE_MODULE_PRODUCT = 5;
+    public final static Integer OPERATE_MODULE_BUND_NODERULE= 5;
+    
+    public final static Integer OPERATE_MODULE_BUND_PRODUCTSTEP = 6;
 }

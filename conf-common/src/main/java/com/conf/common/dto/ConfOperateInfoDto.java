@@ -1,6 +1,7 @@
 package com.conf.common.dto;
 
 import java.util.Date;
+import java.util.List;
 
 public class ConfOperateInfoDto {
     private Integer id;
@@ -11,9 +12,7 @@ public class ConfOperateInfoDto {
 
     private Integer operateModule;
 
-    private Integer moduleId;
-
-    private String moduleName;
+    private List<ModuleInfo> module;
 
     private String request;
 
@@ -51,20 +50,14 @@ public class ConfOperateInfoDto {
         this.operateModule = operateModule;
     }
 
-    public Integer getModuleId() {
-        return moduleId;
+    public List<ModuleInfo> getModule()
+    {
+        return module;
     }
 
-    public void setModuleId(Integer moduleId) {
-        this.moduleId = moduleId;
-    }
-
-    public String getModuleName() {
-        return moduleName;
-    }
-
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName == null ? null : moduleName.trim();
+    public void setModule(List<ModuleInfo> module)
+    {
+        this.module = module;
     }
 
     public String getRequest() {

@@ -20,6 +20,7 @@ import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
 import com.conf.common.dto.ConfOperateInfoDto;
+import com.conf.common.dto.ModuleInfo;
 import com.conf.template.db.dto.ConfProductAndStepAndFLow;
 import com.conf.template.db.dto.ConfStepAndFLowInfo;
 import com.conf.template.db.mapper.ConfFlowInfoMapper;
@@ -173,9 +174,11 @@ public class ConfBaseService
         
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_FLOW);
-        local.setModuleName(flowName);
-        local.setOrg(org);
-        local.setTeller(teller);
+        ModuleInfo module = new ModuleInfo();
+        module.setModuleName(flowName);
+        List<ModuleInfo> list = new ArrayList<>();
+        list.add(module);
+        local.setModule(list);
         
         ConfStepInfo stepInfo = confStepInfoMapper.selectByPrimaryKey(stepId);
         if (stepInfo == null)
@@ -219,7 +222,7 @@ public class ConfBaseService
         record.setOrg(org);
         record.setTeller(teller);
         confFlowInfoMapper.insertSelective(record);
-        local.setModuleId(record.getFlowId());
+        module.setModuleId(record.getFlowId());
         
         return ErrorUtil.successResp(new HashMap<>());
     }

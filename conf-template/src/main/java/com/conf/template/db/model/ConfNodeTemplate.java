@@ -11,7 +11,7 @@ public class ConfNodeTemplate {
 
     private String org;
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 

@@ -83,6 +83,9 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfStepInfo">
+     <selectKey resultType="java.lang.Integer" keyProperty="stepId" order="AFTER">
+   		SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into conf_step_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="stepId != null">

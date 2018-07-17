@@ -265,18 +265,30 @@ public class ConfBaseService
     {
         // 参数拼装
 		ConfStepInfo confStepInfo = new ConfStepInfo();
-		confStepInfo.setNodeId((Integer)data.get("nodeId")); // 组件编号
+		Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null);
+		confStepInfo.setNodeId(nodeId); // 组件编号
 		confStepInfo.setStepName((String)data.get("stepName")); // 阶段名称
 		confStepInfo.setRemark((String)data.get("remark")); // 组件描述
 		confStepInfo.setTeller((String)data.get("teller")); // 操作柜员
 		confStepInfo.setOrg((String)data.get("org")); // 操作机构
 		
+        local.setOperateType(Constants.OPERATE_TYPE_ADD);
+        local.setOperateModule(Constants.OPERATE_MODULE_STEP);
+        local.setRemark("阶段新增");
+        ModuleInfo module = new ModuleInfo();
+        module.setModuleName(confStepInfo.getStepName());
+        List<ModuleInfo> list = new ArrayList<>();
+        list.add(module);
+        local.setModule(list);
+        
 		// 调用urule创建工程
         try
         {
-            logger.info("Begin to  create empty project[" + confStepInfo.getStepName() + "] on Urule system");
-            invokerService.createProject(confStepInfo.getStepName());
-            logger.info("End to  create empty project!");
+            ConfNodeInfo nodeInfo = confNodeInfoMapper.selectByPrimaryKey(nodeId);
+            String path = "/" + nodeInfo.getNodeName() + "-" + confStepInfo.getStepName();
+            logger.info("Begin to  create empty floder[" + path + "] on Urule system");
+            invokerService.createProject(path);
+            logger.info("End to  create empty floder!");
         }
         catch (Exception e)
         {
@@ -294,6 +306,8 @@ public class ConfBaseService
         }
         Map<String, Object> body = new HashMap<>();
         body.put("nodeId", confStepInfo.getNodeId());
+        module.setModuleId(confStepInfo.getNodeId());
+        
         return ErrorUtil.successResp(body);
     }
 	

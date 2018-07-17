@@ -10,6 +10,7 @@
     <result column="teller" jdbcType="VARCHAR" property="teller" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="org" jdbcType="VARCHAR" property="org" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
   </resultMap>

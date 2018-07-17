@@ -23,6 +23,7 @@ import com.conf.common.dto.ConfOperateInfoDto;
 import com.conf.common.dto.ModuleInfo;
 import com.conf.template.db.dto.ConfProductAndStepAndFLow;
 import com.conf.template.db.dto.ConfStepAndFLowInfo;
+import com.conf.template.db.dto.ConfStepInfoDto;
 import com.conf.template.db.mapper.ConfFlowInfoMapper;
 import com.conf.template.db.mapper.ConfInvokInfoMapper;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
@@ -308,7 +309,7 @@ public class ConfBaseService
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10); // 分页大小
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);// 当前页数
 		int startNum = (pageNum - 1) * pageSize;
-		List<ConfStepInfo> list = confStepInfoMapper.queryStep(nodeId, nodeName, stepId, startNum, pageSize);
+		List<ConfStepInfoDto> list = confStepInfoMapper.queryStep(nodeId, nodeName, stepId, startNum, pageSize);
 		int totalNum = confStepInfoMapper.queryCount(nodeId, nodeName, stepId);
 		Map<String, Object> body = new HashMap<>();
 		body.put("totalNum", totalNum);

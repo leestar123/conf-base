@@ -15,6 +15,7 @@
     <result column="rule_type" jdbcType="VARCHAR" property="ruleType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
   </resultMap>
   <resultMap id="EffectResultMap" type="com.conf.template.db.model.ConfRuleInfo">
     <id column="uid" jdbcType="INTEGER" property="uid" />
@@ -31,7 +32,6 @@
     <result column="rule_type" jdbcType="VARCHAR" property="ruleType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
   </resultMap>
   <sql id="Base_Column_List">
    uid,rule_name,remark,clazz,method,param,version,effect,teller,org,rule_path,rule_type,create_time,update_time,delete_flag

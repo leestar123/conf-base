@@ -35,6 +35,24 @@
             <id property="flowName" column="flow_name" />
         </association>
     </resultMap>
+    <resultMap type="com.conf.template.db.dto.ConfStepInfoDto" id="ConfStepDtoResultMap">
+    <result column="step_id" jdbcType="INTEGER" property="stepId" />
+    <result column="step_name" jdbcType="VARCHAR" property="stepName" />
+        <association property="confNodeInfo" javaType="com.conf.template.db.model.ConfNodeInfo">
+            <id property="nodeName" column="node_name" />
+            <id property="teller" column="teller" />
+            <id property="org" column="org" />
+            <id property="createTime" column="create_time" />
+        </association>
+        <association property="confFlowInfo" javaType="com.conf.template.db.model.ConfFlowInfo">
+            <id property="flowId" column="flow_id" />
+            <id property="flowName" column="flow_name" />
+            <id property="flowPath" column="flow_path" />
+        </association>
+        <association property="confRuleInfo" javaType="com.conf.template.db.model.ConfRuleInfo">
+            <id property="useable" column="useable" />
+        </association>
+    </resultMap>
   
   <sql id="Base_Column_List">
     step_id, node_id, step_name, remark, teller, org, create_time, update_time, delete_flag
@@ -155,8 +173,9 @@
   </update>
   
   <select id="queryCount" resultType="java.lang.Integer">
-  select count(1) from conf_step_info t
+  select count(1) from conf_rule_info r, conf_product_step ps, conf_product_node pn, conf_step_info si, conf_flow_info fi, conf_node_info ni
   <where>
+      r.uid = pn.uid and ps.step_id = si.step_id and ps.flow_id = fi.flow_id and ni.node_id = pn.node_id
 	  <if test="nodeId!=null and nodeId!=''">
 	        and t.node_id like '%${nodeId}%' 
 	   </if>
@@ -166,11 +185,11 @@
 	   <if test="stepId!=null and stepId!=''">
 	        and t.step_id = #{stepId}
 	   </if>
-	   and t.delete_flag = 0
+	   and r.delete_flag = 0 and ps.delete_flag = 0 and pn.delete_flag = 0 and fi.delete_flag = 0 and ni.delete_flag = 0
    </where>
   </select>
   
-  <select id="queryStep" resultMap="BaseResultMap">
+ <!--  <select id="queryStep" resultMap="BaseResultMap">
   select t.* from conf_step_info t
   <where>
 	  <if test="nodeId!=null and nodeId!=''">
@@ -182,11 +201,10 @@
 	   <if test="stepId!=null and stepId!=''">
 	        and t.step_id = #{stepId}
 	   </if>
-	   and t.delete_flag = 0
    </where>  
    order by t.node_id desc
    limit #{startNum},#{pageSize}
-  </select>
+  </select> -->
   <select id="queryStepList" resultMap="BaseResultMap">
   select s.step_id, s.step_name from conf_step_info s, conf_product_step p
   <where>
@@ -205,7 +223,7 @@
   select ps.product_id, ps.product_name, si.step_name, fi.flow_name, ps.teller, ps.org, ps.create_time from 
   conf_rule_info r, conf_product_step ps, conf_product_node pn, conf_step_info si, conf_flow_info fi
   <where>
-      where r.uid = pn.uid and ps.product_id = pn.product_id and ps.step_id = si.step_id and ps.flow_id = fi.flow_id
+      r.uid = pn.uid and ps.product_id = pn.product_id and ps.step_id = si.step_id and ps.flow_id = fi.flow_id
 	  <if test="productId!=null and productId!=''">
 	        and ps.product_id = #{productId} 
 	   </if>
@@ -218,7 +236,26 @@
 	    <if test="useable!=null and useable!=''">
 	        and r.useable = #{useable}
 	   </if>
-	   and r.delete_flag = 0 ande ps.delete_flag = 0 and pn.delete_flag = 0 and si.delete_flag = 0 and fi.delete_flag = 0
+	   and r.delete_flag = 0 and ps.delete_flag = 0 and pn.delete_flag = 0 and si.delete_flag = 0 and fi.delete_flag = 0
    </where>  
+  </select>
+  
+  <select id="queryStep" resultMap="ConfStepDtoResultMap">
+  select si.step_id, ni.node_name, si.step_name, fi.flow_id,  fi.flow_name, fi.flow_path,r.useable, ni.teller, ni.org, ni.create_time from 
+  conf_rule_info r, conf_product_step ps, conf_product_node pn, conf_step_info si, conf_flow_info fi, conf_node_info ni
+  <where>
+      r.uid = pn.uid and ps.step_id = si.step_id and ps.flow_id = fi.flow_id and ni.node_id = pn.node_id
+	  <if test="nodeId!=null and nodeId!=''">
+	        and ni.node_id = #{nodeId} 
+	   </if>
+	   <if test="nodeName!=null and nodeName!=''">
+	        and ni.node_name = #{nodeName} 
+	   </if>
+	   <if test="stepId!=null and stepId!=''">
+	        and si.step_id = #{stepId}
+	   </if>
+   </where>  
+    order by ni.node_id desc
+   limit #{startNum},#{pageSize}
   </select>
 </mapper>

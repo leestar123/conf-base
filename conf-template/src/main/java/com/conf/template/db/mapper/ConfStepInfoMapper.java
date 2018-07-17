@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.conf.template.db.dto.ConfProductAndStepAndFLow;
 import com.conf.template.db.dto.ConfStepAndFLowInfo;
+import com.conf.template.db.dto.ConfStepInfoDto;
 import com.conf.template.db.model.ConfStepInfo;
 
 public interface ConfStepInfoMapper {
@@ -23,7 +24,7 @@ public interface ConfStepInfoMapper {
 	
     List<ConfStepAndFLowInfo> selectStepAndFlowInfo(Integer nodeId);    
 
-    List<ConfStepInfo> queryStep(@Param("nodeId") String nodeId,
+    List<ConfStepInfoDto> queryStep(@Param("nodeId") String nodeId,
 			@Param("nodeName") String nodeName,
 			@Param("stepId") String stepId,
 			@Param("startNum") Integer startNum,
@@ -34,7 +35,7 @@ public interface ConfStepInfoMapper {
     List<ConfStepInfo> queryStepList(@Param("productId") String productId, @Param("nodeId") String nodeId);
     
     /**
-     * Ω⁄µ„≤È≈‰÷√≤È—Ø
+     * ËäÇÁÇπÊü•ÈÖçÁΩÆÊü•ËØ¢
      * @param productName
      * @param productId
      * @param stepId

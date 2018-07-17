@@ -245,7 +245,7 @@
   </select>
   
   <select id="queryStep" resultMap="ConfStepDtoResultMap">
-  	select si.step_id, ni.node_name, si.step_name, fi.flow_id,  fi.flow_name, fi.flow_path,r.useable, ni.teller, ni.org, ni.create_time
+  	select si.step_id, ni.node_name, si.step_name, fi.flow_id,  fi.flow_name, fi.flow_path, ni.teller, ni.org, ni.create_time
   	from conf_node_info ni, conf_step_info si, conf_flow_info fi
   <where>
       ni.node_id = si.node_id AND si.step_id = fi.step_id 

@@ -210,16 +210,17 @@
    limit #{startNum},#{pageSize}
   </select> -->
   <select id="queryStepList" resultMap="BaseResultMap">
-  select s.step_id, s.step_name from conf_step_info s, conf_product_step p
+  select s.* from conf_step_info s
+  <if test="productId!=null and productId!=''">
+   , conf_product_step p
+  </if>
   <where>
-      s.step_id = p.step_id
 	  <if test="productId!=null and productId!=''">
-	        and p.product_id = #{productId} 
+	   s.step_id = p.step_id and p.product_id = #{productId} and p.delete_flag = 0
 	   </if>
 	   <if test="nodeId!=null and nodeId!=''">
-	        and s.node_id = #{nodeId}
+	        and s.node_id = #{nodeId} and s.delete_flag = 0
 	   </if>
-	   and s.delete_flag = 0 and p.delete_flag = 0
    </where>  
   </select>
   

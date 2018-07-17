@@ -194,8 +194,8 @@ public class ConfBaseService
             logger.error(ErrorCode.code_0008.getMsg(stepInfo.getNodeId()));
             return ErrorUtil.errorResp(ErrorCode.code_0008, stepInfo.getNodeId());
         }
-        String path =
-            "/" + nodeInfo.getNodeName().concat("-").concat(stepInfo.getStepName()).concat("/").concat(flowName).concat(
+        String path = "/" + nodeInfo.getNodeName() + "/"
+            + nodeInfo.getNodeName().concat("-").concat(stepInfo.getStepName()).concat("/").concat(flowName).concat(
                 ".rl.xml");
         try
         {
@@ -371,8 +371,8 @@ public class ConfBaseService
 	 * @return
 	 */
 	public Map<String, ? extends Object> queryStepList(Map<String, ? extends Object> data) {
-		String productId = ToolsUtil.obj2Str(data.get("productId")); // 节点名称
-		String nodeId = ToolsUtil.obj2Str(data.get("nodeId")); // 节点编号
+		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null); // 节点名称
+		Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null); // 节点编号
 		List<ConfStepInfo> list = confStepInfoMapper.queryStepList(productId, nodeId);
 		Map<String, Object> body = new HashMap<>();
 		body.put("list", list);

@@ -32,7 +32,7 @@ public interface ConfStepInfoMapper {
     
     int queryCount(@Param("nodeId") String nodeId, @Param("nodeName") String nodeName, @Param("stepId") String stepId);
     
-    List<ConfStepInfo> queryStepList(@Param("productId") String productId, @Param("nodeId") String nodeId);
+    List<ConfStepInfo> queryStepList(@Param("productId") Integer productId, @Param("nodeId") Integer nodeId);
     
     /**
      * 节点查配置查询

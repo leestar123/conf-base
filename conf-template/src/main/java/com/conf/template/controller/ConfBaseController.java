@@ -147,4 +147,18 @@ public class ConfBaseController implements CommController
 				
 		return confBaseService.queryNodeConfList(data);
 	}
+	
+	/**
+	 * 创建流程
+	 * 
+	 * @param data
+	 * @return
+	 * @see [类、类#方法、类#成员]
+	 */
+    @ApiException
+    public Map<String, ? extends Object> createFlow(Map<String, ? extends Object> data)
+    {
+        return confBaseService.createFlow(data);
+    }
+	
 }

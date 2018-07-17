@@ -1,5 +1,7 @@
 package com.conf.template.db.model;
 
+import java.util.Date;
+
 public class ConfRuleInfo {
     private Integer uid;
 
@@ -24,6 +26,10 @@ public class ConfRuleInfo {
     private String rulePath;
     
     private String ruleType;
+    
+    private Date createTime;
+    
+    private Date updateTime;
     
     public String getTeller() {
 		return teller;
@@ -120,4 +126,24 @@ public class ConfRuleInfo {
 	public void setEffect(String effect) {
 		this.effect = effect;
 	}
+
+    public Date getCreateTime()
+    {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime)
+    {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime()
+    {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime)
+    {
+        this.updateTime = updateTime;
+    }
 }

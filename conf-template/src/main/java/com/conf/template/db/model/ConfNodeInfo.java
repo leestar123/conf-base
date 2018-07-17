@@ -1,5 +1,7 @@
 package com.conf.template.db.model;
 
+import java.util.Date;
+
 public class ConfNodeInfo {
     private Integer nodeId;
 
@@ -15,6 +17,10 @@ public class ConfNodeInfo {
 
     private String org;
 
+    private Date createTime;
+    
+    private Date updateTime;
+    
     public Integer getNodeId() {
         return nodeId;
     }
@@ -69,5 +75,25 @@ public class ConfNodeInfo {
 
     public void setOrg(String org) {
         this.org = org == null ? null : org.trim();
+    }
+
+    public Date getCreateTime()
+    {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime)
+    {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime()
+    {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime)
+    {
+        this.updateTime = updateTime;
     }
 }

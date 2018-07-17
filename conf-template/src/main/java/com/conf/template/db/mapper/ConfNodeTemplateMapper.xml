@@ -7,9 +7,11 @@
     <result column="uid" jdbcType="INTEGER" property="uid" />
     <result column="teller" jdbcType="VARCHAR" property="teller" />
     <result column="org" jdbcType="VARCHAR" property="org" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />    
   </resultMap>
   <sql id="Base_Column_List">
-    id, node_id, uid, teller, org
+    id, node_id, uid, teller, org, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

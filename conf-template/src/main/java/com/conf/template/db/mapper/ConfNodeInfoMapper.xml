@@ -9,9 +9,11 @@
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="teller" jdbcType="VARCHAR" property="teller" />
     <result column="org" jdbcType="VARCHAR" property="org" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />    
   </resultMap>
   <sql id="Base_Column_List">
-    node_id, node_name, remark, node_type, version, teller, org
+    node_id, node_name, remark, node_type, version, teller, org, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

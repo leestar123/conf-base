@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS `conf_node_info` (
   `version` varchar(12) NOT NULL COMMENT '版本号',
   `teller` varchar(50) DEFAULT NULL COMMENT '操作柜员',
   `org` varchar(50) DEFAULT NULL COMMENT '操作机构',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`node_id`),
   UNIQUE KEY `NODE_INFO_IDX1` (`node_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000000 DEFAULT CHARSET=utf8 MAX_ROWS=19999999 COMMENT='组件基础信息表';
@@ -31,6 +33,8 @@ CREATE TABLE IF NOT EXISTS `conf_node_template` (
   `uid` int(12) NOT NULL COMMENT '属性/规则id',
   `teller` varchar(50) DEFAULT NULL COMMENT '操作柜员',
   `org` varchar(50) DEFAULT NULL COMMENT '操作机构',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',  
   PRIMARY KEY (`id`),
   UNIQUE KEY `NODE_TEMPLATE_IDX1` (`node_id`,`uid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20000000 DEFAULT CHARSET=utf8 MAX_ROWS=29999999 COMMENT='组件模板配置';
@@ -64,6 +68,9 @@ CREATE TABLE IF NOT EXISTS `conf_rule_info` (
   `version` varchar(12) DEFAULT NULL COMMENT '版本号',
   `teller` varchar(12) DEFAULT NULL COMMENT '柜员号',
   `org` varchar(12) DEFAULT NULL COMMENT '机构号',
+  `useable` varchar(2) DEFAULT NULL COMMENT '是否启用,0-启用 1-停用',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',  
   PRIMARY KEY (`uid`),
   UNIQUE KEY `RULE_INFO_IDX1` (`rule_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=40000000 DEFAULT CHARSET=utf8 MAX_ROWS=49999999 COMMENT='规则配置表';

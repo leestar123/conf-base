@@ -13,6 +13,8 @@
     <result column="org" jdbcType="VARCHAR" property="org" />
     <result column="rule_path" jdbcType="VARCHAR" property="rulePath" />
     <result column="rule_type" jdbcType="VARCHAR" property="ruleType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <resultMap id="EffectResultMap" type="com.conf.template.db.model.ConfRuleInfo">
     <id column="uid" jdbcType="INTEGER" property="uid" />
@@ -27,6 +29,8 @@
     <result column="org" jdbcType="VARCHAR" property="org" />
     <result column="rule_path" jdbcType="VARCHAR" property="rulePath" />
     <result column="rule_type" jdbcType="VARCHAR" property="ruleType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '

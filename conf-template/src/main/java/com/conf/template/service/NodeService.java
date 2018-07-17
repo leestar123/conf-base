@@ -53,8 +53,6 @@ public class NodeService {
     @Autowired
     private RuleInvokerService invokerService;
 	
-    private ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
-    
     public void setInvokerService(RuleInvokerService invokerService)
     {
         this.invokerService = invokerService;
@@ -73,6 +71,7 @@ public class NodeService {
         confNodeInfo.setVersion("");
         logger.info("Begin to create node[" + confNodeInfo.getNodeName() + "]!");
         
+        ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_NODE);
         local.setRemark("节点添加");
@@ -194,6 +193,7 @@ public class NodeService {
         //要创建的规则路径
         String newFullPath = null;
         
+        ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_BUND_NODERULE);
         local.setRemark("节点关联组件添加");
@@ -250,7 +250,8 @@ public class NodeService {
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
-        local.setOperateType(Constants.OPERATE_TYPE_DEl);
+	    ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
+	    local.setOperateType(Constants.OPERATE_TYPE_DEl);
         local.setOperateModule(Constants.OPERATE_MODULE_BUND_NODERULE);
         local.setRemark("节点关联组件删除");
         
@@ -413,6 +414,7 @@ public class NodeService {
         String path = null;
         String url = Constants.RULE_URL_BASE;
         
+        ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_RULE);
         local.setRemark("组件创建");

@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,7 +21,7 @@ import com.conf.template.db.model.ConfOperateInfo;
 
 public class DefaultHttpAopProcess implements HttpAopProcess
 {
-    private ConfOperateInfoDto dto = ToolsUtil.operateLocalGet();
+    private final static Logger logger = LoggerFactory.getLogger(DefaultHttpAopProcess.class);
     
     @Autowired
     private ConfOperateInfoMapper confOperateInfoMapper;
@@ -27,6 +29,7 @@ public class DefaultHttpAopProcess implements HttpAopProcess
     @Override
     public void beforeProcess(Map<String, ? extends Object> data)
     {
+        ConfOperateInfoDto dto = ToolsUtil.operateLocalGet();
         //设置请求报文及请求时间
         dto.setTeller(ToolsUtil.obj2Str(data.get(Constants.TELLER)));
         dto.setOrg(ToolsUtil.obj2Str(data.get(Constants.ORG)));
@@ -44,6 +47,7 @@ public class DefaultHttpAopProcess implements HttpAopProcess
     @Override
     public void afterPorcess(Map<String, ? extends Object> data)
     {
+        ConfOperateInfoDto dto = ToolsUtil.operateLocalGet();
         //保存请求消息
         Boolean success = ErrorUtil.isSuccess(data);
         dto.setSuccess(success ? 0 : 1);
@@ -52,10 +56,15 @@ public class DefaultHttpAopProcess implements HttpAopProcess
         {
             for (ModuleInfo module : dto.getModule())
             {
-                ConfOperateInfo record = JSONObject.parseObject(JSONObject.toJSONString(dto), ConfOperateInfo.class);
-                record.setModuleName(module.getModuleName());
-                record.setModuleId(module.getModuleId());
-                confOperateInfoMapper.insertSelective(record);
+                try
+                {
+                    ConfOperateInfo record = JSONObject.parseObject(JSONObject.toJSONString(dto), ConfOperateInfo.class);
+                    record.setModuleName(module.getModuleName());
+                    record.setModuleId(module.getModuleId());
+                    confOperateInfoMapper.insertSelective(record);
+                } catch (Exception e) {
+                    logger.warn("查询操作日志表失败！", e);
+                }
             }
         }
     }

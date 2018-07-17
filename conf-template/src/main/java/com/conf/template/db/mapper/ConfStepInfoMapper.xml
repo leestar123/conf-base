@@ -176,19 +176,20 @@
   </update>
   
   <select id="queryCount" resultType="java.lang.Integer">
-  select count(1) from conf_rule_info r, conf_product_step ps, conf_product_node pn, conf_step_info si, conf_flow_info fi, conf_node_info ni
+  select count(1) 
+  from conf_node_info ni, conf_step_info si, conf_flow_info fi
   <where>
-      r.uid = pn.uid and ps.step_id = si.step_id and ps.flow_id = fi.flow_id and ni.node_id = pn.node_id
+      ni.node_id = si.node_id AND si.step_id = fi.step_id 
 	  <if test="nodeId!=null and nodeId!=''">
-	        and t.node_id like '%${nodeId}%' 
+	        and ni.node_id like '%${nodeId}%' 
 	   </if>
 	   <if test="nodeName!=null and nodeName!=''">
-	        and t.node_name like '%${nodeName}%'
+	        and ni.node_name like '%${nodeName}%'
 	   </if>
 	   <if test="stepId!=null and stepId!=''">
-	        and t.step_id = #{stepId}
+	        and si.step_id = #{stepId}
 	   </if>
-	   and r.delete_flag = 0 and ps.delete_flag = 0 and pn.delete_flag = 0 and fi.delete_flag = 0 and ni.delete_flag = 0
+	   and ni.delete_flag = 0 and si.delete_flag = 0 and fi.delete_flag = 0
    </where>
   </select>
   
@@ -244,10 +245,10 @@
   </select>
   
   <select id="queryStep" resultMap="ConfStepDtoResultMap">
-  select si.step_id, ni.node_name, si.step_name, fi.flow_id,  fi.flow_name, fi.flow_path,r.useable, ni.teller, ni.org, ni.create_time from 
-  conf_rule_info r, conf_product_step ps, conf_product_node pn, conf_step_info si, conf_flow_info fi, conf_node_info ni
+  	select si.step_id, ni.node_name, si.step_name, fi.flow_id,  fi.flow_name, fi.flow_path,r.useable, ni.teller, ni.org, ni.create_time
+  	from conf_node_info ni, conf_step_info si, conf_flow_info fi
   <where>
-      r.uid = pn.uid and ps.step_id = si.step_id and ps.flow_id = fi.flow_id and ni.node_id = pn.node_id
+      ni.node_id = si.node_id AND si.step_id = fi.step_id 
 	  <if test="nodeId!=null and nodeId!=''">
 	        and ni.node_id = #{nodeId} 
 	   </if>
@@ -257,6 +258,7 @@
 	   <if test="stepId!=null and stepId!=''">
 	        and si.step_id = #{stepId}
 	   </if>
+	   and ni.delete_flag = 0 and si.delete_flag = 0 and fi.delete_flag = 0
    </where>  
     order by ni.node_id desc
    limit #{startNum},#{pageSize}

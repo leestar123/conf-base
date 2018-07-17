@@ -61,14 +61,14 @@ CREATE TABLE IF NOT EXISTS `conf_operate_info` (
   `remark` varchar(200) NOT NULL COMMENT '操作描述',
   `operate_type` int(2) NOT NULL COMMENT '操作类型 1-增加 2-删除 3-修改',
   `operate_module` int(2) NOT NULL COMMENT '操作模块 1-组件 2-节点 3-阶段 4-流程 5-产品',
-  `module_id` int(11) NOT NULL COMMENT '模块ID',
-  `module_name` varchar(50) NOT NULL COMMENT '模块名称',
+  `module_id` int(11) DEFAULT NULL COMMENT '模块ID',
+  `module_name` varchar(50) DEFAULT NULL COMMENT '模块名称',
   `request` varchar(2000) NOT NULL COMMENT '请求报文',
   `success` int(2) NOT NULL DEFAULT '1' COMMENT '是否成功 0-成功 1-失败',
   `teller` varchar(50) NOT NULL COMMENT '调用柜员',
   `org` varchar(50) NOT NULL COMMENT '调用机构', 
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '调用时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '结束时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `OPERATE_INFO_IDX1` (`operate_type`,`operate_module`,`module_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=70000000 DEFAULT CHARSET=utf8 MAX_ROWS=79999999 CHARSET=utf8;
@@ -111,8 +111,8 @@ CREATE TABLE IF NOT EXISTS `conf_step_info` (
   `teller` varchar(50) NOT NULL COMMENT '操作柜员',
   `org` varchar(50) NOT NULL COMMENT '操作机构',
   `delete_flag` int(2) NOT NULL DEFAULT 0 COMMENT '删除标识 0-未删除 1-删除',  
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`step_id`),
   UNIQUE KEY `NODE_ID_IDX1` (`step_id`,`node_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=90000000 DEFAULT CHARSET=utf8 MAX_ROWS=99999999 CHARSET=utf8;

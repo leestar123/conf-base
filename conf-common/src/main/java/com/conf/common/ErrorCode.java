@@ -32,10 +32,11 @@ public enum ErrorCode {
 	}
 	
 	public String getMsg(Object... params) {
+	    String temp = "";
 		if (params.length > 0) {
-			msg = MessageFormat.format(msg, params);  
+		    temp = MessageFormat.format(msg, params);  
 		}
-		return msg;
+		return temp;
 	}
 	
 	public void setMsg(String msg) {

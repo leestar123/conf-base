@@ -101,7 +101,11 @@ public class ToolsUtil {
 	 */
 	public static ConfOperateInfoDto operateLocalGet()
     {
-        return operateLocal.get() == null ? new ConfOperateInfoDto() : operateLocal.get();
+        if (operateLocal.get() == null) 
+        {
+            operateLocal.set(new ConfOperateInfoDto());
+        } 
+        return operateLocal.get();
     }
 
 	/**

@@ -68,8 +68,6 @@ public class ConfBaseService
         this.invokerService = invokerService;
     }
 
-    private ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
-    
     /**
      * 查询录入阶段的详细信息
      * 
@@ -173,6 +171,7 @@ public class ConfBaseService
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
         
+        ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_FLOW);
         local.setRemark("流程新增");
@@ -272,6 +271,7 @@ public class ConfBaseService
 		confStepInfo.setTeller((String)data.get("teller")); // 操作柜员
 		confStepInfo.setOrg((String)data.get("org")); // 操作机构
 		
+		ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_STEP);
         local.setRemark("阶段新增");
@@ -286,6 +286,10 @@ public class ConfBaseService
         {
             ConfNodeInfo nodeInfo = confNodeInfoMapper.selectByPrimaryKey(nodeId);
             String path = "/" + nodeInfo.getNodeName() + "/" + nodeInfo.getNodeName() + "-" + confStepInfo.getStepName();
+            if (invokerService.fileExistCheck(path)) {
+                logger.info("Floder[" + path + "]is already existing");
+                return ErrorUtil.errorResp(ErrorCode.code_0005, path);
+            }
             logger.info("Begin to  create empty floder[" + path + "] on Urule system");
             invokerService.createFlolder(path);
             logger.info("End to  create empty floder!");

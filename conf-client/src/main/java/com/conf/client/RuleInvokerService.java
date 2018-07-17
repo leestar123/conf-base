@@ -128,13 +128,16 @@ public class RuleInvokerService
      * @param projectName
      * @param types
      * @return
+     * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public boolean createFlolder(String fullFolderName, String projectName, String types)
+    public void createFlolder(String fullFolderName) throws Exception
     {
         HttpServletRequest req = RequestHolder.getRequest();
         HttpServletResponse resp = RequestHolder.getResponse();
-        return getClassify(req, resp);
+        fullFolderName=Utils.decodeURL(fullFolderName);
+        User user=EnvironmentUtils.getLoginUser(new RequestContext(req,resp));
+        repositoryService.createDir(fullFolderName, user);
     }
     
     /**

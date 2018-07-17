@@ -285,9 +285,9 @@ public class ConfBaseService
         try
         {
             ConfNodeInfo nodeInfo = confNodeInfoMapper.selectByPrimaryKey(nodeId);
-            String path = "/" + nodeInfo.getNodeName() + "-" + confStepInfo.getStepName();
+            String path = "/" + nodeInfo.getNodeName() + "/" + nodeInfo.getNodeName() + "-" + confStepInfo.getStepName();
             logger.info("Begin to  create empty floder[" + path + "] on Urule system");
-            invokerService.createProject(path);
+            invokerService.createFlolder(path);
             logger.info("End to  create empty floder!");
         }
         catch (Exception e)

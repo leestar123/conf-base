@@ -57,6 +57,7 @@ DROP TABLE IF EXISTS `conf_operate_info`;
 CREATE TABLE IF NOT EXISTS `conf_operate_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `serial_no` varchar(50) NOT NULL COMMENT '操作流水',
+  `remark` varchar(200) NOT NULL COMMENT '操作描述',
   `operate_type` int(2) NOT NULL COMMENT '操作类型 1-增加 2-删除 3-修改',
   `operate_module` int(2) NOT NULL COMMENT '操作模块 1-组件 2-节点 3-阶段 4-流程 5-产品',
   `module_id` int(11) NOT NULL COMMENT '模块ID',

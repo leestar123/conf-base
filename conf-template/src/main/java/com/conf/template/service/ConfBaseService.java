@@ -174,6 +174,7 @@ public class ConfBaseService
         
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_FLOW);
+        local.setRemark("流程新增");
         ModuleInfo module = new ModuleInfo();
         module.setModuleName(flowName);
         List<ModuleInfo> list = new ArrayList<>();

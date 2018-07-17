@@ -76,6 +76,7 @@ public class NodeService {
         
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_NODE);
+        local.setRemark("节点添加");
         ModuleInfo module = new ModuleInfo();
         module.setModuleName(confNodeInfo.getNodeName());
         List<ModuleInfo> list = new ArrayList<>();
@@ -195,7 +196,8 @@ public class NodeService {
         String newFullPath = null;
         
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
-        local.setOperateModule(Constants.OPERATE_MODULE_NODE);
+        local.setOperateModule(Constants.OPERATE_MODULE_BUND_NODERULE);
+        local.setRemark("节点关联组件添加");
         
         for (int i = 0; i < ruleList.size(); i++)
         {
@@ -251,6 +253,7 @@ public class NodeService {
 	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
         local.setOperateType(Constants.OPERATE_TYPE_DEl);
         local.setOperateModule(Constants.OPERATE_MODULE_BUND_NODERULE);
+        local.setRemark("节点关联组件删除");
         
 		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
 		Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null);
@@ -413,6 +416,8 @@ public class NodeService {
         
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_RULE);
+        local.setRemark("组件创建");
+        
         ModuleInfo module = new ModuleInfo();
         module.setModuleName(ruleName);
         List<ModuleInfo> list = new ArrayList<>();

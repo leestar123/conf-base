@@ -11,6 +11,8 @@ public class ConfOperateInfo {
 
     private Integer operateModule;
 
+    private String remark;
+    
     private Integer moduleId;
 
     private String moduleName;
@@ -122,4 +124,14 @@ public class ConfOperateInfo {
 	public void setSerialNo(String serialNo) {
 		this.serialNo = serialNo;
 	}
+
+    public String getRemark()
+    {
+        return remark;
+    }
+
+    public void setRemark(String remark)
+    {
+        this.remark = remark;
+    }
 }

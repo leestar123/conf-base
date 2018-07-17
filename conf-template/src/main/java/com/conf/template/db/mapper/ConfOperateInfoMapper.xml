@@ -6,6 +6,7 @@
     <result column="serial_no" jdbcType="VARCHAR" property="serialNo" />
     <result column="operate_type" jdbcType="INTEGER" property="operateType" />
     <result column="operate_module" jdbcType="INTEGER" property="operateModule" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="module_id" jdbcType="INTEGER" property="moduleId" />
     <result column="module_name" jdbcType="VARCHAR" property="moduleName" />
     <result column="request" jdbcType="VARCHAR" property="request" />
@@ -16,7 +17,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, serialNo, operate_type, operate_module, module_id, module_name, request, success, teller, 
+    id, serialNo, operate_type, operate_module, remark, module_id, module_name, request, success, teller, 
     org, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -31,11 +32,11 @@
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfOperateInfo">
     insert into conf_operate_info (id, serialNo, operate_type, operate_module, 
-      module_id, module_name, request, 
+      remark, module_id, module_name, request, 
       success, teller, org, 
       create_time, update_time)
     values (#{id,jdbcType=INTEGER}, #{serialNo,jdbcType=VARCHAR}, #{operateType,jdbcType=INTEGER}, #{operateModule,jdbcType=INTEGER}, 
-      #{moduleId,jdbcType=INTEGER}, #{moduleName,jdbcType=VARCHAR}, #{request,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{moduleId,jdbcType=INTEGER}, #{moduleName,jdbcType=VARCHAR}, #{request,jdbcType=VARCHAR}, 
       #{success,jdbcType=INTEGER}, #{teller,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
@@ -53,6 +54,9 @@
       </if>
       <if test="operateModule != null">
         operate_module,
+      </if>
+      <if test="remark != null">
+        remark,
       </if>
       <if test="moduleId != null">
         module_id,
@@ -92,6 +96,9 @@
       <if test="operateModule != null">
         #{operateModule,jdbcType=INTEGER},
       </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="moduleId != null">
         #{moduleId,jdbcType=INTEGER},
       </if>
@@ -130,6 +137,9 @@
       <if test="operateModule != null">
         operate_module = #{operateModule,jdbcType=INTEGER},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>      
       <if test="moduleId != null">
         module_id = #{moduleId,jdbcType=INTEGER},
       </if>
@@ -162,6 +172,7 @@
     set serial_no = #{serialNo,jdbcType=VARCHAR},
       operate_type = #{operateType,jdbcType=INTEGER},
       operate_module = #{operateModule,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
       module_id = #{moduleId,jdbcType=INTEGER},
       module_name = #{moduleName,jdbcType=VARCHAR},
       request = #{request,jdbcType=VARCHAR},

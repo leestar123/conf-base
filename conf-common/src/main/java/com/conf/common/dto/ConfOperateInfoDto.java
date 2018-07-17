@@ -11,6 +11,8 @@ public class ConfOperateInfoDto {
     private Integer operateType;
 
     private Integer operateModule;
+    
+    private String remark;
 
     private List<ModuleInfo> module;
 
@@ -116,5 +118,15 @@ public class ConfOperateInfoDto {
     public void setSerialNo(String serialNo)
     {
         this.serialNo = serialNo;
+    }
+
+    public String getRemark()
+    {
+        return remark;
+    }
+
+    public void setRemark(String remark)
+    {
+        this.remark = remark;
     }
 }

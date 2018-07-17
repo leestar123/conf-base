@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `conf_node_info` (
   `version` varchar(12) NOT NULL COMMENT '版本号',
   `teller` varchar(50) DEFAULT NULL COMMENT '操作柜员',
   `org` varchar(50) DEFAULT NULL COMMENT '操作机构',
+  `delete_flag` int(2) NOT NULL DEFAULT 0 COMMENT '删除标识 0-未删除 1-删除',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`node_id`),
@@ -33,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `conf_node_template` (
   `uid` int(12) NOT NULL COMMENT '属性/规则id',
   `teller` varchar(50) DEFAULT NULL COMMENT '操作柜员',
   `org` varchar(50) DEFAULT NULL COMMENT '操作机构',
+  `delete_flag` int(2) NOT NULL DEFAULT 0 COMMENT '删除标识 0-未删除 1-删除',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',  
   PRIMARY KEY (`id`),
@@ -50,6 +52,9 @@ CREATE TABLE IF NOT EXISTS `conf_product_node` (
   `teller` varchar(2) DEFAULT NULL COMMENT '操作柜员',
   `org` varchar(50) DEFAULT NULL COMMENT '操作机构',
   `product_name` varchar(50) DEFAULT NULL COMMENT '产品名称',
+  `delete_flag` int(2) NOT NULL DEFAULT 0 COMMENT '删除标识 0-未删除 1-删除',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',  
   PRIMARY KEY (`id`),
   UNIQUE KEY `PRODUCT_NODE_IDX` (`product_id`,`node_id`,`uid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30000000 DEFAULT CHARSET=utf8 MAX_ROWS=39999999 COMMENT='产品关联组件配置';
@@ -69,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `conf_rule_info` (
   `teller` varchar(12) DEFAULT NULL COMMENT '柜员号',
   `org` varchar(12) DEFAULT NULL COMMENT '机构号',
   `useable` varchar(2) DEFAULT NULL COMMENT '是否启用,0-启用 1-停用',
+  `delete_flag` int(2) NOT NULL DEFAULT 0 COMMENT '删除标识 0-未删除 1-删除',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',  
   PRIMARY KEY (`uid`),

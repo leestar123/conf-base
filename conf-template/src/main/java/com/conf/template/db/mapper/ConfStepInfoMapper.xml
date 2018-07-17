@@ -10,6 +10,7 @@
     <result column="org" jdbcType="VARCHAR" property="org" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
   </resultMap>
    
   <resultMap type="com.conf.template.db.dto.ConfStepAndFLowInfo" id="StepAndFlowMap">
@@ -36,7 +37,7 @@
     </resultMap>
   
   <sql id="Base_Column_List">
-    step_id, node_id, step_name, remark, teller, org, create_time, update_time
+    step_id, node_id, step_name, remark, teller, org, create_time, update_time, delete_flag
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -48,7 +49,7 @@
   <select id="selectStepAndFlowInfo" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select step_id, step_name
     from conf_step_info
-    where node_id = #{nodeId,jdbcType=INTEGER}
+    where node_id = #{nodeId,jdbcType=INTEGER} and delete_flag = 0
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -136,11 +137,8 @@
       <if test="org != null">
         org = #{org,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
       </if>
     </set>
     where step_id = #{stepId,jdbcType=INTEGER}
@@ -152,8 +150,7 @@
       remark = #{remark,jdbcType=VARCHAR},
       teller = #{teller,jdbcType=VARCHAR},
       org = #{org,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+	  delete_flag = #{deleteFlag,jdbcType=INTEGER}
     where step_id = #{stepId,jdbcType=INTEGER}
   </update>
   
@@ -169,6 +166,7 @@
 	   <if test="stepId!=null and stepId!=''">
 	        and t.step_id = #{stepId}
 	   </if>
+	   and t.delete_flag = 0
    </where>
   </select>
   
@@ -184,6 +182,7 @@
 	   <if test="stepId!=null and stepId!=''">
 	        and t.step_id = #{stepId}
 	   </if>
+	   and t.delete_flag = 0
    </where>  
    order by t.node_id desc
    limit #{startNum},#{pageSize}
@@ -198,6 +197,7 @@
 	   <if test="nodeId!=null and nodeId!=''">
 	        and s.node_id = #{nodeId}
 	   </if>
+	   and s.delete_flag = 0 and p.delete_flag = 0
    </where>  
   </select>
   
@@ -218,6 +218,7 @@
 	    <if test="useable!=null and useable!=''">
 	        and r.useable = #{useable}
 	   </if>
+	   and r.delete_flag = 0 ande ps.delete_flag = 0 and pn.delete_flag = 0 and si.delete_flag = 0 and fi.delete_flag = 0
    </where>  
   </select>
 </mapper>

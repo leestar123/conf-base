@@ -20,6 +20,8 @@ public class ConfFlowInfo {
     private Date createTime;
 
     private Date updateTime;
+    
+    private Integer deleteFlag;
 
     public Integer getFlowId() {
         return flowId;
@@ -91,5 +93,15 @@ public class ConfFlowInfo {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getDeleteFlag()
+    {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(Integer deleteFlag)
+    {
+        this.deleteFlag = deleteFlag;
     }
 }

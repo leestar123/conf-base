@@ -11,6 +11,9 @@
     <result column="teller" jdbcType="VARCHAR" property="teller" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="org" jdbcType="VARCHAR" property="org" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />    
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />   
   </resultMap>
   <resultMap type="com.conf.template.db.dto.ConfNodeInfoAndProduct" id="NodeByProductMap">
   <id column="product_id" property="productId"/>
@@ -19,7 +22,7 @@
   									column="{productId = product_id}" fetchType="eager"></collection>
   </resultMap>
   <sql id="Base_Column_List">
-    id, product_id, node_id, uid, effect, sequence, teller, org,product_name
+    id, product_id, node_id, uid, effect, sequence, teller, org,product_name, create_time, update_time, delete_flag
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -122,6 +125,9 @@
       <if test="productName != null">
         product_name = #{productName,jdbcType=VARCHAR},
       </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -134,7 +140,8 @@
       sequence = #{sequence,jdbcType=INTEGER},
       teller = #{teller,jdbcType=VARCHAR},
       org = #{org,jdbcType=VARCHAR},
-      product_name = #{productName,jdbcType=VARCHAR}
+      product_name = #{productName,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
   
@@ -147,12 +154,14 @@
   <select id="queryProductIdCount"  resultType="java.lang.Integer">
     select 
     COUNT(DISTINCT product_id)
-    from conf_product_node
+    from conf_product_node 
+    where delete_flag = 0
     limit #{startNum},#{pageSize}
   </select>
   <select id="batchQueryNodeByProduct" resultMap="NodeByProductMap">
   	select DISTINCT product_id ,product_name
   	from conf_product_node 
+  	where delete_flag = 0
     limit #{startNum},#{pageSize}
   </select>
   
@@ -163,6 +172,7 @@
   where  node_id = #{nodeId}
     and product_id = #{productId}
     and uid = #{uid}
+    and delete_flag = 0
   </update>
   
   <update id="updateInvalidStatus">
@@ -176,6 +186,7 @@
             separator="," close=")">
             #{item}  
      </foreach>
+    and delete_flag = 0
   </update>
   
 </mapper>

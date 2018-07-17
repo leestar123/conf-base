@@ -21,6 +21,18 @@ public class ConfNodeInfo {
     
     private Date updateTime;
     
+    private Integer deleteFlag;
+    
+    public Integer getDeleteFlag()
+    {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(Integer deleteFlag)
+    {
+        this.deleteFlag = deleteFlag;
+    }
+
     public Integer getNodeId() {
         return nodeId;
     }

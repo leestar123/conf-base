@@ -10,10 +10,11 @@
     <result column="teller" jdbcType="VARCHAR" property="teller" />
     <result column="org" jdbcType="VARCHAR" property="org" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />    
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />    
   </resultMap>
   <sql id="Base_Column_List">
-    node_id, node_name, remark, node_type, version, teller, org, create_time, update_time
+    node_id, node_name, remark, node_type, version, teller, org, create_time, update_time, delete_flag
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,6 +32,7 @@
 	   <if test="nodeType!=null and nodeType!=''">
 	        and t.node_type = #{nodeType}
 	   </if>
+	   and t.delete_flag = 0
    </where>
   </select>
   
@@ -43,6 +45,7 @@
 	   <if test="nodeType!=null and nodeType!=''">
 	        and t.node_type = #{nodeType}
 	   </if>
+	   and t.delete_flag = 0
    </where>  
    order by t.node_id desc
    limit #{startNum},#{pageSize}
@@ -127,6 +130,9 @@
       <if test="org != null">
         org = #{org,jdbcType=VARCHAR},
       </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
     </set>
     where node_id = #{nodeId,jdbcType=INTEGER}
   </update>
@@ -137,15 +143,16 @@
       node_type = #{nodeType,jdbcType=VARCHAR},
       version = #{version,jdbcType=VARCHAR},
       teller = #{teller,jdbcType=VARCHAR},
-      org = #{org,jdbcType=VARCHAR}
+      org = #{org,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
     where node_id = #{nodeId,jdbcType=INTEGER}
   </update>
   
   <select id="queryNodeByProduct" resultMap="BaseResultMap">
   select m.*
     from conf_product_node t left join conf_node_info m 
-    on t.node_id = m.node_id
-    where t.product_id = #{productId}
+    on t.node_id = m.node_id and m.delete_flag = 0
+    where t.product_id = #{productId} and t.delete_flag = 0
     group by t.node_id
     limit #{startNum},#{pageSize}  
    </select>
@@ -153,15 +160,15 @@
    <select id="queryNodeCountByProduct" resultType="java.lang.Integer">
   select count(distinct(t.node_id))
     from conf_product_node t left join conf_node_info m 
-    on t.node_id = m.node_id
-    where t.product_id = #{productId} 
+    on t.node_id = m.node_id and m.delete_flag = 0
+    where t.product_id = #{productId} and t.delete_flag = 0
    </select>
 
 	<select id="queryNodeByProducts" resultMap="BaseResultMap">
 		select m.* from (
 		select distinct(node_id) from conf_product_node 
-		where product_id = #{productId}
+		where product_id = #{productId} and delete_flag = 0
 		) t left join conf_node_info m
-		on t.node_id = m.node_id
+		on t.node_id = m.node_id and m.delete_flag = 0
 	</select>
 </mapper>

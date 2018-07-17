@@ -1,5 +1,7 @@
 package com.conf.template.db.model;
 
+import java.util.Date;
+
 public class ConfProductNode {
     private Integer id;
 
@@ -18,6 +20,22 @@ public class ConfProductNode {
     private String org;
     
     private String productName;
+    
+    private Integer deleteFlag;
+    
+    private Date createTime;
+    
+    private Date updateTime;
+    
+    public Integer getDeleteFlag()
+    {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(Integer deleteFlag)
+    {
+        this.deleteFlag = deleteFlag;
+    }
 
     public String getProductName() {
 		return productName;
@@ -90,4 +108,24 @@ public class ConfProductNode {
 	public void setSequence(Integer sequence) {
 		this.sequence = sequence;
 	}
+
+    public Date getCreateTime()
+    {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime)
+    {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime()
+    {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime)
+    {
+        this.updateTime = updateTime;
+    }
 }

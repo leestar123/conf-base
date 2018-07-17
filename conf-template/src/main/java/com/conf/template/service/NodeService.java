@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.nanjingbank.api.riskmanagement.entity.PostLoanBeanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -580,8 +579,12 @@ public class NodeService {
         String processId = ToolsUtil.obj2Str(data.get("processId"));
         String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
         List<Object> objList = new ArrayList<Object>();
-        PostLoanBeanResult postLoanBeanResult = new PostLoanBeanResult();
-        objList.add(postLoanBeanResult);
+        Object obj = data.get("objList");
+        if (obj != null && List.class.isInstance(obj))
+        {
+            objList = (List<Object>)objList;
+        }
+        
         List<Object> objListUnCheck = new ArrayList<Object>();
         try
         {

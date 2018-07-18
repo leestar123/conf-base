@@ -16,6 +16,8 @@ public class ToolsUtil {
 	
 	static ThreadLocal<ConfOperateInfoDto> operateLocal =new ThreadLocal<>(); 
 	
+	static ThreadLocal<String> invokerLocal =new ThreadLocal<>(); 
+	
 	public static int sequence =0;
 	/**
 	 * Object对象转换为String
@@ -119,6 +121,31 @@ public class ToolsUtil {
     {
         operateLocal.set(value);
     }
+    
+    /**
+     * 
+     * <一句话功能简述>
+     * <功能详细描述>
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public static String invokerLocalGet()
+    {
+        return invokerLocal.get();
+    }
+
+    /**
+     * 
+     * <一句话功能简述>
+     * <功能详细描述>
+     * @param operateLocal
+     * @see [类、类#方法、类#成员]
+     */
+    public static void invokerLocalSet(String value)
+    {
+        invokerLocal.set(value);
+    }
+    
 
     /**
 	 * 组装路径

@@ -29,11 +29,13 @@ import com.conf.template.db.mapper.ConfInvokInfoMapper;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
 import com.conf.template.db.mapper.ConfOperateInfoMapper;
 import com.conf.template.db.mapper.ConfProductStepMapper;
+import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.mapper.ConfStepInfoMapper;
 import com.conf.template.db.model.ConfFlowInfo;
 import com.conf.template.db.model.ConfInvokInfo;
 import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfProductStep;
+import com.conf.template.db.model.ConfRuleInfo;
 import com.conf.template.db.model.ConfStepInfo;
 
 @Service
@@ -58,6 +60,9 @@ public class ConfBaseService
     private ConfOperateInfoMapper confOperateInfoMapper;
     
     @Autowired
+    private ConfRuleInfoMapper confRuleInfoMapper;
+    
+    @Autowired
     private RuleInvokerService invokerService;
     
     @Autowired
@@ -73,6 +78,7 @@ public class ConfBaseService
      * 
      * @param data
      * @return
+     * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
     @SuppressWarnings("unchecked")
@@ -80,33 +86,36 @@ public class ConfBaseService
     public Map<String, ? extends Object> queryFlowDetail(Map<String, ? extends Object> data)
     {
         String flowPath = ToolsUtil.obj2Str(data.get("flowPath"));
+        List<String> nameList = new ArrayList<>();
+        List<String> beanList = new ArrayList<>();
+        
+        Document document = null;
         try {
-            List<String> nameList = new ArrayList<>();
-            List<String> beanList = new ArrayList<>();
-            
-            Document document = invokerService.getFileSource(flowPath);
-            Element root = document.getRootElement();
-            //查询规则
-            List<Element> ruleList = root.elements("rule");
-            for (Element element : ruleList)
-            {
-                String file = element.attributeValue("file");
-                file = file.substring(file.lastIndexOf("/") +  1, file.length());
-                file.substring(0, file.indexOf("."));
-                nameList.add(file);
-            }
-            //查询动作
-            List<Element> actionList = root.elements("action");
-            for (Element element : actionList)
-            {
-                String bean = element.attributeValue("action-bean");
-                beanList.add(bean);
-            }
-            
+            document = invokerService.getFileSource(flowPath);
         } catch (Exception e) {
-            
+            return ErrorUtil.errorResp(ErrorCode.code_9999);
         }
-        return null;
+        Element root = document.getRootElement();
+        //查询规则
+        List<Element> ruleList = root.elements("rule");
+        for (Element element : ruleList)
+        {
+            String file = element.attributeValue("file");
+            file = file.substring(file.lastIndexOf("/") + 1, file.length());
+            file = file.substring(0, file.indexOf("."));
+            nameList.add(file);
+        }
+        //查询动作
+        List<Element> actionList = root.elements("action");
+        for (Element element : actionList)
+        {
+            String bean = element.attributeValue("action-bean");
+            beanList.add(bean);
+        }
+        List<ConfRuleInfo> list = confRuleInfoMapper.selectList(nameList, beanList);
+        Map<String, Object> body = new HashMap<>();
+        body.put("list", list);
+        return ErrorUtil.successResp(body);
     }
     
     /**
@@ -224,8 +233,11 @@ public class ConfBaseService
         record.setTeller(teller);
         confFlowInfoMapper.insertSelective(record);
         module.setModuleId(record.getFlowId());
-        
-        return ErrorUtil.successResp(new HashMap<>());
+        String url =
+            Constants.RULE_URL_BASE + "ruleflowdesigner?file=".concat(path).concat("&nodeId=" + stepInfo.getNodeId());
+        Map<String, Object> body = new HashMap<>();
+        body.put("url", url);
+        return ErrorUtil.successResp(body);
     }
     
     /**
@@ -395,4 +407,30 @@ public class ConfBaseService
 		body.put("list", list);
 		return ErrorUtil.successResp(body);
 	}
+	
+	/**
+	 * 查询流程列表
+	 * 
+	 * @param data
+	 * @return
+	 * @see [类、类#方法、类#成员]
+	 */
+    public Map<String, ? extends Object> queryFlowList(Map<String, ? extends Object> data)
+    {
+        Integer stepId = ToolsUtil.obj2Int(data.get("stepId"), null); // 节点编号
+        ConfStepInfo confStepInfo = confStepInfoMapper.selectByPrimaryKey(stepId);
+        List<ConfFlowInfo> list =confFlowInfoMapper.selectByStep(stepId);
+        List<JSONObject> jsonList = new ArrayList<>();
+        Map<String, Object> body = new HashMap<>();
+        for (ConfFlowInfo confFlowInfo : list)
+        {
+            JSONObject json = JSONObject.parseObject(JSONObject.toJSONString(confFlowInfo));
+            String url =
+                Constants.RULE_URL_BASE + "ruleflowdesigner?file=".concat(confFlowInfo.getFlowPath()).concat("&nodeId=" + confStepInfo.getNodeId());
+            json.put("key", url);
+            jsonList.add(json);
+        }
+        body.put("list", jsonList);
+        return ErrorUtil.successResp(body);
+    }
 }

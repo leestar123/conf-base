@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `conf_rule_info` (
   `version` varchar(12) DEFAULT NULL COMMENT '版本号',
   `teller` varchar(12) DEFAULT NULL COMMENT '柜员号',
   `org` varchar(12) DEFAULT NULL COMMENT '机构号',
-  `useable` varchar(2) DEFAULT NULL COMMENT '是否启用,0-启用 1-停用',
+  `useable` varchar(2) NOT NULL DEFAULT 0 COMMENT '是否启用,0-启用 1-停用',
   `delete_flag` int(2) NOT NULL DEFAULT 0 COMMENT '删除标识 0-未删除 1-删除',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',  

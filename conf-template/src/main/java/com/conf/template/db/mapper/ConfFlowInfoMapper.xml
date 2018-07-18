@@ -23,6 +23,12 @@
     from conf_flow_info
     where flow_id = #{flowId,jdbcType=INTEGER}
   </select>
+  <select id="selectByStep" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_flow_info
+    where step_id = #{stepId,jdbcType=INTEGER}
+  </select>
   <select id="selectBySelective" parameterType="com.conf.template.db.model.ConfFlowInfo" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

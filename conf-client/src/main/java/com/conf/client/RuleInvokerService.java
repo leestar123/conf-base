@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -232,7 +233,7 @@ public class RuleInvokerService
      * @param processId
      * @throws Exception
      */
-    public void executeProcess(String packageId, List<Object> objList, List<Object> objListUnCheck, String processId)
+    public Map<String, Object> executeProcess(String packageId, List<Object> objList, List<Object> objListUnCheck, String processId)
         throws Exception
     {
         KnowledgePackage knowledgePackage;
@@ -247,6 +248,8 @@ public class RuleInvokerService
             session.insert(objUnCkecked);
         }
         session.startProcess(processId);
+        session.writeLogFile();
+        return session.getParameters();
     }
     
     private boolean getClassify(HttpServletRequest req, HttpServletResponse resp)

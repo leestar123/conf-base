@@ -34,7 +34,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-   uid,rule_name,remark,clazz,method,param,version,effect,teller,org,rule_path,rule_type,create_time,update_time,delete_flag
+   uid,rule_name,remark,clazz,method,param,version,teller,org,rule_path,rule_type,create_time,update_time,delete_flag
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -251,16 +251,23 @@
   </update>
   <select id="selectList" resultMap="BaseResultMap">
   	select  <include refid="Base_Column_List" />
-    from conf_rule_info where rule_name in
-     <foreach item="item" index="index" collection="ruleNames" open="("
-            separator="," close=")">
-            #{item} 
-     </foreach>
-     and clazz in
-     <foreach item="item" index="index" collection="beans" open="("
-            separator="," close=")">
-            #{item} 
-     </foreach>
-     and delete_flag = 0
+    from conf_rule_info
+    <where>
+	    <if test="ruleNames != null and ruleNames.size() > 0"> 
+	   		 rule_name in
+		     <foreach item="item" index="index" collection="ruleNames" open="("
+		            separator="," close=")">
+		            #{item} 
+		     </foreach>
+	     </if>
+	     <if test="beans != null and beans.size() > 0"> 
+		     and clazz in
+		     <foreach item="item" index="index" collection="beans" open="("
+		            separator="," close=")">
+		            #{item} 
+		     </foreach>
+	     </if>
+	     and delete_flag = 0
+     </where>
   </select>
 </mapper>

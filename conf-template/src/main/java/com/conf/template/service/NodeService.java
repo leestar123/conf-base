@@ -24,10 +24,12 @@ import com.conf.common.ToolsUtil;
 import com.conf.common.dto.ConfOperateInfoDto;
 import com.conf.common.dto.ModuleInfo;
 import com.conf.template.db.dto.ConfNodeInfoAndProduct;
+import com.conf.template.db.mapper.ConfInvokInfoMapper;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
 import com.conf.template.db.mapper.ConfNodeTemplateMapper;
 import com.conf.template.db.mapper.ConfProductNodeMapper;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
+import com.conf.template.db.model.ConfInvokInfo;
 import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfNodeTemplate;
 import com.conf.template.db.model.ConfProductNode;
@@ -50,6 +52,9 @@ public class NodeService {
 	@Autowired
 	ConfProductNodeMapper confProductNodeMapper;
 	
+    @Autowired
+    ConfInvokInfoMapper confInvokInfoMapper;
+    
     @Autowired
     private RuleInvokerService invokerService;
 	
@@ -577,9 +582,15 @@ public class NodeService {
     public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data)
     {
         logger.info("Begin to excute knowledge service!");
+        
         String packageId = ToolsUtil.obj2Str(data.get("packageId"));
         String processId = ToolsUtil.obj2Str(data.get("processId"));
         String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        ConfInvokInfo invokInfo = new ConfInvokInfo();
+        invokInfo.setRequest(JSONObject.toJSONString(data));
+        invokInfo.setService(processId);
+        invokInfo.setSuccess(1);
+        
         List<Object> objList = new ArrayList<Object>();
         Object obj = data.get("objList");
         if (obj != null && List.class.isInstance(obj))

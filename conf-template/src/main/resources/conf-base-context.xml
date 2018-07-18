@@ -43,4 +43,5 @@
 		<property name="property" ref="propertyConf"></property>
 	</bean>
 
+	<bean id="invokerDebugWriter" class="com.conf.template.process.InvokerDebugWriter" />
 </beans>

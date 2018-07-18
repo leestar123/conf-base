@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bstek.urule.debug.DebugWriter;
 import com.bstek.urule.debug.MessageItem;
+import com.conf.common.ToolsUtil;
 
 public class InvokerDebugWriter implements DebugWriter
 {
@@ -12,11 +13,12 @@ public class InvokerDebugWriter implements DebugWriter
     public void write(List<MessageItem> items)
         throws IOException
     {
-
-        StringBuilder sb=new StringBuilder();
-        for(MessageItem item:items){
+        StringBuilder sb = new StringBuilder();
+        for (MessageItem item : items)
+        {
             sb.append(item.toHtml());
         }
+        ToolsUtil.invokerLocalSet(sb.toString());
     }
     
 }

@@ -65,4 +65,11 @@ public class Constants {
     public final static Integer OPERATE_MODULE_BUND_NODERULE= 5;
     
     public final static Integer OPERATE_MODULE_BUND_PRODUCTSTEP = 6;
+    
+    /**
+     * 执行状态 0-成功 1-失败
+     */
+    public final static Integer EXCUTE_STATUS_SUCCESS = 0;
+    
+    public final static Integer EXCUTE_STATUS_FAIL = 1;
 }

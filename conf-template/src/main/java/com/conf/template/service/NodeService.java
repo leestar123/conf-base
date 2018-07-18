@@ -586,10 +586,15 @@ public class NodeService {
         String packageId = ToolsUtil.obj2Str(data.get("packageId"));
         String processId = ToolsUtil.obj2Str(data.get("processId"));
         String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        String teller = ToolsUtil.obj2Str(data.get("teller"));
+        String org = ToolsUtil.obj2Str(data.get("org"));
+        
         ConfInvokInfo invokInfo = new ConfInvokInfo();
         invokInfo.setRequest(JSONObject.toJSONString(data));
         invokInfo.setService(processId);
-        invokInfo.setSuccess(1);
+        invokInfo.setSuccess(Constants.EXCUTE_STATUS_FAIL);
+        invokInfo.setTeller(teller);
+        invokInfo.setOrg(org);
         
         List<Object> objList = new ArrayList<Object>();
         Object obj = data.get("objList");
@@ -604,11 +609,24 @@ public class NodeService {
             logger.info("Excute knowledge service actually, file is [" + nodeName + "/" + packageId + "]!");
             invokerService.executeProcess(nodeName + "/" + packageId, objList, objListUnCheck, processId);
             logger.info("End to excute knowledge service");
+            invokInfo.setDetail(ToolsUtil.invokerLocalGet());
+            invokInfo.setSuccess(Constants.EXCUTE_STATUS_SUCCESS);
         }
         catch (Exception e)
         {
             logger.error("Excute knowledge [" + processId + "] failly!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
+        }
+        finally
+        {
+            try
+            {
+                confInvokInfoMapper.insertSelective(invokInfo);
+            }
+            catch (Exception e)
+            {
+                logger.warn("调用日志表插入失败！", e);
+            }
         }
         Map<String, Object> body = new HashMap<>();
         return ErrorUtil.successResp(body);

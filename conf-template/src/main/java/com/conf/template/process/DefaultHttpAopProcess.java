@@ -33,37 +33,42 @@ public class DefaultHttpAopProcess implements HttpAopProcess
         //设置请求报文及请求时间
         dto.setTeller(ToolsUtil.obj2Str(data.get(Constants.TELLER)));
         dto.setOrg(ToolsUtil.obj2Str(data.get(Constants.ORG)));
-        if (StringUtils.isBlank(dto.getOrg())) {
+        if (StringUtils.isBlank(dto.getOrg()))
+        {
             
         }
-        if (StringUtils.isBlank(dto.getTeller())) {
+        if (StringUtils.isBlank(dto.getTeller()))
+        {
             
         }
         dto.setSerialNo(MDC.get("serialNo") + "");
         dto.setRequest(JSONObject.toJSONString(data));
         dto.setCreateTime(new Date(System.currentTimeMillis()));
     }
-
+    
     @Override
     public void afterPorcess(Map<String, ? extends Object> data)
     {
         ConfOperateInfoDto dto = ToolsUtil.operateLocalGet();
         //保存请求消息
         Boolean success = ErrorUtil.isSuccess(data);
-        dto.setSuccess(success ? 0 : 1);
+        dto.setSuccess(success ? Constants.EXCUTE_STATUS_SUCCESS : Constants.EXCUTE_STATUS_FAIL);
         //查询操作不添加记录
-        if(dto.getOperateType() != null)
+        if (dto.getOperateType() != null)
         {
             for (ModuleInfo module : dto.getModule())
             {
                 try
                 {
-                    ConfOperateInfo record = JSONObject.parseObject(JSONObject.toJSONString(dto), ConfOperateInfo.class);
+                    ConfOperateInfo record =
+                        JSONObject.parseObject(JSONObject.toJSONString(dto), ConfOperateInfo.class);
                     record.setModuleName(module.getModuleName());
                     record.setModuleId(module.getModuleId());
                     confOperateInfoMapper.insertSelective(record);
-                } catch (Exception e) {
-                    logger.warn("查询操作日志表失败！", e);
+                }
+                catch (Exception e)
+                {
+                    logger.warn("操作日志表插入记录失败！", e);
                 }
             }
         }

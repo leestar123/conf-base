@@ -64,7 +64,7 @@
     where step_id = #{stepId,jdbcType=INTEGER}
   </select>
   
-  <select id="selectStepAndFlowInfo" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectStepAndFlowInfo" parameterType="java.lang.Integer" resultMap="StepAndFlowMap">
     select step_id, step_name
     from conf_step_info
     where node_id = #{nodeId,jdbcType=INTEGER} and delete_flag = 0

@@ -597,9 +597,14 @@ public class NodeService {
         String org = ToolsUtil.obj2Str(data.get("org"));
         Integer flowId = ToolsUtil.obj2Int(data.get("flowId"), null);
         ConfFlowInfo flowInfo = confFlowInfoMapper.selectByPrimaryKey(flowId);
-        if (flowId == null) 
+        if (flowInfo == null) 
         {
             return ErrorUtil.errorResp(ErrorCode.code_0009, flowId);
+        }
+        ConfNodeInfo nodeInfo = confNodeInfoMapper.queryNodeByStep(flowInfo.getStepId());
+        if (nodeInfo == null)
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0010, flowInfo.getStepId());
         }
         
         ConfInvokInfo invokInfo = new ConfInvokInfo();
@@ -623,7 +628,7 @@ public class NodeService {
                     String key = ToolsUtil.obj2Str(map.get("key"));
                     map.remove("key");
                     if (StringUtils.isBlank(clazzMap.get(key))) {
-                        buildKnowledgeObject("/风险评控", key);
+                        buildKnowledgeObject("/" + nodeInfo.getNodeName(), key);
                     }
                     String clazz = clazzMap.get(key);
                     GeneralEntity entity = new GeneralEntity(clazz);
@@ -637,7 +642,8 @@ public class NodeService {
             logger.info("Excute knowledge service actually, file is [" + flowInfo.getFlowPath() + "]!");
             Document doc = invokerService.getFileSource(flowInfo.getFlowPath());
             String processId = doc.getRootElement().attributeValue("id");
-            invokerService.executeProcess("风险评控/riskWarning", entityList, processId);
+            //TODO：
+            invokerService.executeProcess(nodeInfo.getNodeName() + "/riskWarning", entityList, processId);
             logger.info("End to excute knowledge service");
             invokInfo.setDetail(ToolsUtil.invokerLocalGet());
             invokInfo.setSuccess(Constants.EXCUTE_STATUS_SUCCESS);

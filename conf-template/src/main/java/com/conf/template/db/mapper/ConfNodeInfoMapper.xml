@@ -171,4 +171,11 @@
 		) t left join conf_node_info m
 		on t.node_id = m.node_id and m.delete_flag = 0
 	</select>
+	
+	<select id="queryNodeByStep" resultMap="BaseResultMap">
+		select n.* from conf_step_info t
+		left join conf_node_info n on t.node_id = n.node_id
+		where t.step_id = #{stepId}
+	</select>
+	
 </mapper>

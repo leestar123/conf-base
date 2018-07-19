@@ -16,7 +16,7 @@ public class InvokerDebugWriter implements DebugWriter
         StringBuilder sb = new StringBuilder();
         for (MessageItem item : items)
         {
-            sb.append(item.toHtml());
+            sb.append(item.getMsg());
         }
         ToolsUtil.invokerLocalSet(sb.toString());
     }

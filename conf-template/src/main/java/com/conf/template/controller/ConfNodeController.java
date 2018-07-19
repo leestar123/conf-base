@@ -395,20 +395,10 @@ public class ConfNodeController implements CommController{
      */
     @ApiException
 	public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data) {
-		String packageId = ToolsUtil.obj2Str(data.get("packageId"));
-		String processId = ToolsUtil.obj2Str(data.get("processId"));
-		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		if (StringUtils.isBlank(nodeName))
+		String flowId = ToolsUtil.obj2Str(data.get("flowId"));
+		if (StringUtils.isBlank(flowId))
         {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
-        }
-		if (StringUtils.isBlank(packageId))
-        {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "packageId");
-        }
-        if (StringUtils.isBlank(processId))
-        {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "processId");
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "flowId");
         }
 		return nodeService.excuteKnowledge(data);
 	}

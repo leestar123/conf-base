@@ -3,6 +3,7 @@ package com.conf.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +23,14 @@ import com.bstek.urule.builder.KnowledgeBuilder;
 import com.bstek.urule.builder.ResourceBase;
 import com.bstek.urule.console.EnvironmentUtils;
 import com.bstek.urule.console.User;
+import com.bstek.urule.console.repository.Repository;
 import com.bstek.urule.console.repository.RepositoryService;
 import com.bstek.urule.console.repository.model.FileType;
+import com.bstek.urule.console.repository.model.RepositoryFile;
 import com.bstek.urule.console.servlet.RequestContext;
 import com.bstek.urule.console.servlet.RequestHolder;
 import com.bstek.urule.console.servlet.respackage.HttpSessionKnowledgeCache;
+import com.bstek.urule.model.GeneralEntity;
 import com.bstek.urule.runtime.KnowledgePackage;
 import com.bstek.urule.runtime.KnowledgeSession;
 import com.bstek.urule.runtime.KnowledgeSessionFactory;
@@ -233,7 +237,7 @@ public class RuleInvokerService
      * @param processId
      * @throws Exception
      */
-    public Map<String, Object> executeProcess(String packageId, List<Object> objList, List<Object> objListUnCheck, String processId)
+    public Map<String, Object> executeProcess(String packageId, List<GeneralEntity> objList, String processId)
         throws Exception
     {
         KnowledgePackage knowledgePackage;
@@ -242,10 +246,6 @@ public class RuleInvokerService
         for (Object objNeedChecked : objList)
         {
             session.insert(objNeedChecked);
-        }
-        for (Object objUnCkecked : objListUnCheck)
-        {
-            session.insert(objUnCkecked);
         }
         session.startProcess(processId);
         session.writeLogFile();
@@ -507,6 +507,62 @@ public class RuleInvokerService
     public void setKnowledgeService(KnowledgeService knowledgeService)
     {
         this.knowledgeService = knowledgeService;
+    }
+    
+    /**
+     * 
+     * <一句话功能简述>
+     * <功能详细描述>
+     * @param projectName
+     * @param types
+     * @param searchFileName
+     * @return
+     * @throws Exception
+     * @see [类、类#方法、类#成员]
+     */
+    public List<String> getDirectories(String projectName, FileType[] types, String searchFileName)
+        throws Exception
+    {
+        HttpServletRequest req = RequestHolder.getRequest();
+        HttpServletResponse resp = RequestHolder.getResponse();
+        boolean classify = getClassify(req, resp);
+        User user = EnvironmentUtils.getLoginUser(new RequestContext(req, resp));
+        Repository repo = repositoryService.loadRepository(projectName, user, classify, types, searchFileName);
+        List<String> fileList = new ArrayList<>();
+        List<String> result = new ArrayList<>();
+        RepositoryFile root = repo.getRootFile();
+        paraseRepo(root, fileList);
+        for (String file : fileList)
+        {
+            for (FileType type : types)
+            {
+                if (file.endsWith(type.toString()))
+                {
+                    result.add(file);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * 解析获取文件列表
+     * 
+     * @param root
+     * @param pathList
+     * @see [类、类#方法、类#成员]
+     */
+    public void paraseRepo (RepositoryFile root, List<String> pathList) {
+        if (root.getChildren() != null && root.getChildren().size() > 0) {
+            for (RepositoryFile file : root.getChildren())
+            {
+                paraseRepo(file, pathList);
+            }
+        } else {
+            String fullPath = root.getFullPath();
+            pathList.add(fullPath);
+        }
     }
     
 }

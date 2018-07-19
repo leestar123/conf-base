@@ -28,12 +28,12 @@
     <result column="teller" jdbcType="VARCHAR" property="teller" />
     <result column="org" jdbcType="VARCHAR" property="org" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-        <association property="confStepInfo" javaType="com.conf.template.db.model.ConfStepInfo">
+       <!--  <association property="confStepInfo" javaType="com.conf.template.db.model.ConfStepInfo">
             <id property="stepName" column="step_name" />
         </association>
         <association property="confFlowInfo" javaType="com.conf.template.db.model.ConfFlowInfo">
             <id property="flowName" column="flow_name" />
-        </association>
+        </association> -->
     </resultMap>
     <resultMap type="com.conf.template.db.dto.ConfStepInfoDto" id="ConfStepDtoResultMap">
     <result column="step_id" jdbcType="INTEGER" property="stepId" />
@@ -225,10 +225,9 @@
   </select>
   
   <select id="queryNodeConfList" resultMap="ConfResultMap">
-  select ps.product_id, ps.product_name, si.step_name, fi.flow_name, ps.teller, ps.org, ps.create_time from 
-  conf_rule_info r, conf_product_step ps, conf_product_node pn, conf_step_info si, conf_flow_info fi
+  select ps.step_id, ps.product_id, ps.product_name, ps.teller, ps.org, ps.create_time from 
+  conf_product_step ps
   <where>
-      r.uid = pn.uid and ps.product_id = pn.product_id and ps.step_id = si.step_id and ps.flow_id = fi.flow_id
 	  <if test="productId!=null and productId!=''">
 	        and ps.product_id = #{productId} 
 	   </if>
@@ -236,12 +235,9 @@
 	        and ps.product_name = #{productName} 
 	   </if>
 	   <if test="stepId!=null and stepId!=''">
-	        and si.step_id = #{stepId}
+	        and ps.step_id = #{stepId}
 	   </if>
-	    <if test="useable!=null and useable!=''">
-	        and r.useable = #{useable}
-	   </if>
-	   and r.delete_flag = 0 and ps.delete_flag = 0 and pn.delete_flag = 0 and si.delete_flag = 0 and fi.delete_flag = 0
+	   and ps.delete_flag = 0
    </where>  
   </select>
   

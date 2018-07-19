@@ -154,7 +154,7 @@
 	   </if>
    	</where>  
    	order by t.id desc
-   	limit #{startNum},#{pageSize}
+   	limit #{pageNum},#{pageSize}
   </select>
   
 </mapper>

@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.conf.client.RuleInvokerService;
 import com.conf.common.Constants;
@@ -37,6 +39,8 @@ import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfProductStep;
 import com.conf.template.db.model.ConfRuleInfo;
 import com.conf.template.db.model.ConfStepInfo;
+
+import antlr.Utils;
 
 @Service
 public class ConfBaseService
@@ -358,20 +362,35 @@ public class ConfBaseService
         // 参数拼装
 		ConfProductStep confProductStep = new ConfProductStep();
 		confProductStep.setProductName((String)data.get("productName")); // 产品名称
-		confProductStep.setProductId((Integer)data.get("productId")); // 产品编号
+		confProductStep.setProductId(ToolsUtil.obj2Int(data.get("productId"), null)); // 产品编号
 		confProductStep.setBusinessType((String)data.get("businessType")); // 业务类型
-		confProductStep.setStepId((Integer)data.get("stepId")); // 阶段编号
+		/*confProductStep.setStepId((Integer)data.get("stepId")); // 阶段编号
 		confProductStep.setFlowId((Integer)data.get("flowId")); // 流程编号
-		confProductStep.setTeller((String)data.get("teller")); // 操作柜员
+*/		confProductStep.setTeller((String)data.get("teller")); // 操作柜员
 		confProductStep.setOrg((String)data.get("org")); // 操作机构
-        
+		
+		JSONArray jsonArr = (JSONArray) data.get("array");
+		for(int i=0; i<jsonArr.size(); i++){
+			JSONObject json = jsonArr.getJSONObject(i);
+			confProductStep.setStepId(ToolsUtil.obj2Int( json.get("stepId"), null));
+			
+			List<JSONObject> list = (List<JSONObject>) json.get("list");
+			list.stream().forEach(obj -> {
+				confProductStep.setFlowId(ToolsUtil.obj2Int( obj.get("flowId"), null));
+				
+				// 保存数据
+				confProductStepMapper.insertSelective(confProductStep);
+			});
+		}
+		
+		
         // 保存数据
-        int result = confProductStepMapper.insertSelective(confProductStep);
+      /*  int result = confProductStepMapper.insertSelective(confProductStep);
         if (result != 1)
         {
             logger.error("Save node failly, because result doesn`t equal one");
             return ErrorUtil.errorResp(ErrorCode.code_0002);
-        }
+        }*/
         Map<String, Object> body = new HashMap<>();
         body.put("productId", confProductStep.getProductId());
         return ErrorUtil.successResp(body);
@@ -401,8 +420,13 @@ public class ConfBaseService
 		String productName = ToolsUtil.obj2Str(data.get("productName")); // 节点名称
 		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null); // 节点编号
 		Integer stepId = ToolsUtil.obj2Int(data.get("stepId"), null); // 节点编号
-		String useable = ToolsUtil.obj2Str(data.get("useable")); // 节点编号
-		List<ConfProductAndStepAndFLow> list = confStepInfoMapper.queryNodeConfList(productName, productId, stepId, useable);
+		List<ConfProductAndStepAndFLow> list = confStepInfoMapper.queryNodeConfList(productName, productId, stepId);
+		list.stream().forEach(entity -> {
+			List<ConfFlowInfo> flowList = confFlowInfoMapper.selectByStep(entity.getStepId());
+			entity.setConfFlowInfo(flowList);
+			ConfStepInfo confStepInfo = confStepInfoMapper.selectByPrimaryKey(entity.getStepId());
+			entity.setConfStepInfo(confStepInfo);
+		});
 		Map<String, Object> body = new HashMap<>();
 		body.put("list", list);
 		return ErrorUtil.successResp(body);

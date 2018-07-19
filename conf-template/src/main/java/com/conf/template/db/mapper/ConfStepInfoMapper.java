@@ -44,7 +44,6 @@ public interface ConfStepInfoMapper {
      */
     List<ConfProductAndStepAndFLow> queryNodeConfList(@Param("productName") String productName,
     		@Param("productId") Integer productId,
-    		@Param("stepId") Integer stepId,
-    		@Param("useable") String useable);
+    		@Param("stepId") Integer stepId);
     
 }

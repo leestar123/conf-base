@@ -1,12 +1,15 @@
 package com.conf.template.db.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import com.conf.template.db.model.ConfFlowInfo;
 import com.conf.template.db.model.ConfStepInfo;
 
 public class ConfProductAndStepAndFLow
 {
+	private Integer stepId;
+	
 	private Integer productId;
 
     private String productName;
@@ -19,7 +22,7 @@ public class ConfProductAndStepAndFLow
     
     ConfStepInfo confStepInfo;
     
-    ConfFlowInfo confFlowInfo;
+    List<ConfFlowInfo> confFlowInfo;
 
 	public Integer getProductId() {
 		return productId;
@@ -61,6 +64,14 @@ public class ConfProductAndStepAndFLow
 		this.createTime = createTime;
 	}
 
+	public Integer getStepId() {
+		return stepId;
+	}
+
+	public void setStepId(Integer stepId) {
+		this.stepId = stepId;
+	}
+
 	public ConfStepInfo getConfStepInfo() {
 		return confStepInfo;
 	}
@@ -69,13 +80,14 @@ public class ConfProductAndStepAndFLow
 		this.confStepInfo = confStepInfo;
 	}
 
-	public ConfFlowInfo getConfFlowInfo() {
+	public List<ConfFlowInfo> getConfFlowInfo() {
 		return confFlowInfo;
 	}
 
-	public void setConfFlowInfo(ConfFlowInfo confFlowInfo) {
+	public void setConfFlowInfo(List<ConfFlowInfo> confFlowInfo) {
 		this.confFlowInfo = confFlowInfo;
 	}
-    
+
+	
     
 }

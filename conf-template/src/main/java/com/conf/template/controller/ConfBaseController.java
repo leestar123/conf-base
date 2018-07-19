@@ -84,8 +84,8 @@ public class ConfBaseController implements CommController
 		String productName = ToolsUtil.obj2Str(data.get("productName"));
 		String productId = ToolsUtil.obj2Str(data.get("productId"));
 		String businessType = ToolsUtil.obj2Str(data.get("businessType"));
-		String stepId = ToolsUtil.obj2Str(data.get("stepId"));
-        String flowId = ToolsUtil.obj2Str(data.get("flowId"));
+		//String stepId = ToolsUtil.obj2Str(data.get("stepId"));
+        //String flowId = ToolsUtil.obj2Str(data.get("flowId"));
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
         if (StringUtils.isBlank(productName))
@@ -99,14 +99,6 @@ public class ConfBaseController implements CommController
         if (StringUtils.isBlank(businessType))
         {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "businessType");
-        }
-        if (StringUtils.isBlank(stepId))
-        {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "stepId");
-        }
-        if (StringUtils.isBlank(flowId))
-        {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "flowId");
         }
         if (StringUtils.isBlank(teller))
         {
@@ -186,4 +178,38 @@ public class ConfBaseController implements CommController
     {
         return confBaseService.queryFlowDetail(data);
     }
+    
+    /**
+	 * 阶段流程列表查询
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+	public Map<String, ? extends Object> queryStepFlow(Map<String, ? extends Object> data) {
+				
+		return confBaseService.queryStepFlow(data);
+	}
+	
+	 /**
+	 * 操作日志表查询
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+	public Map<String, ? extends Object> queryOperateLog(Map<String, ? extends Object> data) {
+				
+		return confBaseService.queryOperateLog(data);
+	}
+	
+	 /**
+	 * 查看调用日志
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+	public Map<String, ? extends Object> queryInvokLog(Map<String, ? extends Object> data) {
+				
+		return confBaseService.queryInvokLog(data);
+	}
+	
 }

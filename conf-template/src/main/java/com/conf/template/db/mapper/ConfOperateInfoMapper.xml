@@ -184,7 +184,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectTotalRecord" resultType="java.lang.Integer">
-  	select count(1) from conf_invok_info t
+  	select count(1) from conf_operate_info t
   	<where>
 	   <if test="operateType != null">
 	        and t.operate_type like '%${operateType}%' 
@@ -195,7 +195,7 @@
    	</where>
   </select>
   <select id="selectRecordWithPage" resultMap="BaseResultMap">
-  	select t.* from conf_invok_info t
+  	select t.* from conf_operate_info t
   	<where>
 	   <if test="operateType != null">
 	        and t.operate_type like '%${operateType}%' 
@@ -205,6 +205,6 @@
 	   </if>
    	</where>  
    	order by t.id desc
-   	limit #{startNum},#{pageSize}
+   	limit #{pageNum},#{pageSize}
   </select>
 </mapper>

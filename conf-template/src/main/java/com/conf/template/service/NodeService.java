@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.Utils;
 import com.bstek.urule.console.repository.model.FileType;
+import com.bstek.urule.console.repository.model.ResourcePackage;
 import com.bstek.urule.model.GeneralEntity;
 import com.conf.client.RuleInvokerService;
 import com.conf.common.Constants;
@@ -529,28 +530,30 @@ public class NodeService {
     public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data)
     {
         logger.info("Begin to publish knowledge!");
-        //知识包编码id
-        String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
-        //组件名称
-        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-        //决策流文件名称
-        String productName = ToolsUtil.obj2Str(data.get("productName"));
-        //String productId = ToolsUtil.obj2Str(data.get("productId"));
         
-        String path = nodeName + "/" + productName + ".rl.xml";
-        logger.info("Begin to generate RLXML for rule flow[" + path + "] !");
-        String xml = invokerService.generateRLXML(nodeId, nodeName, productName, path).toString();
-        logger.debug("RLXML context is [" + xml + "] !");
+        //flow源文件中的id值
+        String flowId = ToolsUtil.obj2Str(data.get("flowId"));
+        String path = ToolsUtil.obj2Str(data.get("flowPath"));
+        //conf_product_step表中的id
+        String productId = ToolsUtil.obj2Str(data.get("productId"));
+        //对应工程名
+        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        
         //保存知识包
         try
         {
+            List<ResourcePackage> packages = invokerService.loadProjectResourcePackages(nodeName);
+            logger.info("Begin to generate RLXML for rule flow[" + path + "] !");
+            String xml = invokerService.generateRLXML("/" + nodeName, productId, flowId, path, packages).toString();
+            logger.debug("RLXML context is [" + xml + "] !");
+            
             logger.info("Begin to save packages!");
-            invokerService.saveResourcePackages(false, nodeName, xml);
+            invokerService.saveResourcePackages(nodeName, xml);
             logger.info("End to save packages!");
             
-            String files = "jcr:/" + path;
+            String files = path.startsWith("/") ? "jcr:" + path : "jcr:/" + path;
             logger.info("Begin to refresh packages, file path is [" + files + "] !");
-            invokerService.refreshKnowledgeCache(files, nodeId, nodeName);
+            invokerService.refreshKnowledgeCache(files, productId, nodeName);
             logger.info("End to refresh packages!");
         }
         catch (Exception e)

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.conf.client.RuleInvokerService;
@@ -39,8 +38,6 @@ import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfProductStep;
 import com.conf.template.db.model.ConfRuleInfo;
 import com.conf.template.db.model.ConfStepInfo;
-
-import antlr.Utils;
 
 @Service
 public class ConfBaseService
@@ -356,7 +353,8 @@ public class ConfBaseService
      * @param data
      * @return
      */
-	@Transactional
+	@SuppressWarnings("unchecked")
+    @Transactional
     public Map<String, ? extends Object> addFlowByProduct(Map<String, ? extends Object> data)
     {
         // 参数拼装

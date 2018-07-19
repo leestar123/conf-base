@@ -25,8 +25,11 @@ import com.bstek.urule.console.EnvironmentUtils;
 import com.bstek.urule.console.User;
 import com.bstek.urule.console.repository.Repository;
 import com.bstek.urule.console.repository.RepositoryService;
+import com.bstek.urule.console.repository.RepositoryServiceImpl;
 import com.bstek.urule.console.repository.model.FileType;
 import com.bstek.urule.console.repository.model.RepositoryFile;
+import com.bstek.urule.console.repository.model.ResourceItem;
+import com.bstek.urule.console.repository.model.ResourcePackage;
 import com.bstek.urule.console.servlet.RequestContext;
 import com.bstek.urule.console.servlet.RequestHolder;
 import com.bstek.urule.console.servlet.respackage.HttpSessionKnowledgeCache;
@@ -175,14 +178,14 @@ public class RuleInvokerService
      * @throws Exception 
      * @see [类、类#方法、类#成员]
      */
-    public void saveResourcePackages(Boolean newVersion, String projectName, String xml)
+    public void saveResourcePackages(String projectName, String xml)
         throws Exception
     {
-        String path = projectName + "/" + "___res__package__file__";
+        String path = projectName + "/" + RepositoryServiceImpl.RES_PACKGE_FILE;
         HttpServletRequest req = RequestHolder.getRequest();
         HttpServletResponse resp = RequestHolder.getResponse();
         User user = EnvironmentUtils.getLoginUser(new RequestContext(req, resp));
-        repositoryService.saveFile(path, xml, false, null, user);
+        repositoryService.saveFile(path, xml, true, null, user);
         
     }
     
@@ -407,16 +410,65 @@ public class RuleInvokerService
         return root;
     }
     
-    public StringBuilder generateRLXML(String id, String packageName, String fileName, String path)
+    public List<ResourcePackage> loadProjectResourcePackages(String project) throws Exception {
+        return repositoryService.loadProjectResourcePackages("/" + project); 
+    }
+    
+    public StringBuilder generateRLXML(String project, String id, String flowId, String flowPath, List<ResourcePackage> packages)
+    {
+        boolean flag = false;
+        for (ResourcePackage resourcePackage : packages)
+        {
+            if (resourcePackage.getId().equals(id) && resourcePackage.getProject().equals(project))
+            {
+                flag = true;
+                ResourceItem item = new ResourceItem();
+                item.setPackageId(id);
+                item.setName(flowId);
+                item.setPath("jcr:" + flowPath);
+                item.setVersion("LATEST");
+                resourcePackage.getResourceItems().add(item);
+                break;
+            }
+        }
+        if (!flag)
+        {
+            ResourcePackage newPackage = new ResourcePackage();
+            newPackage.setCreateDate(new Date());
+            newPackage.setId(id);
+            newPackage.setName(id);
+            newPackage.setProject(project);
+            List<ResourceItem> listItem = new ArrayList<>();
+            ResourceItem item = new ResourceItem();
+            item.setPackageId(id);
+            item.setName(flowId);
+            item.setPath("jcr:" + flowPath);
+            item.setVersion("LATEST");
+            listItem.add(item);
+            newPackage.setResourceItems(listItem);
+        }
+        return buildXML(packages);
+    }
+    
+    private StringBuilder buildXML(List<ResourcePackage> packages) 
     {
         StringBuilder content = new StringBuilder();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formatStr = formatter.format(new Date());
         content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
         content.append("<res-packages>");
-        content.append("<res-package  id='" + id + "' name='" + packageName + "' create_date='" + formatStr + "'>");
-        content.append("<res-package-item  name='" + fileName + "' path='jcr:" + path + "' version='LATEST'/>");
-        content.append("</res-package></res-packages>");
+        for (ResourcePackage resourcePackage : packages)
+        {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String date = formatter.format(resourcePackage.getCreateDate());
+            content.append("<res-package  id='" + resourcePackage.getId() + "' name='" + resourcePackage.getName()
+            + "' create_date='" + date + "'>");
+            for (ResourceItem item : resourcePackage.getResourceItems())
+            {
+                content.append("<res-package-item  name='" + item.getName() + "' path='" + item.getPath()
+                    + "' version='" + item.getVersion() + "'/>");
+            }
+            content.append("</res-package>");
+        }
+        content.append("</res-packages>");
         return content;
     }
     

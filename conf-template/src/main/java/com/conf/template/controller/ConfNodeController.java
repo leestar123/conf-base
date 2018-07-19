@@ -346,18 +346,21 @@ public class ConfNodeController implements CommController{
 	 */
 	@ApiException
 	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {
-		String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
-		String productName = ToolsUtil.obj2Str(data.get("productName"));
-		String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
-		String productId = ToolsUtil.obj2Str(data.get("productId"));
+        String flowId = ToolsUtil.obj2Str(data.get("flowId"));
+        String path = ToolsUtil.obj2Str(data.get("flowPath"));
+        //conf_product_step表中的id
+        String productId = ToolsUtil.obj2Str(data.get("productId"));
+        //对应工程名
+        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        
 		if (StringUtils.isBlank(nodeName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
         }
-        if (StringUtils.isBlank(productName)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
+        if (StringUtils.isBlank(path)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "path");
         }
-        if (StringUtils.isBlank(nodeId)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
+        if (StringUtils.isBlank(flowId)) {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "flowId");
         }
         if (StringUtils.isBlank(productId)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");

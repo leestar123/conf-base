@@ -3,6 +3,8 @@ package com.conf.common;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -242,4 +244,27 @@ public class ToolsUtil {
             return "127.0.0.1";
         }
     }
+    
+    /**
+     * 设置内存分页数据
+     * @param begin
+     * @param end
+     * @param list
+     * @param totleNum 
+     * @return 
+     */
+    public static List<Map<String, Object>> getListPageData(Integer pageNum, Integer pageSize, List<Map<String, Object>> list){
+    	List<Map<String, Object>> pageList = null;
+    	if (pageNum != null &&  pageSize != null && list != null){
+    		Integer total = list.size();
+    		if (pageNum * pageSize < total) {
+    			pageList = list.subList((pageNum - 1) * pageSize, pageNum * pageSize);
+    		} else {
+    			pageList = list.subList((pageNum - 1) * pageSize, total);
+    		}
+    	}
+    	return pageList == null ? new ArrayList<>() : pageList;
+    }
+    
+    
 }

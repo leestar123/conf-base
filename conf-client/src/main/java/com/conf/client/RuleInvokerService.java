@@ -185,7 +185,7 @@ public class RuleInvokerService
         HttpServletRequest req = RequestHolder.getRequest();
         HttpServletResponse resp = RequestHolder.getResponse();
         User user = EnvironmentUtils.getLoginUser(new RequestContext(req, resp));
-        repositoryService.saveFile(path, xml, true, null, user);
+        repositoryService.saveFile(path, xml, false, null, user);
         
     }
     

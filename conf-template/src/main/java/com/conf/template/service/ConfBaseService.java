@@ -39,6 +39,7 @@ import com.conf.template.db.model.ConfProductStep;
 import com.conf.template.db.model.ConfRuleInfo;
 import com.conf.template.db.model.ConfStepInfo;
 
+
 @Service
 public class ConfBaseService
 {
@@ -353,8 +354,7 @@ public class ConfBaseService
      * @param data
      * @return
      */
-	@SuppressWarnings("unchecked")
-    @Transactional
+	@Transactional
     public Map<String, ? extends Object> addFlowByProduct(Map<String, ? extends Object> data)
     {
         // 参数拼装
@@ -418,15 +418,31 @@ public class ConfBaseService
 		String productName = ToolsUtil.obj2Str(data.get("productName")); // 节点名称
 		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null); // 节点编号
 		Integer stepId = ToolsUtil.obj2Int(data.get("stepId"), null); // 节点编号
+		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10); // 分页大小
+		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);// 当前页数
+		
+		List<Map<String,Object>> resultList = new ArrayList<>(); // 返回结果
 		List<ConfProductAndStepAndFLow> list = confStepInfoMapper.queryNodeConfList(productName, productId, stepId);
 		list.stream().forEach(entity -> {
 			List<ConfFlowInfo> flowList = confFlowInfoMapper.selectByStep(entity.getStepId());
-			entity.setConfFlowInfo(flowList);
 			ConfStepInfo confStepInfo = confStepInfoMapper.selectByPrimaryKey(entity.getStepId());
 			entity.setConfStepInfo(confStepInfo);
+			flowList.stream().forEach( flow -> {
+				Map<String, Object> map = new HashMap<>();
+				map.put("productId", entity.getProductId());
+				map.put("productName", entity.getProductName());
+				map.put("stepName", entity.getConfStepInfo().getStepName());
+				map.put("flowName", flow.getFlowName());
+				map.put("teller", entity.getTeller());
+				map.put("org", entity.getOrg());
+				map.put("createTime", entity.getCreateTime());
+				resultList.add(map);
+			});
 		});
 		Map<String, Object> body = new HashMap<>();
-		body.put("list", list);
+		List<Map<String, Object>> pageData = ToolsUtil.getListPageData(pageNum, pageSize, resultList);
+		body.put("list", pageData);
+		body.put("totalNum", resultList.size());
 		return ErrorUtil.successResp(body);
 	}
 	

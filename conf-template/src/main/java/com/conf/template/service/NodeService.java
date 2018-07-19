@@ -527,6 +527,16 @@ public class NodeService {
         return ErrorUtil.successResp(body);
     }
 	
+    /**
+     * 此方法需要加锁执行
+     * 添加到内存，异步执行
+     * 
+     * <一句话功能简述>
+     * <功能详细描述>
+     * @param data
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
     public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data)
     {
         logger.info("Begin to publish knowledge!");

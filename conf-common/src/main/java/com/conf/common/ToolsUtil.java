@@ -1,7 +1,5 @@
 package com.conf.common;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -233,13 +231,11 @@ public class ToolsUtil {
 	 */
     public static String localIP()
     {
-        InetAddress address;
         try
         {
-            address = InetAddress.getLocalHost();
-            return address.getHostAddress();
+            return WebToolUtils.getLocalIP();
         }
-        catch (UnknownHostException e)
+        catch (Exception e)
         {
             return "127.0.0.1";
         }

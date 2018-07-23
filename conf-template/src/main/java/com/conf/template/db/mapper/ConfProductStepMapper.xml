@@ -212,7 +212,7 @@
    	</where>
   </select>
   
-  <select id="queryIdByCondition"  resultType="BaseResultMap">
+  <select id="queryIdByCondition"  resultMap="BaseResultMap">
  	select ps.id
     from  conf_product_step ps 
     <where>
@@ -232,7 +232,7 @@
    	</where>
   </select>
   
-  <select id="queryListByProductIdAndBusinessType"  resultType="BaseResultMap">
+  <select id="queryListByProductIdAndBusinessType"  resultMap="BaseResultMap">
  	select ps.step_id, ps.flow_id
     from  conf_product_step ps 
     <where>

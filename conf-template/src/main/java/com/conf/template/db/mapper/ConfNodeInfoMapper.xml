@@ -49,8 +49,8 @@
    </where>  
    order by t.node_id desc
    limit #{startNum},#{pageSize}
-   
   </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from conf_node_info
     where node_id = #{nodeId,jdbcType=INTEGER}

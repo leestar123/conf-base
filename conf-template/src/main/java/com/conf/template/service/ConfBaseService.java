@@ -1,9 +1,11 @@
 package com.conf.template.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -12,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.conf.client.RuleInvokerService;
@@ -253,16 +254,37 @@ public class ConfBaseService
     public Map<String, ? extends Object> queryStepFlow(Map<String, ? extends Object> data)
     {
         Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null);
+        Integer productId = ToolsUtil.obj2Int(data.get("productId"), null);
+        String businessType = ToolsUtil.obj2Str(data.get("businessType"));
         List<ConfStepAndFLowInfo> queryList = confStepInfoMapper.selectStepAndFlowInfo(nodeId);
         Map<String, Object> body = new HashMap<>();
         List<Map<String, Object>> list = new ArrayList<>();
         body.put("array", list);
+        
         for (ConfStepAndFLowInfo confStepAndFLowInfo : queryList)
         {
             Map<String, Object> map = new HashMap<>();
             map.put("stepId", confStepAndFLowInfo.getStepId());
             map.put("stepName", confStepAndFLowInfo.getStepName());
-            map.put("list", confStepAndFLowInfo.getFlowList());
+            List<ConfFlowInfo> flowList = confStepAndFLowInfo.getFlowList();
+            if (productId != null || businessType != null) {
+	            flowList.stream().forEach(flow ->{
+	            	ConfProductStep cps = confProductStepMapper.queryIdByCondition(confStepAndFLowInfo.getStepId(), flow.getFlowId(), productId, businessType);
+	            	
+	            	//if (confProductStepMapper.queryCountByStep(confStepAndFLowInfo.getStepId(), flow.getFlowId(), productId, businessType) > 0){
+	            	if (cps != null){	
+	            		// 已绑定
+	            		flow.setBind(0);
+	            		flow.setId(cps.getId());
+	            	}else {
+	            		
+	            		// 未绑定
+	            		flow.setBind(1);
+	            		flow.setId(0); // 默认值
+	            	}
+	            });
+            }
+            map.put("list", flowList);
             list.add(map);
         }
         return ErrorUtil.successResp(body);
@@ -357,43 +379,84 @@ public class ConfBaseService
 	@Transactional
     public Map<String, ? extends Object> addFlowByProduct(Map<String, ? extends Object> data)
     {
+		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null); // 节点名称
+		String businessType = ToolsUtil.obj2Str(data.get("businessType"));
+		Integer bind = ToolsUtil.obj2Int(data.get("bind"), null); // 0--绑定 1--未绑定
         // 参数拼装
 		ConfProductStep confProductStep = new ConfProductStep();
 		confProductStep.setProductName((String)data.get("productName")); // 产品名称
-		confProductStep.setProductId(ToolsUtil.obj2Int(data.get("productId"), null)); // 产品编号
-		confProductStep.setBusinessType((String)data.get("businessType")); // 业务类型
-		/*confProductStep.setStepId((Integer)data.get("stepId")); // 阶段编号
-		confProductStep.setFlowId((Integer)data.get("flowId")); // 流程编号
-*/		confProductStep.setTeller((String)data.get("teller")); // 操作柜员
+		confProductStep.setProductId(productId); // 产品编号
+		confProductStep.setBusinessType(businessType); // 业务类型
+		confProductStep.setTeller((String)data.get("teller")); // 操作柜员
 		confProductStep.setOrg((String)data.get("org")); // 操作机构
+		
+		// 根据产品编号和业务类型查询列表
+		List<ConfProductStep> infoList = confProductStepMapper.queryListByProductIdAndBusinessType(productId, businessType);
 		
 		JSONArray jsonArr = (JSONArray) data.get("array");
 		for(int i=0; i<jsonArr.size(); i++){
 			JSONObject json = jsonArr.getJSONObject(i);
-			confProductStep.setStepId(ToolsUtil.obj2Int( json.get("stepId"), null));
+			Integer stepId = ToolsUtil.obj2Int(data.get("stepId"), null); 
+			confProductStep.setStepId(stepId);
 			
 			List<JSONObject> list = (List<JSONObject>) json.get("list");
-			list.stream().forEach(obj -> {
-				confProductStep.setFlowId(ToolsUtil.obj2Int( obj.get("flowId"), null));
-				
-				// 保存数据
-				confProductStepMapper.insertSelective(confProductStep);
+			
+			// 需要新增的绑定关系列表
+			List<JSONObject> addList = list.stream().filter(obj -> Integer.parseInt(obj.get("bind").toString()) == 0).collect(Collectors.toList());
+			
+			// 过滤已存在的数据,然后新增绑定关系
+			List<JSONObject> filterList = filterExistData(infoList, addList);
+			
+			if (filterList != null && !filterList.isEmpty()){
+				filterList.stream().forEach(obj -> {
+					confProductStep.setFlowId(ToolsUtil.obj2Int( obj.get("flowId"), null));
+					
+					// 保存数据
+					confProductStepMapper.insertSelective(confProductStep);
+				});
+			}
+			
+			// 需要删除的绑定关系列表
+			List<JSONObject> deleteList = list.stream().filter(obj -> Integer.parseInt(obj.get("bind").toString()) == 1).collect(Collectors.toList());
+			ConfProductStep record = new ConfProductStep();
+			deleteList.stream().forEach(delObj -> {
+				Integer id = ToolsUtil.obj2Int(delObj.get("id"), null);
+				if (id != null && id != 0){
+					record.setProductId(productId);
+					record.setBusinessType(businessType);
+					record.setStepId(stepId);
+					record.setId(id);
+					confProductStepMapper.updateByPrimaryKeySelective(record);
+				}
 			});
+			
 		}
-		
-		
-        // 保存数据
-      /*  int result = confProductStepMapper.insertSelective(confProductStep);
-        if (result != 1)
-        {
-            logger.error("Save node failly, because result doesn`t equal one");
-            return ErrorUtil.errorResp(ErrorCode.code_0002);
-        }*/
         Map<String, Object> body = new HashMap<>();
         body.put("productId", confProductStep.getProductId());
         return ErrorUtil.successResp(body);
     }
 	
+	/**
+	 * 过滤已存在的数据
+	 * @param infoList
+	 * @param list
+	 * @return
+	 */
+	private List<JSONObject> filterExistData(List<ConfProductStep> infoList, List<JSONObject> list) {
+		
+		if (infoList == null || infoList.isEmpty()) {
+			return list;
+		}
+		
+		infoList.stream().forEach(info -> {
+			List<JSONObject> removeList = list.stream().filter(json -> (info.getStepId().equals(json.get("stepId")) && info.getFlowId().equals(json.get("flowId"))))
+					.collect(Collectors.toList());
+			list.removeAll(removeList);
+		});
+		
+		return list;
+	}
+
 	/**
 	 * 查询阶段列表
 	 * @param data

@@ -29,4 +29,27 @@ public interface ConfProductStepMapper {
     int queryCount(@Param("nodeId") String nodeId, @Param("nodeName") String nodeName, @Param("stepId") String stepId);
     
     List<ConfStepInfo> queryStepList(@Param("productId") String productId, @Param("nodeId") String nodeId);
+    
+    int queryCountByStep(@Param("stepId")Integer stepId, @Param("flowId")Integer flowId,
+    		@Param("productId")Integer productId,@Param("businessType")String businessType);
+    
+    /**
+     * 
+     * @param stepId
+     * @param flowId
+     * @param productId
+     * @param businessType
+     * @return
+     */
+    ConfProductStep queryIdByCondition(@Param("stepId")Integer stepId, @Param("flowId")Integer flowId,
+    		@Param("productId")Integer productId,@Param("businessType")String businessType);
+    
+    /**
+     * 根据产品编号和业务类型查询列表
+     * @param productId
+     * @param businessType
+     * @return
+     */
+    List<ConfProductStep> queryListByProductIdAndBusinessType(@Param("productId")Integer productId,@Param("businessType")String businessType);
+    
 }

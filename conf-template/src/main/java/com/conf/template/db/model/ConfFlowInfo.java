@@ -3,6 +3,8 @@ package com.conf.template.db.model;
 import java.util.Date;
 
 public class ConfFlowInfo {
+	private Integer id;
+	
     private Integer flowId;
 
     private Integer stepId;
@@ -22,6 +24,8 @@ public class ConfFlowInfo {
     private Date updateTime;
     
     private Integer deleteFlag;
+    
+    private Integer bind;
 
     public Integer getFlowId() {
         return flowId;
@@ -104,4 +108,23 @@ public class ConfFlowInfo {
     {
         this.deleteFlag = deleteFlag;
     }
+
+	public Integer getBind() {
+		return bind;
+	}
+
+	public void setBind(Integer bind) {
+		this.bind = bind;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+    
+	
+    
 }

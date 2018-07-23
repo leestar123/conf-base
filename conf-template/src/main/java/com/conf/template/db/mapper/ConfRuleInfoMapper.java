@@ -25,11 +25,11 @@ public interface ConfRuleInfoMapper {
     
     List<ConfRuleInfo> selectEffectRecordListByPage(@Param("productId")Integer productId, @Param("nodeId")Integer nodeId,@Param("startNum")Integer startNum,@Param("pageSize")Integer pageSize);
 
-    List<ConfRuleInfo> queryRuleListByName(@Param("ruleName")String ruleName,@Param("startNum")Integer startNum,@Param("pageSize")Integer pageSize);
+    List<ConfRuleInfo> queryRuleListByName(@Param("ruleName")String ruleName, @Param("ruleType")String ruleType, @Param("startNum")Integer startNum,@Param("pageSize")Integer pageSize);
 
     int queryCountByNodeId(@Param("nodeId")Integer nodeId);
     
-    int queryCountByName(@Param("ruleName")String ruleName);
+    int queryCountByName(@Param("ruleName")String ruleName, @Param("ruleType")String ruleType);
     
     ConfRuleInfo selectByName(String ruleName);
     

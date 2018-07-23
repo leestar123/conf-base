@@ -150,13 +150,13 @@
   <select id="queryCount" resultType="java.lang.Integer">
   select count(1) from conf_step_info t
   <where>
-	  <if test="nodeId!=null and nodeId!=''">
+	  <if test="nodeId != null and nodeId != ''">
 	        and t.node_id like '%${nodeId}%' 
 	   </if>
-	   <if test="nodeName!=null and nodeName!=''">
+	   <if test="nodeName != null and nodeName != ''">
 	        and t.node_name like '%${nodeName}%'
 	   </if>
-	   <if test="stepId!=null and stepId!=''">
+	   <if test="stepId != null and stepId != ''">
 	        and t.step_id = #{stepId}
 	   </if>
 	   and t.delete_flag = 0
@@ -166,13 +166,13 @@
   <select id="queryStep" resultMap="BaseResultMap">
   select t.* from conf_step_info t
   <where>
-	  <if test="nodeId!=null and nodeId!=''">
+	  <if test="nodeId != null and nodeId != ''">
 	        and t.node_id like '%${nodeId}%' 
 	   </if>
-	   <if test="nodeName!=null and nodeName!=''">
+	   <if test="nodeName != null and nodeName != ''">
 	        and t.node_name like '%${nodeName}%'
 	   </if>
-	   <if test="stepId!=null and stepId!=''">
+	   <if test="stepId != null and stepId != ''">
 	        and t.step_id = #{stepId}
 	   </if>
    </where>  
@@ -183,12 +183,66 @@
   select s.step_id, s.step_name from conf_step_info s, conf_product_step p
   <where>
       s.step_id = p.step_id
-	  <if test="productId!=null and productId!=''">
+	  <if test="productId != null and productId != ''">
 	        and p.product_id = #{productId} 
 	   </if>
-	   <if test="nodeId!=null and nodeId!=''">
+	   <if test="nodeId != null and nodeId != ''">
 	        and s.node_id = #{nodeId}
 	   </if>
    </where>  
+  </select>
+  
+  <select id="queryCountByStep"  resultType="java.lang.Integer">
+ 	select count(1)
+    from  conf_product_step ps 
+    <where>
+    <if test="stepId != null">
+   	 and ps.step_id = #{stepId}
+   	</if>
+   	 <if test="flowId != null">
+   		and ps.flow_id = #{flowId}
+      </if> 
+       <if test="productId != null">
+   		and ps.product_id = #{productId}
+      </if>
+       <if test="businessType != null">
+   		and ps.business_type = #{businessType}
+      </if>
+   	and ps.delete_flag = 0
+   	</where>
+  </select>
+  
+  <select id="queryIdByCondition"  resultType="BaseResultMap">
+ 	select ps.id
+    from  conf_product_step ps 
+    <where>
+    <if test="stepId != null">
+   	 and ps.step_id = #{stepId}
+   	</if>
+   	 <if test="flowId != null">
+   		and ps.flow_id = #{flowId}
+      </if> 
+       <if test="productId != null">
+   		and ps.product_id = #{productId}
+      </if>
+       <if test="businessType != null">
+   		and ps.business_type = #{businessType}
+      </if>
+   	and ps.delete_flag = 0
+   	</where>
+  </select>
+  
+  <select id="queryListByProductIdAndBusinessType"  resultType="BaseResultMap">
+ 	select ps.step_id, ps.flow_id
+    from  conf_product_step ps 
+    <where>
+       <if test="productId != null">
+   		and ps.product_id = #{productId}
+      </if>
+       <if test="businessType != null">
+   		and ps.business_type = #{businessType}
+      </if>
+   	and ps.delete_flag = 0
+   	</where>
   </select>
 </mapper>

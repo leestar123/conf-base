@@ -178,11 +178,12 @@ public class NodeService {
 	@Transactional
 	public Map<String, ? extends Object> queryRuleList(Map<String, ? extends Object> data) {
 		String ruleName = ToolsUtil.obj2Str(data.get("ruleName"));
+		String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
 		int startNum = (pageNum - 1) * pageSize;
-		int totalNum = confRuleInfoMapper.queryCountByName(ruleName);
-		List<ConfRuleInfo> list = confRuleInfoMapper.queryRuleListByName(ruleName, startNum, pageSize);
+		int totalNum = confRuleInfoMapper.queryCountByName(ruleName, ruleType);
+		List<ConfRuleInfo> list = confRuleInfoMapper.queryRuleListByName(ruleName, ruleType, startNum, pageSize);
 		// Map<String,Object> map = new HashMap<String, Object>();
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("totalNum", totalNum);
@@ -424,6 +425,7 @@ public class NodeService {
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
         String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        String remark = ToolsUtil.obj2Str(data.get("remark"));
         
         ruleName = Utils.decodeURL(ruleName).trim();
         String path = null;
@@ -484,11 +486,24 @@ public class NodeService {
         ruleType = ToolsUtil.parse(ruleType);
         record.setRuleType(ruleType);
         record.setTeller(teller);
+        record.setRemark(remark);
         
         logger.info("Begin to save rule[" + ruleName + "], Object is[" + JSONObject.toJSONString(record) + "]!");
         confRuleInfoMapper.insertSelective(record);
         
-        Map<String, Object> body = new HashMap<String, Object>();
+        Map<String, Object> newData = new HashMap<>();
+        List<Map<String, Object>> ruleList = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("uid", record.getUid());
+        map.put("ruleType", ruleType);
+        map.put("ruleName", data.get("ruleName"));
+        ruleList.add(map);
+        newData.put("ruleList", ruleList);
+        newData.put("nodeName", data.get("nodeName"));
+        newData.put("nodeId", data.get("nodeId"));
+        addRuleByNode(newData);
+        
+        Map<String, Object> body = new HashMap<>();
         body.put("uid", record.getUid());
         body.put("url", url);
         module.setModuleId(record.getUid());

@@ -180,13 +180,13 @@
   from conf_node_info ni, conf_step_info si, conf_flow_info fi
   <where>
       ni.node_id = si.node_id AND si.step_id = fi.step_id 
-	  <if test="nodeId!=null and nodeId!=''">
+	  <if test="nodeId != null and nodeId != ''">
 	        and ni.node_id like '%${nodeId}%' 
 	   </if>
-	   <if test="nodeName!=null and nodeName!=''">
+	   <if test="nodeName != null and nodeName != ''">
 	        and ni.node_name like '%${nodeName}%'
 	   </if>
-	   <if test="stepId!=null and stepId!=''">
+	   <if test="stepId != null and stepId != ''">
 	        and si.step_id = #{stepId}
 	   </if>
 	   and ni.delete_flag = 0 and si.delete_flag = 0 and fi.delete_flag = 0
@@ -211,14 +211,14 @@
   </select> -->
   <select id="queryStepList" resultMap="BaseResultMap">
   select s.* from conf_step_info s
-  <if test="productId!=null and productId!=''">
+  <if test="productId != null and productId != ''">
    , conf_product_step p
   </if>
   <where>
-	  <if test="productId!=null and productId!=''">
+	  <if test="productId != null and productId != ''">
 	   s.step_id = p.step_id and p.product_id = #{productId} and p.delete_flag = 0
 	   </if>
-	   <if test="nodeId!=null and nodeId!=''">
+	   <if test="nodeId != null and nodeId != ''">
 	        and s.node_id = #{nodeId} and s.delete_flag = 0
 	   </if>
    </where>  
@@ -228,13 +228,13 @@
   select ps.step_id, ps.product_id, ps.product_name, ps.teller, ps.org, ps.create_time from 
   conf_product_step ps
   <where>
-	  <if test="productId!=null and productId!=''">
+	  <if test="productId != null and productId != ''">
 	        and ps.product_id = #{productId} 
 	   </if>
-	   <if test="productName!=null and productName!=''">
+	   <if test="productName != null and productName != ''">
 	        and ps.product_name = #{productName} 
 	   </if>
-	   <if test="stepId!=null and stepId!=''">
+	   <if test="stepId != null and stepId != ''">
 	        and ps.step_id = #{stepId}
 	   </if>
 	   and ps.delete_flag = 0
@@ -246,13 +246,13 @@
   	from conf_node_info ni, conf_step_info si, conf_flow_info fi
   <where>
       ni.node_id = si.node_id AND si.step_id = fi.step_id 
-	  <if test="nodeId!=null and nodeId!=''">
+	  <if test="nodeId != null and nodeId != ''">
 	        and ni.node_id = #{nodeId} 
 	   </if>
-	   <if test="nodeName!=null and nodeName!=''">
+	   <if test="nodeName != null and nodeName != ''">
 	        and ni.node_name = #{nodeName} 
 	   </if>
-	   <if test="stepId!=null and stepId!=''">
+	   <if test="stepId != null and stepId != ''">
 	        and si.step_id = #{stepId}
 	   </if>
 	   and ni.delete_flag = 0 and si.delete_flag = 0 and fi.delete_flag = 0

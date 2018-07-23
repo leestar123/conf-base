@@ -89,6 +89,9 @@
       <if test="ruleName != null">
    		and m.rule_name like '%${ruleName}%'
       </if> 
+       <if test="ruleType != null">
+   		and m.rule_type = #{ruleType}
+      </if> 
       and m.delete_flag = 0
     </where>
     order by m.uid desc
@@ -102,6 +105,9 @@
     <if test="ruleName != null">
    	 and m.rule_name like '%${ruleName}%'  
    	</if>
+   	 <if test="ruleType != null">
+   		and m.rule_type = #{ruleType}
+      </if> 
    	and m.delete_flag = 0
    	</where>
   </select>

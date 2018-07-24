@@ -416,18 +416,32 @@ public class RuleInvokerService
     
     public StringBuilder generateRLXML(String project, String id, String flowId, String flowPath, List<ResourcePackage> packages)
     {
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(flowId))
+            return buildXML(packages);
         boolean flag = false;
         for (ResourcePackage resourcePackage : packages)
         {
             if (resourcePackage.getId().equals(id) && resourcePackage.getProject().equals(project))
             {
                 flag = true;
-                ResourceItem item = new ResourceItem();
-                item.setPackageId(id);
-                item.setName(flowId);
-                item.setPath("jcr:" + flowPath);
-                item.setVersion("LATEST");
-                resourcePackage.getResourceItems().add(item);
+                boolean subFlag = false;
+                for (ResourceItem item : resourcePackage.getResourceItems())
+                {
+                    if (item.getPackageId().equals(id))
+                    {
+                        subFlag = true;
+                        break;
+                    }
+                }
+                if (!subFlag)
+                {
+                    ResourceItem item = new ResourceItem();
+                    item.setPackageId(id);
+                    item.setName(flowId);
+                    item.setPath("jcr:" + flowPath);
+                    item.setVersion("LATEST");
+                    resourcePackage.getResourceItems().add(item);
+                }
                 break;
             }
         }
@@ -446,6 +460,7 @@ public class RuleInvokerService
             item.setVersion("LATEST");
             listItem.add(item);
             newPackage.setResourceItems(listItem);
+            packages.add(newPackage);
         }
         return buildXML(packages);
     }

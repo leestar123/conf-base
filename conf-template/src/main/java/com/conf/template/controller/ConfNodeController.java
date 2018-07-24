@@ -346,7 +346,7 @@ public class ConfNodeController implements CommController{
 	 */
 	@ApiException
 	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {
-        String flowId = ToolsUtil.obj2Str(data.get("flowId"));
+        String flowId = ToolsUtil.obj2Str(data.get("processId"));
         String path = ToolsUtil.obj2Str(data.get("flowPath"));
         //conf_product_step表中的id
         String productId = ToolsUtil.obj2Str(data.get("productId"));
@@ -392,19 +392,6 @@ public class ConfNodeController implements CommController{
         }
         return nodeService.queryActionRule(data);
     }
-
-    /**
-     * 调用知识包
-     */
-    @ApiException
-	public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data) {
-		String flowId = ToolsUtil.obj2Str(data.get("flowId"));
-		if (StringUtils.isBlank(flowId))
-        {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "flowId");
-        }
-		return nodeService.excuteKnowledge(data);
-	}
 
     @Override
     public String url()

@@ -1,23 +1,44 @@
 package com.conf.template.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.dom4j.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.conf.client.CommController;
+import com.conf.client.RuleInvokerService;
 import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
 import com.conf.common.annotation.ApiException;
+import com.conf.template.db.model.ConfFlowInfo;
+import com.conf.template.db.model.ConfNodeInfo;
+import com.conf.template.db.model.ConfProductStep;
 import com.conf.template.service.ConfBaseService;
+import com.conf.template.service.NodeService;
 
 @Component
 public class ConfBaseController implements CommController
 {
-	@Autowired
-	private ConfBaseService confBaseService;
+    private final static Logger logger = LoggerFactory.getLogger(ConfBaseController.class);
+    
+    @Autowired
+    private ConfBaseService confBaseService;
+    
+    @Autowired
+    private NodeService nodeService;
+    
+    @Autowired
+    private RuleInvokerService invokerService;
 	
 	public void setConfBaseService(ConfBaseService confBaseService) {
 		this.confBaseService = confBaseService;
@@ -78,27 +99,27 @@ public class ConfBaseController implements CommController
 	 * @param data
 	 * @return
 	 */
-	@ApiException
+	@SuppressWarnings({"rawtypes", "unchecked"})
+    @ApiException
     public Map<String, ? extends Object> addFlowByProduct(Map<String, ? extends Object> data)
     {
 		String productName = ToolsUtil.obj2Str(data.get("productName"));
-		String productId = ToolsUtil.obj2Str(data.get("productId"));
+		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null);
 		String businessType = ToolsUtil.obj2Str(data.get("businessType"));
-		//String stepId = ToolsUtil.obj2Str(data.get("stepId"));
-        //String flowId = ToolsUtil.obj2Str(data.get("flowId"));
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
         if (StringUtils.isBlank(productName))
         {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
         }
-        if (StringUtils.isBlank(productId))
+        if (productId == null || StringUtils.isBlank(businessType))
         {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
-        }
-        if (StringUtils.isBlank(businessType))
-        {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "businessType");
+            if (StringUtils.isBlank(businessType)) {
+                return ErrorUtil.errorResp(ErrorCode.code_0001, "businessType");
+            } 
+            else {
+                return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
+            }
         }
         if (StringUtils.isBlank(teller))
         {
@@ -109,9 +130,82 @@ public class ConfBaseController implements CommController
             return ErrorUtil.errorResp(ErrorCode.code_0001, "org");
         }
         
-        return confBaseService.addFlowByProduct(data);
+        Map<String, ? extends Object> result = confBaseService.addFlowByProduct(data);
+        
+        if (ErrorUtil.isSuccess(result)) {
+            try
+            {
+                Map<String, Object> body = (Map<String, Object>)result.get("body");
+                List<Map<String, String>> bind = new ArrayList<>();
+                //List<Map<String, String>> delete = new ArrayList<>();
+                JSONArray filter = JSONObject.parseArray(JSONObject.toJSONString(body.get("filter")));
+                body.remove("filter");
+                for (int i = 0; i < filter.size(); i++)
+                {
+                    Map map = JSONObject.parseObject(JSONObject.toJSONString(filter.get(i)), Map.class);
+                    List<JSONObject> addList =
+                        JSONObject.parseArray(JSONObject.toJSONString(map.get("bind")), JSONObject.class);
+                    buildKnowledge(addList, bind, true, productId, businessType);
+                    //List<JSONObject> deletList =
+                     //   JSONObject.parseArray(JSONObject.toJSONString(map.get("delete")), JSONObject.class);
+                    //buildKnowledge(deletList, delete, false, null, null);
+                }
+                Map<String, Object> invoker = new HashMap<>();
+                invoker.put("bind", bind);
+                //invoker.put("delete", delete);
+                nodeService.publishKnowledge(invoker);
+            } catch (Exception e) {
+                
+            }
+        }
+        return result;
     }
 	
+	/**
+	 * 构建发布知识包内容
+	 * 
+	 * <一句话功能简述>
+	 * <功能详细描述>
+	 * @param list
+	 * @param result
+	 * @param add
+	 * @param productId
+	 * @param businessType
+	 * @see [类、类#方法、类#成员]
+	 */
+    private void buildKnowledge(List<JSONObject> list, List<Map<String, String>> result, boolean add, Integer productId, String businessType)
+    {
+        for (JSONObject json : list)
+        {
+            try
+            {
+                Map<String, String> map = new HashMap<>();
+                Integer flowId = json.getInteger("flowId");
+                ConfFlowInfo flowInfo = confBaseService.queryFlowById(flowId);
+                if (flowInfo == null)
+                    continue;
+                ConfNodeInfo nodeInfo = nodeService.queryNodeByStepId(flowInfo.getStepId());
+                if (nodeInfo == null)
+                    continue;
+                Document doc = invokerService.getFileSource(flowInfo.getFlowPath());
+                String processId = doc.getRootElement().attributeValue("id");
+                map.put("nodeName", nodeInfo.getNodeName());
+                map.put("flowPath", flowInfo.getFlowPath());
+                map.put("processId", processId);
+                result.add(map);
+                if (add) {
+                    ConfProductStep product = confBaseService.queryProductStep(flowId, flowInfo.getStepId(), productId, businessType);
+                    if (product != null)
+                        map.put("productId", product.getId() + "");
+                }
+            }
+            catch (Exception e)
+            {
+                logger.error("build knowledge error!", e);
+                continue;
+            }
+        }
+    }
 	/**
 	 * 查询阶段列表
 	 * @param data
@@ -212,4 +306,22 @@ public class ConfBaseController implements CommController
 		return confBaseService.queryInvokLog(data);
 	}
 	
+    /**
+     * 调用知识包
+     */
+    @ApiException
+    public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data) {
+        String flowId = ToolsUtil.obj2Str(data.get("productId"));
+        String businessType = ToolsUtil.obj2Str(data.get("businessType"));
+        if (StringUtils.isBlank(flowId) || StringUtils.isBlank(businessType))
+        {
+            if (StringUtils.isBlank(businessType)) {
+                return ErrorUtil.errorResp(ErrorCode.code_0001, "businessType");
+            } 
+            else {
+                return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
+            }
+        }
+        return confBaseService.excuteKnowledge(data);
+    }
 }

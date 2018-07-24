@@ -21,6 +21,8 @@ public interface ConfRuleInfoMapper {
     
     List<ConfRuleInfo> selectRecordList(@Param("productId") Integer productId ,@Param("nodeId")Integer nodeId, @Param("ruleType")String ruleType, @Param("effect")String effect);
     
+    List<ConfRuleInfo> selectRuleList(@Param("nodeId")Integer nodeId, @Param("ruleType")String ruleType);
+    
     List<ConfRuleInfo> selectRecordListByPage(@Param("nodeId")Integer nodeId,@Param("startNum")Integer startNum,@Param("pageSize")Integer pageSize);
     
     List<ConfRuleInfo> selectEffectRecordListByPage(@Param("productId")Integer productId, @Param("nodeId")Integer nodeId,@Param("startNum")Integer startNum,@Param("pageSize")Integer pageSize);
@@ -31,7 +33,7 @@ public interface ConfRuleInfoMapper {
     
     int queryCountByName(@Param("ruleName")String ruleName, @Param("ruleType")String ruleType);
     
-    ConfRuleInfo selectByName(String ruleName);
+    ConfRuleInfo selectByName(@Param("ruleName")String ruleName);
     
     List<ConfRuleInfo> selectList(@Param(value = "ruleNames")List<String> ruleNames, @Param(value = "beans")List<String> beans);
 }

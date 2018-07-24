@@ -47,13 +47,24 @@
     from conf_product_node t left join conf_rule_info m 
     on t.uid = m.uid
     where t.product_id = #{productId}
-    and t.node_id = #{nodeId}   
+    and t.node_id = #{nodeId} and m.delete_flag = 0
     <if test="ruleType != null">
     	and m.rule_type = #{ruleType}
     </if>
     and t.effect = #{effect}
-    and delete_flag = 0
+    and t.delete_flag = 0
   </select>
+  <select id="selectRuleList"  resultMap="BaseResultMap">
+  	select m.*
+    from conf_node_template t left join conf_rule_info m 
+    on t.uid = m.uid
+    where t.node_id = #{nodeId} and m.delete_flag = 0
+    <if test="ruleType != null">
+    	and m.rule_type = #{ruleType}
+    </if>
+    and t.delete_flag = 0
+  </select>
+  
   
   <select id="selectRecordListByPage"  resultMap="BaseResultMap">
   	select m.*
@@ -115,7 +126,7 @@
   <select id="selectByName"  parameterType="java.lang.String" resultMap="BaseResultMap">
  	select m.*
     from  conf_rule_info m 
-   	 where m.rule_name = #{ruleName,jdbcType=VARCHAR} and m.delete_flag = 0
+   	where m.rule_name = #{ruleName,jdbcType=VARCHAR} and m.delete_flag = 0
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

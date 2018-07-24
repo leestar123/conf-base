@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.Utils;
 import com.bstek.urule.console.repository.model.FileType;
 import com.bstek.urule.console.repository.model.ResourcePackage;
-import com.bstek.urule.model.GeneralEntity;
 import com.conf.client.RuleInvokerService;
 import com.conf.common.Constants;
 import com.conf.common.ErrorCode;
@@ -33,8 +31,6 @@ import com.conf.template.db.mapper.ConfNodeInfoMapper;
 import com.conf.template.db.mapper.ConfNodeTemplateMapper;
 import com.conf.template.db.mapper.ConfProductNodeMapper;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
-import com.conf.template.db.model.ConfFlowInfo;
-import com.conf.template.db.model.ConfInvokInfo;
 import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfNodeTemplate;
 import com.conf.template.db.model.ConfProductNode;
@@ -45,8 +41,6 @@ public class NodeService {
 	
     private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
 	
-    private static Map<String, String> clazzMap = new HashMap<>();
-    
 	@Autowired
 	ConfNodeInfoMapper confNodeInfoMapper;
 	
@@ -552,40 +546,49 @@ public class NodeService {
      * @return
      * @see [类、类#方法、类#成员]
      */
+    @SuppressWarnings({"rawtypes"})
     public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data)
     {
         logger.info("Begin to publish knowledge!");
         
-        //flow源文件中的id值
-        String flowId = ToolsUtil.obj2Str(data.get("flowId"));
-        String path = ToolsUtil.obj2Str(data.get("flowPath"));
-        //conf_product_step表中的id
-        String productId = ToolsUtil.obj2Str(data.get("productId"));
-        //对应工程名
-        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        List<Map> bind = JSONObject.parseArray(JSONObject.toJSONString(data.get("bind")), Map.class);
+        List<ResourcePackage> packages = null;
+        for (Map map : bind)
+        {
+            //conf_product_step表中的id
+            String productId = ToolsUtil.obj2Str(map.get("productId"));
+            
+            //flow源文件中的id值
+            String flowId = ToolsUtil.obj2Str(map.get("processId"));
+            String path = ToolsUtil.obj2Str(map.get("flowPath"));
+            //对应工程名
+            String nodeName = ToolsUtil.obj2Str(map.get("nodeName"));
+            try
+            {
+                if (packages == null)
+                    packages = invokerService.loadProjectResourcePackages(nodeName);
+                logger.info("Begin to generate RLXML for rule flow[" + path + "] !");
+                String xml = invokerService.generateRLXML("/" + nodeName, productId, flowId, path, packages).toString();
+                //保存知识包
+                //packages = invokerService.loadProjectResourcePackages(nodeName);
+                logger.debug("RLXML context is [" + xml + "] !");
+                
+                logger.info("Begin to save packages!");
+                invokerService.saveResourcePackages(nodeName, xml);
+                logger.info("End to save packages!");
+                
+                String files = path.startsWith("/") ? "jcr:" + path : "jcr:/" + path;
+                logger.info("Begin to refresh packages, file path is [" + files + "] !");
+                invokerService.refreshKnowledgeCache(files, productId, nodeName);
+                logger.info("End to refresh packages!");
+            }
+            catch (Exception e)
+            {
+                logger.error("Publish knowledge [" + path + "] failly!", e);
+                return ErrorUtil.errorResp(ErrorCode.code_9999);
+            }
+        }
         
-        //保存知识包
-        try
-        {
-            List<ResourcePackage> packages = invokerService.loadProjectResourcePackages(nodeName);
-            logger.info("Begin to generate RLXML for rule flow[" + path + "] !");
-            String xml = invokerService.generateRLXML("/" + nodeName, productId, flowId, path, packages).toString();
-            logger.debug("RLXML context is [" + xml + "] !");
-            
-            logger.info("Begin to save packages!");
-            invokerService.saveResourcePackages(nodeName, xml);
-            logger.info("End to save packages!");
-            
-            String files = path.startsWith("/") ? "jcr:" + path : "jcr:/" + path;
-            logger.info("Begin to refresh packages, file path is [" + files + "] !");
-            invokerService.refreshKnowledgeCache(files, productId, nodeName);
-            logger.info("End to refresh packages!");
-        }
-        catch (Exception e)
-        {
-            logger.error("Publish knowledge [" + path + "] failly!", e);
-            return ErrorUtil.errorResp(ErrorCode.code_9999);
-        }
         Map<String, Object> map = new HashMap<String, Object>();
         return ErrorUtil.successResp(map);
     }
@@ -600,115 +603,24 @@ public class NodeService {
     public Map<String, ? extends Object> queryActionRule(Map<String, ? extends Object> data)
     {
         logger.info("Begin to query action rules!");
-        //产品id
-        Integer productId = ToolsUtil.obj2Int(data.get("productId"), 0);
         //组件名称
         Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), 0);
         
-        List<ConfRuleInfo> list = confRuleInfoMapper.selectRecordList(productId, nodeId, Constants.RULE_TYPE_ACTION, Constants.EFFECT_STATUS_VALID);
+        List<ConfRuleInfo> list = confRuleInfoMapper.selectRuleList(nodeId, Constants.RULE_TYPE_ACTION);
         Map<String, Object> body = new HashMap<>();
         body.put("list", list);
         return ErrorUtil.successResp(body);
     }
     
     /**
-     * 调用知识包
-     * @param data
+     * 
+     * <一句话功能简述>
+     * <功能详细描述>
+     * @param nodeId
      * @return
+     * @see [类、类#方法、类#成员]
      */
-    @SuppressWarnings("unchecked")
-    public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data)
-    {
-        logger.info("Begin to excute knowledge service!");
-        
-        String teller = ToolsUtil.obj2Str(data.get("teller"));
-        String org = ToolsUtil.obj2Str(data.get("org"));
-        Integer flowId = ToolsUtil.obj2Int(data.get("flowId"), null);
-        ConfFlowInfo flowInfo = confFlowInfoMapper.selectByPrimaryKey(flowId);
-        if (flowInfo == null) 
-        {
-            return ErrorUtil.errorResp(ErrorCode.code_0009, flowId);
-        }
-        ConfNodeInfo nodeInfo = confNodeInfoMapper.queryNodeByStep(flowInfo.getStepId());
-        if (nodeInfo == null)
-        {
-            return ErrorUtil.errorResp(ErrorCode.code_0010, flowInfo.getStepId());
-        }
-        
-        ConfInvokInfo invokInfo = new ConfInvokInfo();
-        invokInfo.setRequest(JSONObject.toJSONString(data));
-        invokInfo.setService(flowInfo.getFlowName());
-        invokInfo.setSuccess(Constants.EXCUTE_STATUS_FAIL);
-        invokInfo.setTeller(teller);
-        invokInfo.setOrg(org);
-        
-        try
-        {
-            List<GeneralEntity> entityList = new ArrayList<>();
-            List<Map<String, Object>> objList = new ArrayList<>();
-            Object obj = data.get("objList");
-            if (obj != null && List.class.isInstance(obj))
-            {
-                //TODO： 此处必须为实体对象
-                objList = (List<Map<String, Object>>)obj;
-                for (Map<String, Object> map : objList)
-                {
-                    String key = ToolsUtil.obj2Str(map.get("key"));
-                    map.remove("key");
-                    if (StringUtils.isBlank(clazzMap.get(key))) {
-                        buildKnowledgeObject("/" + nodeInfo.getNodeName(), key);
-                    }
-                    String clazz = clazzMap.get(key);
-                    GeneralEntity entity = new GeneralEntity(clazz);
-                    for (String set : map.keySet())
-                    {
-                        entity.put(set, map.get(set));
-                    }
-                    entityList.add(entity);
-                }
-            }
-            logger.info("Excute knowledge service actually, file is [" + flowInfo.getFlowPath() + "]!");
-            Document doc = invokerService.getFileSource(flowInfo.getFlowPath());
-            String processId = doc.getRootElement().attributeValue("id");
-            //TODO：
-            invokerService.executeProcess(nodeInfo.getNodeName() + "/riskWarning", entityList, processId);
-            logger.info("End to excute knowledge service");
-            invokInfo.setDetail(ToolsUtil.invokerLocalGet());
-            invokInfo.setSuccess(Constants.EXCUTE_STATUS_SUCCESS);
-        }
-        catch (Exception e)
-        {
-            logger.error("Excute knowledge [" + flowInfo.getFlowPath() + "] failly!", e);
-            return ErrorUtil.errorResp(ErrorCode.code_9999);
-        }
-        finally
-        {
-            try
-            {
-                confInvokInfoMapper.insertSelective(invokInfo);
-            }
-            catch (Exception e)
-            {
-                logger.warn("调用日志表插入失败！", e);
-            }
-        }
-        Map<String, Object> body = new HashMap<>();
-        return ErrorUtil.successResp(body);
-    }
-    
-    private synchronized void buildKnowledgeObject (String path, String key) throws Exception {
-        if (StringUtils.isNotBlank(clazzMap.get(key)))
-            return;
-        
-        //TODO:遍历项目下的变量库
-        FileType[] types = new FileType[] {FileType.VariableLibrary};
-        List<String> fileList = invokerService.getDirectories(path, types, null);
-        for (String file : fileList)
-        {
-            Document doc = invokerService.getFileSource(file);
-            String clazz = doc.getRootElement().element("category").attributeValue("clazz");
-            String newkey = clazz.substring(clazz.lastIndexOf(".") + 1, clazz.length());
-            clazzMap.put(newkey, clazz);
-        }
+    public ConfNodeInfo queryNodeByStepId(Integer stepId) {
+        return confNodeInfoMapper.queryNodeByStep(stepId);
     }
 }

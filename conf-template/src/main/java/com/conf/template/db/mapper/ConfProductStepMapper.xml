@@ -39,6 +39,9 @@
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfProductStep">
+ 	 <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+   		SELECT LAST_INSERT_ID()
+ 	  </selectKey>
     insert into conf_product_step
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -213,27 +216,26 @@
   </select>
   
   <select id="queryIdByCondition"  resultMap="BaseResultMap">
- 	select ps.id
+ 	select ps.id, ps.delete_flag
     from  conf_product_step ps 
     <where>
-    <if test="stepId != null">
+    <if test="stepId != null and stepId != ''">
    	 and ps.step_id = #{stepId}
    	</if>
-   	 <if test="flowId != null">
+   	 <if test="flowId != null and flowId != ''">
    		and ps.flow_id = #{flowId}
       </if> 
-       <if test="productId != null">
+       <if test="productId != null and productId != ''">
    		and ps.product_id = #{productId}
       </if>
-       <if test="businessType != null">
+       <if test="businessType != null and businessType != ''">
    		and ps.business_type = #{businessType}
       </if>
-   	and ps.delete_flag = 0
    	</where>
   </select>
   
   <select id="queryListByProductIdAndBusinessType"  resultMap="BaseResultMap">
- 	select ps.step_id, ps.flow_id
+ 	select ps.id, ps.step_id, ps.flow_id
     from  conf_product_step ps 
     <where>
        <if test="productId != null">
@@ -242,7 +244,7 @@
        <if test="businessType != null">
    		and ps.business_type = #{businessType}
       </if>
-   	and ps.delete_flag = 0
+   	
    	</where>
   </select>
 </mapper>

@@ -1,12 +1,13 @@
 package com.conf.template.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -14,8 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bstek.urule.console.repository.model.FileType;
+import com.bstek.urule.model.GeneralEntity;
 import com.conf.client.RuleInvokerService;
 import com.conf.common.Constants;
 import com.conf.common.ErrorCode;
@@ -46,6 +50,8 @@ public class ConfBaseService
 {
     
     private final static Logger logger = LoggerFactory.getLogger(ConfBaseService.class);
+    
+    private static Map<String, String> clazzMap = new HashMap<>();
     
     @Autowired
     private ConfStepInfoMapper confStepInfoMapper;
@@ -272,15 +278,18 @@ public class ConfBaseService
 	            	ConfProductStep cps = confProductStepMapper.queryIdByCondition(confStepAndFLowInfo.getStepId(), flow.getFlowId(), productId, businessType);
 	            	
 	            	//if (confProductStepMapper.queryCountByStep(confStepAndFLowInfo.getStepId(), flow.getFlowId(), productId, businessType) > 0){
-	            	if (cps != null){	
-	            		// 已绑定
-	            		flow.setBind(0);
-	            		flow.setId(cps.getId());
-	            	}else {
-	            		
+	            	if (cps == null) {
 	            		// 未绑定
 	            		flow.setBind(1);
 	            		flow.setId(0); // 默认值
+	            	} else if (cps.getDeleteFlag() == 1) {
+	            		// 存在数据，但标识是已删除
+	            		flow.setBind(1);
+	            		flow.setId(cps.getId());
+	            	} else if (cps.getDeleteFlag() == 0) {
+	            		// 已绑定
+	            		flow.setBind(0);
+	            		flow.setId(cps.getId());
 	            	}
 	            });
             }
@@ -381,7 +390,6 @@ public class ConfBaseService
     {
 		Integer productId = ToolsUtil.obj2Int(data.get("productId"), null); // 节点名称
 		String businessType = ToolsUtil.obj2Str(data.get("businessType"));
-		Integer bind = ToolsUtil.obj2Int(data.get("bind"), null); // 0--绑定 1--未绑定
         // 参数拼装
 		ConfProductStep confProductStep = new ConfProductStep();
 		confProductStep.setProductName((String)data.get("productName")); // 产品名称
@@ -393,46 +401,59 @@ public class ConfBaseService
 		// 根据产品编号和业务类型查询列表
 		List<ConfProductStep> infoList = confProductStepMapper.queryListByProductIdAndBusinessType(productId, businessType);
 		
-		JSONArray jsonArr = (JSONArray) data.get("array");
+		JSONArray jsonArr = JSONObject.parseArray(JSONObject.toJSONString(data.get("array")));
+		//用于返回做自动发布处理
+		List<Map<String, Object>> filter = new ArrayList<>();
 		for(int i=0; i<jsonArr.size(); i++){
+		    Map<String, Object> map = new HashMap<>();
+		    
 			JSONObject json = jsonArr.getJSONObject(i);
-			Integer stepId = ToolsUtil.obj2Int(data.get("stepId"), null); 
+			Integer stepId = ToolsUtil.obj2Int(json.get("stepId"), null); 
 			confProductStep.setStepId(stepId);
 			
-			List<JSONObject> list = (List<JSONObject>) json.get("list");
+			List<JSONObject> list =  JSONObject.parseArray(JSONObject.toJSONString(json.get("list")), JSONObject.class);
 			
 			// 需要新增的绑定关系列表
 			List<JSONObject> addList = list.stream().filter(obj -> Integer.parseInt(obj.get("bind").toString()) == 0).collect(Collectors.toList());
-			
+			map.put("bind", addList);
 			// 过滤已存在的数据,然后新增绑定关系
-			List<JSONObject> filterList = filterExistData(infoList, addList);
-			
-			if (filterList != null && !filterList.isEmpty()){
-				filterList.stream().forEach(obj -> {
+			Map<String, List<JSONObject>> filterMap = filterExistData(infoList, addList);
+			if (filterMap.get("trueAddList") != null && !filterMap.get("trueAddList").isEmpty()){
+				filterMap.get("trueAddList").stream().forEach(obj -> {
 					confProductStep.setFlowId(ToolsUtil.obj2Int( obj.get("flowId"), null));
-					
 					// 保存数据
 					confProductStepMapper.insertSelective(confProductStep);
 				});
 			}
 			
+			// 修改绑定关系
+			if (filterMap.get("updateList") != null && !filterMap.get("updateList").isEmpty()){
+				ConfProductStep record = new ConfProductStep();
+				filterMap.get("updateList").stream().forEach(obj -> {
+					Integer id = ToolsUtil.obj2Int(obj.get("id"), null);
+					record.setId(id);
+					record.setDeleteFlag(0);
+					confProductStepMapper.updateByPrimaryKeySelective(record);
+				});
+			}
+			
 			// 需要删除的绑定关系列表
 			List<JSONObject> deleteList = list.stream().filter(obj -> Integer.parseInt(obj.get("bind").toString()) == 1).collect(Collectors.toList());
+			map.put("delete", deleteList);
 			ConfProductStep record = new ConfProductStep();
 			deleteList.stream().forEach(delObj -> {
 				Integer id = ToolsUtil.obj2Int(delObj.get("id"), null);
 				if (id != null && id != 0){
-					record.setProductId(productId);
-					record.setBusinessType(businessType);
-					record.setStepId(stepId);
 					record.setId(id);
+					record.setDeleteFlag(1);
 					confProductStepMapper.updateByPrimaryKeySelective(record);
 				}
 			});
-			
+			filter.add(map);
 		}
         Map<String, Object> body = new HashMap<>();
-        body.put("productId", confProductStep.getProductId());
+        body.put("productId", productId);
+        body.put("filter", filter);
         return ErrorUtil.successResp(body);
     }
 	
@@ -442,19 +463,21 @@ public class ConfBaseService
 	 * @param list
 	 * @return
 	 */
-	private List<JSONObject> filterExistData(List<ConfProductStep> infoList, List<JSONObject> list) {
+	private Map<String, List<JSONObject>> filterExistData(List<ConfProductStep> infoList, List<JSONObject> list) {
 		
-		if (infoList == null || infoList.isEmpty()) {
-			return list;
-		}
+		HashSet<Integer> idSet =  (HashSet<Integer>) infoList.stream().map(ConfProductStep :: getId).collect(Collectors.toSet());
 		
-		infoList.stream().forEach(info -> {
-			List<JSONObject> removeList = list.stream().filter(json -> (info.getStepId().equals(json.get("stepId")) && info.getFlowId().equals(json.get("flowId"))))
-					.collect(Collectors.toList());
-			list.removeAll(removeList);
-		});
+		// 返回的Map数据包括 需要新增的List（数据库里不存在，本次新增）  和 需要修改的List(数据库里存在，但状态是已删除，本次修改状态)
+		Map<String, List<JSONObject>> filterMap = new HashMap<>();
 		
-		return list;
+		// 过滤之后需要新增的List
+		List<JSONObject> trueAddList = list.stream().filter(json -> json.get("id") == null || Integer.parseInt(json.get("id").toString()) == 0).collect(Collectors.toList());
+		
+		// 过滤之后需要更新的List
+		List<JSONObject> updateList = list.stream().filter(json -> json.get("id") != null && idSet.contains(Integer.parseInt(json.get("id").toString()))).collect(Collectors.toList());
+		filterMap.put("trueAddList", trueAddList);
+		filterMap.put("updateList", updateList);
+		return filterMap;
 	}
 
 	/**
@@ -533,5 +556,147 @@ public class ConfBaseService
         }
         body.put("list", jsonList);
         return ErrorUtil.successResp(body);
+    }
+    
+    /**
+     * 根据flowId查询流程信息
+     * 
+     * @param flowId
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public ConfFlowInfo queryFlowById(Integer flowId)
+    {
+        return confFlowInfoMapper.selectByPrimaryKey(flowId);
+    }
+    
+    /**
+     * 
+     * <一句话功能简述>
+     * <功能详细描述>
+     * @param flowId
+     * @param stepId
+     * @param productId
+     * @param businessType
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    public ConfProductStep queryProductStep(Integer flowId, Integer stepId, Integer productId, String businessType)
+    {
+        return confProductStepMapper.queryIdByCondition(stepId, flowId, productId, businessType);
+    }
+    
+    /**
+     * 调用知识包
+     * @param data
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data)
+    {
+        logger.info("Begin to excute knowledge service!");
+        
+        Integer productId = ToolsUtil.obj2Int(data.get("productId"), null);
+        String businessType = ToolsUtil.obj2Str(data.get("businessType"));
+        Integer stepId = ToolsUtil.obj2Int(data.get("stepId"), null);
+        Integer flowId = ToolsUtil.obj2Int(data.get("flowId"), null);
+        String teller = ToolsUtil.obj2Str(data.get("teller"));
+        String org = ToolsUtil.obj2Str(data.get("org"));
+        ConfProductStep product = confProductStepMapper.queryIdByCondition(stepId, flowId, productId, businessType);
+        if (product == null)
+            return ErrorUtil.errorResp(ErrorCode.code_0011, flowId);
+        
+        ConfFlowInfo flowInfo = confFlowInfoMapper.selectByPrimaryKey(flowId);
+        if (flowInfo == null) 
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0009, flowId);
+        }
+        ConfNodeInfo nodeInfo = confNodeInfoMapper.queryNodeByStep(flowInfo.getStepId());
+        if (nodeInfo == null)
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0010, flowInfo.getStepId());
+        }
+        
+        ConfInvokInfo invokInfo = new ConfInvokInfo();
+        invokInfo.setRequest(JSONObject.toJSONString(data));
+        invokInfo.setService(flowInfo.getFlowName());
+        invokInfo.setSuccess(Constants.EXCUTE_STATUS_FAIL);
+        invokInfo.setTeller(teller);
+        invokInfo.setOrg(org);
+        
+        try
+        {
+            List<GeneralEntity> entityList = new ArrayList<>();
+            List<Map<String, Object>> objList = new ArrayList<>();
+            Object obj = data.get("objList");
+            if (obj != null && List.class.isInstance(obj))
+            {
+                //TODO： 此处必须为实体对象
+                objList = (List<Map<String, Object>>)obj;
+                for (Map<String, Object> map : objList)
+                {
+                    String key = ToolsUtil.obj2Str(map.get("key"));
+                    map.remove("key");
+                    if (StringUtils.isBlank(clazzMap.get(key))) {
+                        buildKnowledgeObject("/" + nodeInfo.getNodeName(), key);
+                    }
+                    String clazz = clazzMap.get(key);
+                    GeneralEntity entity = new GeneralEntity(clazz);
+                    for (String set : map.keySet())
+                    {
+                        entity.put(set, map.get(set));
+                    }
+                    entityList.add(entity);
+                }
+            }
+            logger.info("Excute knowledge service actually, file is [" + flowInfo.getFlowPath() + "]!");
+            Document doc = invokerService.getFileSource(flowInfo.getFlowPath());
+            String processId = doc.getRootElement().attributeValue("id");
+            //TODO：
+            invokerService.executeProcess(nodeInfo.getNodeName() + "/" + product.getId(), entityList, processId);
+            logger.info("End to excute knowledge service");
+            invokInfo.setDetail(ToolsUtil.invokerLocalGet());
+            invokInfo.setSuccess(Constants.EXCUTE_STATUS_SUCCESS);
+        }
+        catch (Exception e)
+        {
+            logger.error("Excute knowledge [" + flowInfo.getFlowPath() + "] failly!", e);
+            return ErrorUtil.errorResp(ErrorCode.code_9999);
+        }
+        finally
+        {
+            try
+            {
+                confInvokInfoMapper.insertSelective(invokInfo);
+            }
+            catch (Exception e)
+            {
+                logger.warn("调用日志表插入失败！", e);
+            }
+        }
+        Map<String, Object> body = new HashMap<>();
+        return ErrorUtil.successResp(body);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private synchronized void buildKnowledgeObject (String path, String key) throws Exception {
+        if (StringUtils.isNotBlank(clazzMap.get(key)))
+            return;
+        
+        //TODO:遍历项目下的变量库
+        FileType[] types = new FileType[] {FileType.VariableLibrary};
+        List<String> fileList = invokerService.getDirectories(path, types, null);
+        for (String file : fileList)
+        {
+            Document doc = invokerService.getFileSource(file);
+            List<Element> elements = doc.getRootElement().elements("category");
+            for (Element element : elements)
+            {
+                String clazz = element.attributeValue("clazz");
+                String newkey = clazz.substring(clazz.lastIndexOf(".") + 1, clazz.length());
+                clazzMap.put(newkey, clazz);
+                
+            }
+        }
     }
 }

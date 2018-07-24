@@ -227,7 +227,6 @@ public class NodeService {
             if (!Constants.RULE_TYPE_ACTION.equals(ruleType) && StringUtils.isBlank(oldFullPath))
             {
                 logger.info("规则[" + ruleName + "]无规则路径，跳过复制！");
-                continue;
             } else if (!Constants.RULE_TYPE_ACTION.equals(ruleType)) {
 
                 ruleType = ToolsUtil.unParse(ruleType);

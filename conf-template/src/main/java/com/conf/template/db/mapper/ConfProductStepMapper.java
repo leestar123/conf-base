@@ -52,4 +52,12 @@ public interface ConfProductStepMapper {
      */
     List<ConfProductStep> queryListByProductIdAndBusinessType(@Param("productId")Integer productId,@Param("businessType")String businessType);
     
+    /**
+     * 
+     * @param stepId
+     * @param flowId
+     * @return
+     */
+    List<ConfProductStep> queryListByStepAndFlow(@Param("stepId")Integer stepId, @Param("flowId")Integer flowId);
+    
 }

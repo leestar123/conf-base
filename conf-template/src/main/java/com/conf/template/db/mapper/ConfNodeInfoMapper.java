@@ -36,4 +36,6 @@ public interface ConfNodeInfoMapper {
     List<ConfNodeInfo> queryNodeByProducts(@Param("product_id") Integer product_id);
     
     ConfNodeInfo queryNodeByStep(@Param("stepId") Integer stepId);
+    
+    String queryNodeNameByStepId(@Param("stepId") Integer stepId);
 }

@@ -22,6 +22,7 @@ import com.conf.common.Constants;
 import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
+import com.conf.common.dto.BuildXMlDto;
 import com.conf.common.dto.ConfOperateInfoDto;
 import com.conf.common.dto.ModuleInfo;
 import com.conf.template.db.dto.ConfNodeInfoAndProduct;
@@ -545,52 +546,38 @@ public class NodeService {
      * @return
      * @see [类、类#方法、类#成员]
      */
-    @SuppressWarnings({"rawtypes"})
     public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data)
-    {
-        logger.info("Begin to publish knowledge!");
-        
-        List<Map> bind = JSONObject.parseArray(JSONObject.toJSONString(data.get("bind")), Map.class);
-        List<ResourcePackage> packages = null;
-        for (Map map : bind)
-        {
-            //conf_product_step表中的id
-            String productId = ToolsUtil.obj2Str(map.get("productId"));
-            
-            //flow源文件中的id值
-            String flowId = ToolsUtil.obj2Str(map.get("processId"));
-            String path = ToolsUtil.obj2Str(map.get("flowPath"));
-            //对应工程名
-            String nodeName = ToolsUtil.obj2Str(map.get("nodeName"));
-            try
-            {
-                if (packages == null)
-                    packages = invokerService.loadProjectResourcePackages(nodeName);
-                logger.info("Begin to generate RLXML for rule flow[" + path + "] !");
-                String xml = invokerService.generateRLXML("/" + nodeName, productId, flowId, path, packages).toString();
-                //保存知识包
-                //packages = invokerService.loadProjectResourcePackages(nodeName);
-                logger.debug("RLXML context is [" + xml + "] !");
-                
-                logger.info("Begin to save packages!");
-                invokerService.saveResourcePackages(nodeName, xml);
-                logger.info("End to save packages!");
-                
-                String files = path.startsWith("/") ? "jcr:" + path : "jcr:/" + path;
-                logger.info("Begin to refresh packages, file path is [" + files + "] !");
-                invokerService.refreshKnowledgeCache(files, productId, nodeName);
-                logger.info("End to refresh packages!");
-            }
-            catch (Exception e)
-            {
-                logger.error("Publish knowledge [" + path + "] failly!", e);
-                return ErrorUtil.errorResp(ErrorCode.code_9999);
-            }
-        }
-        
-        Map<String, Object> map = new HashMap<String, Object>();
-        return ErrorUtil.successResp(map);
-    }
+	{
+		logger.info("Begin to publish knowledge!");
+		try {
+			List<BuildXMlDto> bind = JSONObject.parseArray(JSONObject.toJSONString(data.get("bind")),
+					BuildXMlDto.class);
+			String nodeName = bind.get(0).getNodeName();
+			List<ResourcePackage> packages = invokerService.loadProjectResourcePackages(nodeName);
+
+			logger.info("Begin to generate RLXML!");
+			invokerService.generateRLXML(bind, packages);
+			String xml = invokerService.buildXML(packages).toString();
+			logger.debug("RLXML context is [" + xml + "] !");
+
+			logger.info("Begin to save packages!");
+			invokerService.saveResourcePackages(nodeName, xml);
+			logger.info("End to save packages!");
+
+			for (BuildXMlDto dto : bind) {
+				String files = dto.getPath().startsWith("/") ? "jcr:" + dto.getPath() : "jcr:/" + dto.getPath();
+				logger.info("Begin to refresh packages, file path is [" + files + "] !");
+				invokerService.refreshKnowledgeCache(files, dto.getProductId(), nodeName);
+				logger.info("End to refresh packages!");
+			}
+
+			Map<String, Object> map = new HashMap<String, Object>();
+			return ErrorUtil.successResp(map);
+		} catch (Exception e) {
+			logger.error("Publish knowledge failly!", e);
+			return ErrorUtil.errorResp(ErrorCode.code_9999);
+		}
+	}
 	
 	/**
      * 根查询动作规则

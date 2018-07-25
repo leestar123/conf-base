@@ -699,4 +699,47 @@ public class ConfBaseService
             }
         }
     }
+    
+    /**
+     * 刷新知识包
+     * @param data
+     * @return
+     */
+    public Map<String, ? extends Object> refreshKnowledgeCacheByStepAndFlow(Map<String, ? extends Object> data)
+    {
+    	Map<String, Object> body = new HashMap<>();
+    	Integer stepId = ToolsUtil.obj2Int(data.get("stepId"), null);
+    	Integer flowId = ToolsUtil.obj2Int(data.get("flowId"), null);
+    	List<ConfProductStep> productList = confProductStepMapper.queryListByStepAndFlow(stepId, flowId);
+    	if (productList == null || productList.isEmpty()) {
+    		return ErrorUtil.successResp(body);
+    	}
+    	String nodeName = confNodeInfoMapper.queryNodeNameByStepId(stepId);
+    	ConfFlowInfo confFlowInfo = confFlowInfoMapper.selectByPrimaryKey(flowId);
+    	String path = confFlowInfo.getFlowPath();
+    	
+    	// 判断是否空文件，空文件不做任何处理
+    	Document doc;
+		try {
+			doc = invokerService.getFileSource(path);
+			String processId = doc.getRootElement().attributeValue("id");
+	    	if (processId != null) {
+	    		String files = path.startsWith("/") ? "jcr:" + path : "jcr:/" + path;
+		        logger.info("Begin to refresh packages, file path is [" + files + "] !");
+		    	productList.stream().forEach(product -> {
+					try {
+						invokerService.refreshKnowledgeCache(files, product.getProductId().toString(), nodeName);
+					} catch (Exception e) {
+						logger.error("Publish knowledge [" + path + "] failly!", e);
+			            return;
+					}
+		    	});
+	    	}
+		} catch (Exception e1) {
+			logger.error("Publish knowledge [" + path + "] failly!", e1);
+            return ErrorUtil.errorResp(ErrorCode.code_9999);
+		}
+    	logger.info("End to refresh packages!");
+        return ErrorUtil.successResp(body);
+    } 
 }

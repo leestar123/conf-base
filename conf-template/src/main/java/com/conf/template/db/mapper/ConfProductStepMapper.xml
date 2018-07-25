@@ -247,4 +247,17 @@
    	
    	</where>
   </select>
+  
+  <select id="queryListByStepAndFlow"  resultMap="BaseResultMap">
+ 	select ps.product_id
+    from  conf_product_step ps 
+    <where>
+       <if test="stepId != null">
+   		and ps.step_id = #{stepId}
+      </if>
+       <if test="flowId != null">
+   		and ps.flow_id = #{flowId}
+      </if>
+   	</where>
+  </select>
 </mapper>

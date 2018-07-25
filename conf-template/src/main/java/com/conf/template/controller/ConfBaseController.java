@@ -20,6 +20,7 @@ import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
 import com.conf.common.annotation.ApiException;
+import com.conf.common.dto.BuildXMlDto;
 import com.conf.template.db.model.ConfFlowInfo;
 import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfProductStep;
@@ -136,8 +137,7 @@ public class ConfBaseController implements CommController
             try
             {
                 Map<String, Object> body = (Map<String, Object>)result.get("body");
-                List<Map<String, String>> bind = new ArrayList<>();
-                //List<Map<String, String>> delete = new ArrayList<>();
+                List<BuildXMlDto> bind = new ArrayList<>();
                 JSONArray filter = JSONObject.parseArray(JSONObject.toJSONString(body.get("filter")));
                 body.remove("filter");
                 for (int i = 0; i < filter.size(); i++)
@@ -146,13 +146,9 @@ public class ConfBaseController implements CommController
                     List<JSONObject> addList =
                         JSONObject.parseArray(JSONObject.toJSONString(map.get("bind")), JSONObject.class);
                     buildKnowledge(addList, bind, true, productId, businessType);
-                    //List<JSONObject> deletList =
-                     //   JSONObject.parseArray(JSONObject.toJSONString(map.get("delete")), JSONObject.class);
-                    //buildKnowledge(deletList, delete, false, null, null);
                 }
                 Map<String, Object> invoker = new HashMap<>();
                 invoker.put("bind", bind);
-                //invoker.put("delete", delete);
                 nodeService.publishKnowledge(invoker);
             } catch (Exception e) {
                 
@@ -173,13 +169,13 @@ public class ConfBaseController implements CommController
 	 * @param businessType
 	 * @see [类、类#方法、类#成员]
 	 */
-    private void buildKnowledge(List<JSONObject> list, List<Map<String, String>> result, boolean add, Integer productId, String businessType)
+    private void buildKnowledge(List<JSONObject> list, List<BuildXMlDto> result, boolean add, Integer productId, String businessType)
     {
         for (JSONObject json : list)
         {
             try
             {
-                Map<String, String> map = new HashMap<>();
+            	BuildXMlDto dto = new BuildXMlDto();
                 Integer flowId = json.getInteger("flowId");
                 ConfFlowInfo flowInfo = confBaseService.queryFlowById(flowId);
                 if (flowInfo == null)
@@ -189,14 +185,15 @@ public class ConfBaseController implements CommController
                     continue;
                 Document doc = invokerService.getFileSource(flowInfo.getFlowPath());
                 String processId = doc.getRootElement().attributeValue("id");
-                map.put("nodeName", nodeInfo.getNodeName());
-                map.put("flowPath", flowInfo.getFlowPath());
-                map.put("processId", processId);
-                result.add(map);
+                dto.setProductId(productId + "");
+                dto.setFlowId(processId);
+                dto.setNodeName(nodeInfo.getNodeName());
+                dto.setPath(flowInfo.getFlowPath());
+                result.add(dto);
                 if (add) {
                     ConfProductStep product = confBaseService.queryProductStep(flowId, flowInfo.getStepId(), productId, businessType);
                     if (product != null)
-                        map.put("productId", product.getId() + "");
+                    	dto.setProductId(product.getId() + "");
                 }
             }
             catch (Exception e)
@@ -324,4 +321,14 @@ public class ConfBaseController implements CommController
         }
         return confBaseService.excuteKnowledge(data);
     }
+    
+    /**
+     * 刷新知识包
+     */
+    @ApiException
+    public Map<String, ? extends Object> refreshKnowledgeCacheByStepAndFlow(Map<String, ? extends Object> data) {
+    	
+    	return confBaseService.refreshKnowledgeCacheByStepAndFlow(data);
+    }
+    
 }

@@ -39,6 +39,7 @@ import com.bstek.urule.runtime.KnowledgeSession;
 import com.bstek.urule.runtime.KnowledgeSessionFactory;
 import com.bstek.urule.runtime.cache.CacheUtils;
 import com.bstek.urule.runtime.service.KnowledgeService;
+import com.conf.common.dto.BuildXMlDto;
 
 /**
  * 
@@ -414,10 +415,22 @@ public class RuleInvokerService
         return repositoryService.loadProjectResourcePackages("/" + project); 
     }
     
-    public StringBuilder generateRLXML(String project, String id, String flowId, String flowPath, List<ResourcePackage> packages)
+    /**
+     * 构建知识包对象
+     * 
+     * @param bind 包含productId、processId、flowPath、nodeName字段
+     * @param packages
+     */
+	public void generateRLXML(List<BuildXMlDto> bind, List<ResourcePackage> packages) {
+		for (BuildXMlDto dto : bind) {
+			generateRLXML("/" + dto.getNodeName(), dto.getProductId(), dto.getFlowId(), dto.getPath(), packages);
+		}
+	}
+    
+    public void generateRLXML(String project, String id, String flowId, String flowPath, List<ResourcePackage> packages)
     {
         if (StringUtils.isBlank(id) || StringUtils.isBlank(flowId))
-            return buildXML(packages);
+            return;
         boolean flag = false;
         for (ResourcePackage resourcePackage : packages)
         {
@@ -462,10 +475,9 @@ public class RuleInvokerService
             newPackage.setResourceItems(listItem);
             packages.add(newPackage);
         }
-        return buildXML(packages);
     }
     
-    private StringBuilder buildXML(List<ResourcePackage> packages) 
+    public StringBuilder buildXML(List<ResourcePackage> packages) 
     {
         StringBuilder content = new StringBuilder();
         content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");

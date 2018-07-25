@@ -178,4 +178,15 @@
 		where t.step_id = #{stepId}
 	</select>
 	
+	<select id="queryNodeNameByStepId" resultType="java.lang.String">
+		select ni.node_name from conf_step_info si, conf_node_info ni 
+		<where>
+		  si.node_id = ni.node_id 
+		  <if test="stepId != null and stepId != ''">
+		        and si.step_id = #{stepId}#
+		   </if>
+		   and si.delete_flag = 0
+	   </where>  
+   </select>
+	
 </mapper>

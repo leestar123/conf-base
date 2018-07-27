@@ -1,5 +1,24 @@
 # conf-base
 全局配置中心，实现各种组件的可配置化
+## 配置文件
+*	application.properties
+	*	urule.repository.dir:urule文件存储地方，事先需要建立
+	*	scan.package.name：扫描包下所有含有@Rule注解的类，可通过逗号(,)扫描多个包
+	*	urule.repository.databasetype：如果urule文件采用数据库方式存储，则需要配置。否则不需要
+	*	urule.repository.datasourcename：配合 urule.repository.databasetype使用，配置数据源具体内容见application.yml
+	*	urule.debugToFile：是否开启调用日志文件输出，true-开启，flase-关闭。
+*	application.yml
+	*	spring.datasource:配置对应的数据源信息
+	*	server.port:配置访问端口
+## 配置ActionBean
+*	决策流中的动作Bean需要实现FlowAction接口
+*	给类添加@Rule注解，注解包含以下属性
+	*	name：Bean展示名称
+	*	remark：注解说明
+	*	verison：注解版本号，当版本号高于上一个版本号时，则重新加载
+*	如果类中存在属性，则需要给属性添加注解@ActionParam
+	*	desc：属性中文描述
+	*	defaultValue：属性的默认值
 
 ## 规则组件
 针对自定义的规则组件，实现针对规则组件中的规则可配置化。如果某一条规则执行失败则整个组件则执行完成。

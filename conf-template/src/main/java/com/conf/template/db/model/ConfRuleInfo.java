@@ -33,6 +33,8 @@ public class ConfRuleInfo {
     
     private Integer deleteFlag;
     
+    private String packageName;
+    
     public Integer getDeleteFlag()
     {
         return deleteFlag;
@@ -158,4 +160,14 @@ public class ConfRuleInfo {
     {
         this.updateTime = updateTime;
     }
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+    
+    
 }

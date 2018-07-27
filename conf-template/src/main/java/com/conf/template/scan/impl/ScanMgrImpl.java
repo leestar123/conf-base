@@ -7,6 +7,7 @@ import com.conf.common.PropertyConf;
 import com.conf.common.annotation.Rule;
 import com.conf.template.scan.AnnotationParsing;
 import com.conf.template.scan.ScanMgr;
+import com.conf.template.service.ConfBeanService;
 
 /**
  * 启动扫描
@@ -17,6 +18,8 @@ import com.conf.template.scan.ScanMgr;
 public class ScanMgrImpl implements ScanMgr{
 
 	private AnnotationParsing annotationParsing;
+	
+	private ConfBeanService confBeanService;
 	
 	private PropertyConf property;
 	
@@ -29,6 +32,10 @@ public class ScanMgrImpl implements ScanMgr{
     {
         this.property = property;
     }
+    
+	public void setConfBeanService(ConfBeanService confBeanService) {
+		this.confBeanService = confBeanService;
+	}
 
 	public void firstScan() throws Exception {
 		//包名
@@ -40,6 +47,9 @@ public class ScanMgrImpl implements ScanMgr{
                 annotationParsing.insertAnnotationInfo(cls);
             }
         }
+        
+        // 初始化ActionBean的属性值
+        confBeanService.initActionBeanField();
 	}
 
 	@Override

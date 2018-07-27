@@ -29,11 +29,11 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfProductStep">
-    insert into conf_product_step (id, product_id, product_name, 
+    insert into conf_product_step (product_id, product_name, 
       business_type, step_id, flow_id, 
       teller, org, create_time, 
       update_time)
-    values (#{id,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, 
+    values (#{productId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, 
       #{businessType,jdbcType=VARCHAR}, #{stepId,jdbcType=INTEGER}, #{flowId,jdbcType=INTEGER}, 
       #{teller,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
@@ -44,9 +44,6 @@
  	  </selectKey>
     insert into conf_product_step
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="productId != null">
         product_id,
       </if>
@@ -76,9 +73,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="productId != null">
         #{productId,jdbcType=INTEGER},
       </if>

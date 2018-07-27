@@ -36,4 +36,6 @@ public interface ConfRuleInfoMapper {
     ConfRuleInfo selectByName(@Param("ruleName")String ruleName);
     
     List<ConfRuleInfo> selectList(@Param(value = "ruleNames")List<String> ruleNames, @Param(value = "beans")List<String> beans);
+    
+    List<ConfRuleInfo> selectParamList();
 }

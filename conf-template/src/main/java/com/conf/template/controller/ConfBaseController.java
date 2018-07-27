@@ -25,6 +25,7 @@ import com.conf.template.db.model.ConfFlowInfo;
 import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfProductStep;
 import com.conf.template.service.ConfBaseService;
+import com.conf.template.service.ConfBeanService;
 import com.conf.template.service.NodeService;
 
 @Component
@@ -36,6 +37,9 @@ public class ConfBaseController implements CommController
     private ConfBaseService confBaseService;
     
     @Autowired
+    private ConfBeanService confBeanService;
+    
+    @Autowired
     private NodeService nodeService;
     
     @Autowired
@@ -43,6 +47,10 @@ public class ConfBaseController implements CommController
 	
 	public void setConfBaseService(ConfBaseService confBaseService) {
 		this.confBaseService = confBaseService;
+	}
+	
+	public void setConfBeanService(ConfBeanService confBeanService) {
+		this.confBeanService = confBeanService;
 	}
 
 	/**
@@ -113,7 +121,7 @@ public class ConfBaseController implements CommController
         {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "productName");
         }
-        if (productId == null || StringUtils.isBlank(businessType))
+        if (productId == null && StringUtils.isBlank(businessType))
         {
             if (StringUtils.isBlank(businessType)) {
                 return ErrorUtil.errorResp(ErrorCode.code_0001, "businessType");
@@ -329,6 +337,24 @@ public class ConfBaseController implements CommController
     public Map<String, ? extends Object> refreshKnowledgeCacheByStepAndFlow(Map<String, ? extends Object> data) {
     	
     	return confBaseService.refreshKnowledgeCacheByStepAndFlow(data);
+    }
+    
+    /**
+     * 根据规则编号查询动作Bean参数
+     */
+    @ApiException
+    public Map<String, ? extends Object> queryParamByUid(Map<String, ? extends Object> data) {
+    	
+    	return confBeanService.queryParamByUid(data);
+    }
+    
+    /**
+     * 配置ActionBean属性
+     */
+    @ApiException
+    public Map<String, ? extends Object> confBeanField(Map<String, ? extends Object> data) {
+    	
+    	return confBeanService.confBeanField(data);
     }
     
 }

@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `conf_rule_info` (
   `rule_type` varchar(200) NOT NULL COMMENT '规则类型',
   `rule_path` varchar(200) DEFAULT NULL COMMENT '规则路径，如/aa/bb.rs.xml',
   `remark` varchar(200) DEFAULT NULL COMMENT '规则说明',
+  `package_name` varchar(200) DEFAULT NULL COMMENT '执行类包名',
   `clazz` varchar(200) DEFAULT NULL COMMENT '执行类',
   `method` varchar(50) DEFAULT NULL COMMENT '执行方法',
   `param` varchar(200) DEFAULT NULL COMMENT '执行参数',

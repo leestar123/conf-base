@@ -34,6 +34,8 @@
 	
 	<bean id="annotationParsing" class="com.conf.template.scan.AnnotationParsing"/>
 	
+	<bean id="confBeanService" class="com.conf.template.service.ConfBeanService"/>
+	
 	<bean id="propertyConf" class="com.conf.common.PropertyConf">
 		<property name="scanPackageName" value="${scan.package.name}"></property>
 	</bean>
@@ -41,6 +43,7 @@
 	<bean id="scanMgrImpl" class="com.conf.template.scan.impl.ScanMgrImpl" scope="singleton" init-method="firstScan">
 		<property name="annotationParsing" ref="annotationParsing"></property>
 		<property name="property" ref="propertyConf"></property>
+		<property name="confBeanService" ref="confBeanService"></property>
 	</bean>
 
 	<bean id="invokerDebugWriter" class="com.conf.template.process.InvokerDebugWriter" />

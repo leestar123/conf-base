@@ -5,6 +5,7 @@
     <id column="uid" jdbcType="INTEGER" property="uid" />
     <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
     <result column="clazz" jdbcType="VARCHAR" property="clazz" />
     <result column="method" jdbcType="VARCHAR" property="method" />
     <result column="param" jdbcType="VARCHAR" property="param" />
@@ -21,6 +22,7 @@
     <id column="uid" jdbcType="INTEGER" property="uid" />
     <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
     <result column="clazz" jdbcType="VARCHAR" property="clazz" />
     <result column="method" jdbcType="VARCHAR" property="method" />
     <result column="param" jdbcType="VARCHAR" property="param" />
@@ -34,7 +36,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-   uid,rule_name,remark,clazz,method,param,version,teller,org,rule_path,rule_type,create_time,update_time,delete_flag
+   uid,rule_name,remark,package_name,clazz,method,param,version,teller,org,rule_path,rule_type,create_time,update_time,delete_flag
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -154,6 +156,9 @@
       <if test="remark != null">
         remark,
       </if>
+      <if test="packageName != null">
+        package_name,
+      </if>
       <if test="clazz != null">
         clazz,
       </if>
@@ -185,6 +190,9 @@
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="packageName != null">
+        #{packageName,jdbcType=VARCHAR},
       </if>
       <if test="clazz != null">
         #{clazz,jdbcType=VARCHAR},
@@ -286,5 +294,10 @@
 	     </if>
 	     and delete_flag = 0
      </where>
+  </select>
+  <select id="selectParamList" resultMap="BaseResultMap">
+  	select  <include refid="Base_Column_List" />
+    from conf_rule_info
+    where package_name is not null and clazz is not null and param is not null
   </select>
 </mapper>

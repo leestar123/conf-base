@@ -27,6 +27,7 @@ import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
 import com.conf.common.dto.ConfOperateInfoDto;
 import com.conf.common.dto.ModuleInfo;
+import com.conf.common.process.InvokerAopProcess;
 import com.conf.template.db.dto.ConfProductAndStepAndFLow;
 import com.conf.template.db.dto.ConfStepAndFLowInfo;
 import com.conf.template.db.dto.ConfStepInfoDto;
@@ -76,6 +77,9 @@ public class ConfBaseService
     
     @Autowired
     private ConfProductStepMapper confProductStepMapper;
+    
+    @Autowired
+    private InvokerAopProcess invokerAopProcess;
     
     public void setInvokerService(RuleInvokerService invokerService)
     {
@@ -626,12 +630,13 @@ public class ConfBaseService
         
         try
         {
+        	invokerAopProcess.beforeProcess(data);
             List<GeneralEntity> entityList = new ArrayList<>();
             List<Map<String, Object>> objList = new ArrayList<>();
             Object obj = data.get("objList");
             if (obj != null && List.class.isInstance(obj))
             {
-                //TODO： 此处必须为实体对象
+                //此处必须为实体对象
                 objList = (List<Map<String, Object>>)obj;
                 for (Map<String, Object> map : objList)
                 {
@@ -652,8 +657,9 @@ public class ConfBaseService
             logger.info("Excute knowledge service actually, file is [" + flowInfo.getFlowPath() + "]!");
             Document doc = invokerService.getFileSource(flowInfo.getFlowPath());
             String processId = doc.getRootElement().attributeValue("id");
-            //TODO：
-            invokerService.executeProcess(nodeInfo.getNodeName() + "/" + product.getId(), entityList, processId);
+
+            Map<String, Object> params = invokerService.executeProcess(nodeInfo.getNodeName() + "/" + product.getId(), entityList, processId);
+            invokerAopProcess.afterPorcess(params);
             logger.info("End to excute knowledge service");
             invokInfo.setDetail(ToolsUtil.invokerLocalGet());
             invokInfo.setSuccess(Constants.EXCUTE_STATUS_SUCCESS);

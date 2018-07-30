@@ -70,9 +70,8 @@
   
   <select id="selectRecordListByPage"  resultMap="BaseResultMap">
   	select m.*
-    from conf_node_template t left join conf_rule_info m 
-    on t.uid = m.uid and m.delete_flag = 0
-    where t.node_id = #{nodeId} and t.delete_flag = 0
+    from conf_node_template t , conf_rule_info m 
+    where t.uid = m.uid and m.delete_flag = 0 and t.node_id = #{nodeId} and t.delete_flag = 0
     limit #{startNum},#{pageSize}  
   </select>
   

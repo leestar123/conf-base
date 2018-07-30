@@ -346,7 +346,7 @@ public class ConfNodeController implements CommController{
 	 */
 	@ApiException
 	public Map<String, ? extends Object> publishKnowledge(Map<String, ? extends Object> data) {
-        String flowId = ToolsUtil.obj2Str(data.get("processId"));
+        String flowId = ToolsUtil.obj2Str(data.get("flowId"));
         String path = ToolsUtil.obj2Str(data.get("flowPath"));
         //conf_product_step表中的id
         String productId = ToolsUtil.obj2Str(data.get("productId"));

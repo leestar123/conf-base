@@ -318,7 +318,7 @@ public class ConfBaseController implements CommController
     public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data) {
         String flowId = ToolsUtil.obj2Str(data.get("productId"));
         String businessType = ToolsUtil.obj2Str(data.get("businessType"));
-        if (StringUtils.isBlank(flowId) || StringUtils.isBlank(businessType))
+        if (StringUtils.isBlank(flowId) && StringUtils.isBlank(businessType))
         {
             if (StringUtils.isBlank(businessType)) {
                 return ErrorUtil.errorResp(ErrorCode.code_0001, "businessType");

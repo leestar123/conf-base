@@ -38,6 +38,7 @@ import com.bstek.urule.runtime.KnowledgePackage;
 import com.bstek.urule.runtime.KnowledgeSession;
 import com.bstek.urule.runtime.KnowledgeSessionFactory;
 import com.bstek.urule.runtime.cache.CacheUtils;
+import com.bstek.urule.runtime.event.KnowledgeEventListener;
 import com.bstek.urule.runtime.service.KnowledgeService;
 import com.conf.common.dto.BuildXMlDto;
 
@@ -66,7 +67,13 @@ public class RuleInvokerService
     
     private KnowledgeService knowledgeService;
     
-    /**
+    private KnowledgeEventListener knowledgeEventListener;
+    
+    public void setKnowledgeEventListener(KnowledgeEventListener knowledgeEventListener) {
+		this.knowledgeEventListener = knowledgeEventListener;
+	}
+
+	/**
      * 校验节点是否存在
      * 
      * @param nodeName
@@ -235,6 +242,7 @@ public class RuleInvokerService
     
     /**
      * 知识包的调用
+     * @param listener 
      * @param packageId
      * @param objList
      * @param objListUnCheck
@@ -247,6 +255,7 @@ public class RuleInvokerService
         KnowledgePackage knowledgePackage;
         knowledgePackage = knowledgeService.getKnowledge(packageId);
         KnowledgeSession session = KnowledgeSessionFactory.newKnowledgeSession(knowledgePackage);
+        session.addEventListener(knowledgeEventListener);
         for (Object objNeedChecked : objList)
         {
             session.insert(objNeedChecked);

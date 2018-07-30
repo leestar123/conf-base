@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
-@ImportResource({"classpath*:urule-console-context.xml","classpath*:conf-base-context.xml"})
+@ImportResource({"classpath*:urule-console-context.xml","classpath*:conf-base-context.xml","classpath*:nanjingbank-api-context.xml"})
 @ComponentScan(basePackages="com.conf.client")
 @MapperScan("com.conf.template.db.mapper")
 public class BootstrapAppliaction {

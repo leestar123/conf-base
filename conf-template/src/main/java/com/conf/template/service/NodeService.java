@@ -99,6 +99,10 @@ public class NodeService {
         }
         catch (Exception e)
         {
+        	logger.error(e.getMessage(), e);
+        	if (e.getMessage().contains("already exist")) {
+        		return ErrorUtil.errorResp(ErrorCode.code_0006, confNodeInfo.getNodeName());
+        	}
             logger.error("reate empty project[" + confNodeInfo.getNodeName() + "] failly!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
         }
@@ -138,6 +142,17 @@ public class NodeService {
     {
         logger.info("Begin to delete node!");
         String[] str = ToolsUtil.obj2Str(data.get("nodeId")).split(",");
+        String[] nodeNames = ToolsUtil.obj2Str(data.get("nodeName")).split(",");
+        if (nodeNames != null && nodeNames.length > 0) {
+        	for (String nodeName : nodeNames) {
+        		try {
+					invokerService.deleteFile(nodeName);
+				} catch (Exception e) {
+					 logger.error("删除节点[" + nodeName + "]失败!", e);
+	                 return ErrorUtil.errorResp(ErrorCode.code_9999);
+				}
+        	}
+        }
         for (String nodeId : str)
         {
             logger.info("Now delete node[" + nodeId + "]!");
@@ -558,6 +573,8 @@ public class NodeService {
 			logger.info("Begin to generate RLXML!");
 			invokerService.generateRLXML(bind, packages);
 			String xml = invokerService.buildXML(packages).toString();
+//			String xml = "<?xml version='1.0' encoding='utf-8'?><res-packages><res-package id='80000088' name='80000088' create_date='2018-07-30 14:06:00'><res-package-item  name='GeneralPrescreening' path='jcr:/资质审查/资质审查-预筛选/通用预筛选.rl.xml' version='LATEST'/></res-package>\r\n" + 
+//					"</res-packages>";
 			logger.debug("RLXML context is [" + xml + "] !");
 
 			logger.info("Begin to save packages!");

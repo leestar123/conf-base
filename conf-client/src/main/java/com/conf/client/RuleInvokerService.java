@@ -16,6 +16,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.bstek.urule.Utils;
 import com.bstek.urule.builder.KnowledgeBase;
@@ -53,6 +55,8 @@ import com.conf.common.dto.BuildXMlDto;
  */
 public class RuleInvokerService
 {
+	private final static Logger logger = LoggerFactory.getLogger(RuleInvokerService.class);
+	    
     private static final String CLASSIFY_COOKIE_NAME = "_lib_classify";
     
     public static final String KB_KEY = "_kb";
@@ -243,27 +247,32 @@ public class RuleInvokerService
     /**
      * 知识包的调用
      * @param listener 
-     * @param packageId
      * @param objList
      * @param objListUnCheck
      * @param processId
      * @throws Exception
      */
-    public Map<String, Object> executeProcess(String packageId, List<GeneralEntity> objList, String processId)
+    public Map<String, Object> executeProcess(String files, List<GeneralEntity> objList, String processId)
         throws Exception
-    {
-        KnowledgePackage knowledgePackage;
-        knowledgePackage = knowledgeService.getKnowledge(packageId);
-        KnowledgeSession session = KnowledgeSessionFactory.newKnowledgeSession(knowledgePackage);
-        session.addEventListener(knowledgeEventListener);
-        for (Object objNeedChecked : objList)
-        {
-            session.insert(objNeedChecked);
-        }
-        session.startProcess(processId);
-        session.writeLogFile();
-        return session.getParameters();
-    }
+	{
+		HttpServletRequest req = RequestHolder.getRequest();
+		logger.debug("Begin to build KonwledgeBase");
+		KnowledgeBase knowledgeBase = (KnowledgeBase) httpSessionKnowledgeCache.get(req, KB_KEY);
+		if (knowledgeBase == null) {
+			knowledgeBase = buildKnowledgeBase(req, files);
+		}
+		logger.debug("End to build Konwledge");
+		KnowledgePackage knowledgePackage = knowledgeBase.getKnowledgePackage();
+		// knowledgePackage = knowledgeService.getKnowledge(packageId);
+		KnowledgeSession session = KnowledgeSessionFactory.newKnowledgeSession(knowledgePackage);
+		session.addEventListener(knowledgeEventListener);
+		for (Object objNeedChecked : objList) {
+			session.insert(objNeedChecked);
+		}
+		session.startProcess(processId);
+		session.writeLogFile();
+		return session.getParameters();
+	}
     
     private boolean getClassify(HttpServletRequest req, HttpServletResponse resp)
     {

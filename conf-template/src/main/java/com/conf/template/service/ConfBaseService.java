@@ -656,9 +656,12 @@ public class ConfBaseService
             }
             logger.info("Excute knowledge service actually, file is [" + flowInfo.getFlowPath() + "]!");
             Document doc = invokerService.getFileSource(flowInfo.getFlowPath());
+            logger.debug("After parase flow document");
             String processId = doc.getRootElement().attributeValue("id");
 
-            Map<String, Object> params = invokerService.executeProcess(nodeInfo.getNodeName() + "/" + product.getId(), entityList, processId);
+            logger.debug("Begin to excute Konwledge");
+            String files = "jcr:".concat(flowInfo.getFlowPath()).concat(",LATEST");
+            Map<String, Object> params = invokerService.executeProcess(files, entityList, processId);
             invokerAopProcess.afterPorcess(params);
             logger.info("End to excute knowledge service");
             invokInfo.setDetail(ToolsUtil.invokerLocalGet());

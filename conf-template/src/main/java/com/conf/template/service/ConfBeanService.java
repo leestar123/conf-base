@@ -56,11 +56,14 @@ public class ConfBeanService {
 			Map<String, ? extends Object> returnData = setFieldsValue(rule, jsonArray);
 		
 			// 4.更新uid对应的param(格式：[{"name":"xxx", "value":"xxx", "desc":"xxx"},{"name":"xxx", "value":"xxx", "desc":"xxx"}])
-			if (returnData.get("success") != null && (boolean)returnData.get("success")) {
-				ConfRuleInfo record = new ConfRuleInfo();
-				record.setUid(uid);
-				record.setParam(param);
-				confRuleInfoMapper.updateByPrimaryKeySelective(record);
+			Object obj = null;
+			if ((obj = returnData.get("success")) != null && obj instanceof Boolean) {
+				if ((boolean) obj) {
+					ConfRuleInfo record = new ConfRuleInfo();
+					record.setUid(uid);
+					record.setParam(param);
+					confRuleInfoMapper.updateByPrimaryKeySelective(record);
+				}
 			}
 		} catch (ClassNotFoundException e) {
 			logger.error("conf bean field failly!", e);

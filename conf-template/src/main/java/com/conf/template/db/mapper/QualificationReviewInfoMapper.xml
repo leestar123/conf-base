@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.conf.template.db.mapper.QualificationReviewInfoMapper">
+  <resultMap id="BaseResultMap" type="com.conf.template.db.model.QualificationReviewInfo">
+    <id column="QUALIFICATION_REVIEW_ID" jdbcType="INTEGER" property="qualificationReviewId" />
+    <result column="TRAN_SEQ_NO" jdbcType="VARCHAR" property="tranSeqNo" />
+    <result column="PROCESS_ID" jdbcType="VARCHAR" property="processId" />
+    <result column="CUST_NO" jdbcType="VARCHAR" property="custNo" />
+    <result column="CUST_NAME" jdbcType="VARCHAR" property="custName" />
+    <result column="CARD_NO" jdbcType="VARCHAR" property="cardNo" />
+    <result column="CARD_TYPE" jdbcType="VARCHAR" property="cardType" />
+    <result column="TELEPHONE_NO" jdbcType="VARCHAR" property="telephoneNo" />
+    <result column="IS_CREDIT_AUTHORIZED" jdbcType="VARCHAR" property="isCreditAuthorized" />
+    <result column="STAGE_TYPE" jdbcType="VARCHAR" property="stageType" />
+    <result column="CREDIT_PRODUCT" jdbcType="VARCHAR" property="creditProduct" />
+    <result column="CREDIT_QUOTA" jdbcType="DECIMAL" property="creditQuota" />
+    <result column="CREDIT_TERM" jdbcType="VARCHAR" property="creditTerm" />
+    <result column="GUARANTEE_QUOTA" jdbcType="DECIMAL" property="guaranteeQuota" />
+    <result column="GUARANTEE_TYPE" jdbcType="VARCHAR" property="guaranteeType" />
+    <result column="SOURCE_SYSTEM" jdbcType="VARCHAR" property="sourceSystem" />
+    <result column="TELLER_NO" jdbcType="VARCHAR" property="tellerNo" />
+    <result column="TELLER_ORG" jdbcType="VARCHAR" property="tellerOrg" />
+    <result column="QUALIFICATION_REVIEW_RESULT" jdbcType="VARCHAR" property="qualificationReviewResult" />
+    <result column="QUALIFICATION_REVIEW_FAIL_CODE" jdbcType="VARCHAR" property="qualificationReviewFailCode" />
+    <result column="QUALIFICATION_REVIEW_REASON" jdbcType="VARCHAR" property="qualificationReviewReason" />
+    <result column="CREIDT_VALUE" jdbcType="VARCHAR" property="creidtValue" />
+    <result column="CREIDT_LEVEL" jdbcType="VARCHAR" property="creidtLevel" />
+    <result column="PASS_FLAG" jdbcType="VARCHAR" property="passFlag" />
+    <result column="PASS_RATE" jdbcType="VARCHAR" property="passRate" />
+    <result column="OVER_PERCENT" jdbcType="VARCHAR" property="overPercent" />
+    <result column="LAST_UPDATED_STAMP" jdbcType="TIMESTAMP" property="lastUpdatedStamp" />
+    <result column="LAST_UPDATED_TX_STAMP" jdbcType="TIMESTAMP" property="lastUpdatedTxStamp" />
+    <result column="CREATED_STAMP" jdbcType="TIMESTAMP" property="createdStamp" />
+    <result column="CREATED_TX_STAMP" jdbcType="TIMESTAMP" property="createdTxStamp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, PROCESS_ID, CUST_NO, CUST_NAME, CARD_NO, CARD_TYPE, 
+    TELEPHONE_NO, IS_CREDIT_AUTHORIZED, STAGE_TYPE, CREDIT_PRODUCT, CREDIT_QUOTA, CREDIT_TERM, 
+    GUARANTEE_QUOTA, GUARANTEE_TYPE, SOURCE_SYSTEM, TELLER_NO, TELLER_ORG, QUALIFICATION_REVIEW_RESULT, 
+    QUALIFICATION_REVIEW_FAIL_CODE, QUALIFICATION_REVIEW_REASON, CREIDT_VALUE, CREIDT_LEVEL, 
+    PASS_FLAG, PASS_RATE, OVER_PERCENT, LAST_UPDATED_STAMP, LAST_UPDATED_TX_STAMP, CREATED_STAMP, 
+    CREATED_TX_STAMP
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from qualification_review_info
+    where QUALIFICATION_REVIEW_ID = #{qualificationReviewId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from qualification_review_info
+    where QUALIFICATION_REVIEW_ID = #{qualificationReviewId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.conf.template.db.model.QualificationReviewInfo">
+    insert into qualification_review_info (QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, 
+      PROCESS_ID, CUST_NO, CUST_NAME, 
+      CARD_NO, CARD_TYPE, TELEPHONE_NO, 
+      IS_CREDIT_AUTHORIZED, STAGE_TYPE, CREDIT_PRODUCT, 
+      CREDIT_QUOTA, CREDIT_TERM, GUARANTEE_QUOTA, 
+      GUARANTEE_TYPE, SOURCE_SYSTEM, TELLER_NO, 
+      TELLER_ORG, QUALIFICATION_REVIEW_RESULT, QUALIFICATION_REVIEW_FAIL_CODE, 
+      QUALIFICATION_REVIEW_REASON, CREIDT_VALUE, 
+      CREIDT_LEVEL, PASS_FLAG, PASS_RATE, 
+      OVER_PERCENT, LAST_UPDATED_STAMP, LAST_UPDATED_TX_STAMP, 
+      CREATED_STAMP, CREATED_TX_STAMP)
+    values (#{qualificationReviewId,jdbcType=INTEGER}, #{tranSeqNo,jdbcType=VARCHAR}, 
+      #{processId,jdbcType=VARCHAR}, #{custNo,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR}, 
+      #{cardNo,jdbcType=VARCHAR}, #{cardType,jdbcType=VARCHAR}, #{telephoneNo,jdbcType=VARCHAR}, 
+      #{isCreditAuthorized,jdbcType=VARCHAR}, #{stageType,jdbcType=VARCHAR}, #{creditProduct,jdbcType=VARCHAR}, 
+      #{creditQuota,jdbcType=DECIMAL}, #{creditTerm,jdbcType=VARCHAR}, #{guaranteeQuota,jdbcType=DECIMAL}, 
+      #{guaranteeType,jdbcType=VARCHAR}, #{sourceSystem,jdbcType=VARCHAR}, #{tellerNo,jdbcType=VARCHAR}, 
+      #{tellerOrg,jdbcType=VARCHAR}, #{qualificationReviewResult,jdbcType=VARCHAR}, #{qualificationReviewFailCode,jdbcType=VARCHAR}, 
+      #{qualificationReviewReason,jdbcType=VARCHAR}, #{creidtValue,jdbcType=VARCHAR}, 
+      #{creidtLevel,jdbcType=VARCHAR}, #{passFlag,jdbcType=VARCHAR}, #{passRate,jdbcType=VARCHAR}, 
+      #{overPercent,jdbcType=VARCHAR}, #{lastUpdatedStamp,jdbcType=TIMESTAMP}, #{lastUpdatedTxStamp,jdbcType=TIMESTAMP}, 
+      #{createdStamp,jdbcType=TIMESTAMP}, #{createdTxStamp,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.conf.template.db.model.QualificationReviewInfo">
+    insert into qualification_review_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="qualificationReviewId != null">
+        QUALIFICATION_REVIEW_ID,
+      </if>
+      <if test="tranSeqNo != null">
+        TRAN_SEQ_NO,
+      </if>
+      <if test="processId != null">
+        PROCESS_ID,
+      </if>
+      <if test="custNo != null">
+        CUST_NO,
+      </if>
+      <if test="custName != null">
+        CUST_NAME,
+      </if>
+      <if test="cardNo != null">
+        CARD_NO,
+      </if>
+      <if test="cardType != null">
+        CARD_TYPE,
+      </if>
+      <if test="telephoneNo != null">
+        TELEPHONE_NO,
+      </if>
+      <if test="isCreditAuthorized != null">
+        IS_CREDIT_AUTHORIZED,
+      </if>
+      <if test="stageType != null">
+        STAGE_TYPE,
+      </if>
+      <if test="creditProduct != null">
+        CREDIT_PRODUCT,
+      </if>
+      <if test="creditQuota != null">
+        CREDIT_QUOTA,
+      </if>
+      <if test="creditTerm != null">
+        CREDIT_TERM,
+      </if>
+      <if test="guaranteeQuota != null">
+        GUARANTEE_QUOTA,
+      </if>
+      <if test="guaranteeType != null">
+        GUARANTEE_TYPE,
+      </if>
+      <if test="sourceSystem != null">
+        SOURCE_SYSTEM,
+      </if>
+      <if test="tellerNo != null">
+        TELLER_NO,
+      </if>
+      <if test="tellerOrg != null">
+        TELLER_ORG,
+      </if>
+      <if test="qualificationReviewResult != null">
+        QUALIFICATION_REVIEW_RESULT,
+      </if>
+      <if test="qualificationReviewFailCode != null">
+        QUALIFICATION_REVIEW_FAIL_CODE,
+      </if>
+      <if test="qualificationReviewReason != null">
+        QUALIFICATION_REVIEW_REASON,
+      </if>
+      <if test="creidtValue != null">
+        CREIDT_VALUE,
+      </if>
+      <if test="creidtLevel != null">
+        CREIDT_LEVEL,
+      </if>
+      <if test="passFlag != null">
+        PASS_FLAG,
+      </if>
+      <if test="passRate != null">
+        PASS_RATE,
+      </if>
+      <if test="overPercent != null">
+        OVER_PERCENT,
+      </if>
+      <if test="lastUpdatedStamp != null">
+        LAST_UPDATED_STAMP,
+      </if>
+      <if test="lastUpdatedTxStamp != null">
+        LAST_UPDATED_TX_STAMP,
+      </if>
+      <if test="createdStamp != null">
+        CREATED_STAMP,
+      </if>
+      <if test="createdTxStamp != null">
+        CREATED_TX_STAMP,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="qualificationReviewId != null">
+        #{qualificationReviewId,jdbcType=INTEGER},
+      </if>
+      <if test="tranSeqNo != null">
+        #{tranSeqNo,jdbcType=VARCHAR},
+      </if>
+      <if test="processId != null">
+        #{processId,jdbcType=VARCHAR},
+      </if>
+      <if test="custNo != null">
+        #{custNo,jdbcType=VARCHAR},
+      </if>
+      <if test="custName != null">
+        #{custName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardType != null">
+        #{cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="telephoneNo != null">
+        #{telephoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isCreditAuthorized != null">
+        #{isCreditAuthorized,jdbcType=VARCHAR},
+      </if>
+      <if test="stageType != null">
+        #{stageType,jdbcType=VARCHAR},
+      </if>
+      <if test="creditProduct != null">
+        #{creditProduct,jdbcType=VARCHAR},
+      </if>
+      <if test="creditQuota != null">
+        #{creditQuota,jdbcType=DECIMAL},
+      </if>
+      <if test="creditTerm != null">
+        #{creditTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="guaranteeQuota != null">
+        #{guaranteeQuota,jdbcType=DECIMAL},
+      </if>
+      <if test="guaranteeType != null">
+        #{guaranteeType,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceSystem != null">
+        #{sourceSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="tellerNo != null">
+        #{tellerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tellerOrg != null">
+        #{tellerOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="qualificationReviewResult != null">
+        #{qualificationReviewResult,jdbcType=VARCHAR},
+      </if>
+      <if test="qualificationReviewFailCode != null">
+        #{qualificationReviewFailCode,jdbcType=VARCHAR},
+      </if>
+      <if test="qualificationReviewReason != null">
+        #{qualificationReviewReason,jdbcType=VARCHAR},
+      </if>
+      <if test="creidtValue != null">
+        #{creidtValue,jdbcType=VARCHAR},
+      </if>
+      <if test="creidtLevel != null">
+        #{creidtLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="passFlag != null">
+        #{passFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="passRate != null">
+        #{passRate,jdbcType=VARCHAR},
+      </if>
+      <if test="overPercent != null">
+        #{overPercent,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedStamp != null">
+        #{lastUpdatedStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedTxStamp != null">
+        #{lastUpdatedTxStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdStamp != null">
+        #{createdStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTxStamp != null">
+        #{createdTxStamp,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.conf.template.db.model.QualificationReviewInfo">
+    update qualification_review_info
+    <set>
+      <if test="tranSeqNo != null">
+        TRAN_SEQ_NO = #{tranSeqNo,jdbcType=VARCHAR},
+      </if>
+      <if test="processId != null">
+        PROCESS_ID = #{processId,jdbcType=VARCHAR},
+      </if>
+      <if test="custNo != null">
+        CUST_NO = #{custNo,jdbcType=VARCHAR},
+      </if>
+      <if test="custName != null">
+        CUST_NAME = #{custName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNo != null">
+        CARD_NO = #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cardType != null">
+        CARD_TYPE = #{cardType,jdbcType=VARCHAR},
+      </if>
+      <if test="telephoneNo != null">
+        TELEPHONE_NO = #{telephoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isCreditAuthorized != null">
+        IS_CREDIT_AUTHORIZED = #{isCreditAuthorized,jdbcType=VARCHAR},
+      </if>
+      <if test="stageType != null">
+        STAGE_TYPE = #{stageType,jdbcType=VARCHAR},
+      </if>
+      <if test="creditProduct != null">
+        CREDIT_PRODUCT = #{creditProduct,jdbcType=VARCHAR},
+      </if>
+      <if test="creditQuota != null">
+        CREDIT_QUOTA = #{creditQuota,jdbcType=DECIMAL},
+      </if>
+      <if test="creditTerm != null">
+        CREDIT_TERM = #{creditTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="guaranteeQuota != null">
+        GUARANTEE_QUOTA = #{guaranteeQuota,jdbcType=DECIMAL},
+      </if>
+      <if test="guaranteeType != null">
+        GUARANTEE_TYPE = #{guaranteeType,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceSystem != null">
+        SOURCE_SYSTEM = #{sourceSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="tellerNo != null">
+        TELLER_NO = #{tellerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tellerOrg != null">
+        TELLER_ORG = #{tellerOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="qualificationReviewResult != null">
+        QUALIFICATION_REVIEW_RESULT = #{qualificationReviewResult,jdbcType=VARCHAR},
+      </if>
+      <if test="qualificationReviewFailCode != null">
+        QUALIFICATION_REVIEW_FAIL_CODE = #{qualificationReviewFailCode,jdbcType=VARCHAR},
+      </if>
+      <if test="qualificationReviewReason != null">
+        QUALIFICATION_REVIEW_REASON = #{qualificationReviewReason,jdbcType=VARCHAR},
+      </if>
+      <if test="creidtValue != null">
+        CREIDT_VALUE = #{creidtValue,jdbcType=VARCHAR},
+      </if>
+      <if test="creidtLevel != null">
+        CREIDT_LEVEL = #{creidtLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="passFlag != null">
+        PASS_FLAG = #{passFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="passRate != null">
+        PASS_RATE = #{passRate,jdbcType=VARCHAR},
+      </if>
+      <if test="overPercent != null">
+        OVER_PERCENT = #{overPercent,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedStamp != null">
+        LAST_UPDATED_STAMP = #{lastUpdatedStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedTxStamp != null">
+        LAST_UPDATED_TX_STAMP = #{lastUpdatedTxStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdStamp != null">
+        CREATED_STAMP = #{createdStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTxStamp != null">
+        CREATED_TX_STAMP = #{createdTxStamp,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where QUALIFICATION_REVIEW_ID = #{qualificationReviewId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.conf.template.db.model.QualificationReviewInfo">
+    update qualification_review_info
+    set TRAN_SEQ_NO = #{tranSeqNo,jdbcType=VARCHAR},
+      PROCESS_ID = #{processId,jdbcType=VARCHAR},
+      CUST_NO = #{custNo,jdbcType=VARCHAR},
+      CUST_NAME = #{custName,jdbcType=VARCHAR},
+      CARD_NO = #{cardNo,jdbcType=VARCHAR},
+      CARD_TYPE = #{cardType,jdbcType=VARCHAR},
+      TELEPHONE_NO = #{telephoneNo,jdbcType=VARCHAR},
+      IS_CREDIT_AUTHORIZED = #{isCreditAuthorized,jdbcType=VARCHAR},
+      STAGE_TYPE = #{stageType,jdbcType=VARCHAR},
+      CREDIT_PRODUCT = #{creditProduct,jdbcType=VARCHAR},
+      CREDIT_QUOTA = #{creditQuota,jdbcType=DECIMAL},
+      CREDIT_TERM = #{creditTerm,jdbcType=VARCHAR},
+      GUARANTEE_QUOTA = #{guaranteeQuota,jdbcType=DECIMAL},
+      GUARANTEE_TYPE = #{guaranteeType,jdbcType=VARCHAR},
+      SOURCE_SYSTEM = #{sourceSystem,jdbcType=VARCHAR},
+      TELLER_NO = #{tellerNo,jdbcType=VARCHAR},
+      TELLER_ORG = #{tellerOrg,jdbcType=VARCHAR},
+      QUALIFICATION_REVIEW_RESULT = #{qualificationReviewResult,jdbcType=VARCHAR},
+      QUALIFICATION_REVIEW_FAIL_CODE = #{qualificationReviewFailCode,jdbcType=VARCHAR},
+      QUALIFICATION_REVIEW_REASON = #{qualificationReviewReason,jdbcType=VARCHAR},
+      CREIDT_VALUE = #{creidtValue,jdbcType=VARCHAR},
+      CREIDT_LEVEL = #{creidtLevel,jdbcType=VARCHAR},
+      PASS_FLAG = #{passFlag,jdbcType=VARCHAR},
+      PASS_RATE = #{passRate,jdbcType=VARCHAR},
+      OVER_PERCENT = #{overPercent,jdbcType=VARCHAR},
+      LAST_UPDATED_STAMP = #{lastUpdatedStamp,jdbcType=TIMESTAMP},
+      LAST_UPDATED_TX_STAMP = #{lastUpdatedTxStamp,jdbcType=TIMESTAMP},
+      CREATED_STAMP = #{createdStamp,jdbcType=TIMESTAMP},
+      CREATED_TX_STAMP = #{createdTxStamp,jdbcType=TIMESTAMP}
+    where QUALIFICATION_REVIEW_ID = #{qualificationReviewId,jdbcType=INTEGER}
+  </update>
+</mapper>

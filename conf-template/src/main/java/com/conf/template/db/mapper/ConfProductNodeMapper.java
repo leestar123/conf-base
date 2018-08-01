@@ -42,4 +42,6 @@ public interface ConfProductNodeMapper {
 			@Param(value = "list") List<Integer> list,
 			@Param(value = "effect") String effect,
 			@Param(value = "sequence") Integer sequence);
+    
+    ConfProductNode selectByCondition(ConfProductNode record);
 }

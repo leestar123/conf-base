@@ -40,6 +40,22 @@
     #{productId,jdbcType=INTEGER}, #{nodeId,jdbcType=INTEGER}, 
       #{uid,jdbcType=INTEGER}, #{effect,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER}, #{teller,jdbcType=VARCHAR}, #{org,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR})
   </insert>
+  <select id="selectByCondition" parameterType="com.conf.template.db.model.ConfProductNode" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_product_node
+    <where>
+      <if test="productId != null and productId != ''">
+	        and product_id = #{productId}
+	  </if>
+	  <if test="nodeId != null and nodeId != ''">
+	        and node_id = #{nodeId}
+	  </if>
+	  <if test="uid != null and uid != ''">
+	        and uid = #{uid}
+	  </if>
+	 </where>
+  </select>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.ConfProductNode">
      <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
    		SELECT LAST_INSERT_ID()

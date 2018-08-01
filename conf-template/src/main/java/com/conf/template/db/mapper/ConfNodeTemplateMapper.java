@@ -25,5 +25,5 @@ public interface ConfNodeTemplateMapper {
     
     List<ConfNodeTemplate> confNodeTemplateList(Integer nodeId);
     
-    ConfNodeTemplate selectByNodIdAndUid(@Param("nodeId") Integer nodeId,@Param("uid") Integer uid);
+    ConfNodeTemplate selectByNodIdAndUid(@Param("nodeId") Integer nodeId, @Param("uid") Integer uid, @Param("deleteFlag") Integer deleteFlag);
 }

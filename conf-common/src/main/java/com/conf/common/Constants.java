@@ -72,4 +72,11 @@ public class Constants {
     public final static Integer EXCUTE_STATUS_SUCCESS = 0;
     
     public final static Integer EXCUTE_STATUS_FAIL = 1;
+    
+    /**
+     * 删除状态 0-未 1-删除
+     */
+    public final static Integer DELETE_STATUS_NO = 0;
+    
+    public final static Integer DELETE_STATUS_YES = 1;
 }

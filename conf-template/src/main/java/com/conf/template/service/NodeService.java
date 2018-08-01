@@ -250,32 +250,40 @@ public class NodeService {
             List<ModuleInfo> list = new ArrayList<>();
             list.add(module);
             local.setModule(list);
-            if (!Constants.RULE_TYPE_ACTION.equals(ruleType) && StringUtils.isBlank(oldFullPath))
-            {
-                logger.info("规则[" + ruleName + "]无规则路径，跳过复制！");
-            } else if (!Constants.RULE_TYPE_ACTION.equals(ruleType)) {
+            // 查询是否存在已删除状态的记录。如果有，则修改为正常状态；否则新增记录
+            ConfNodeTemplate confNodeTemplate = confNodeTemplateMapper.selectByNodIdAndUid(record.getNodeId(), record.getUid(), 1);
+            if (confNodeTemplate != null && confNodeTemplate.getId() != null) {
+            	record.setId(confNodeTemplate.getId());
+            	record.setDeleteFlag(0);
+            	confNodeTemplateMapper.updateByPrimaryKeySelective(record);
+            } else {
+            	confNodeTemplateMapper.insertSelective(record);
+            	if (!Constants.RULE_TYPE_ACTION.equals(ruleType) && StringUtils.isBlank(oldFullPath))
+                {
+                    logger.info("规则[" + ruleName + "]无规则路径，跳过复制！");
+                } else if (!Constants.RULE_TYPE_ACTION.equals(ruleType)) {
 
-                ruleType = ToolsUtil.unParse(ruleType);
-                //规则复制
-                newFullPath = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
-                try
-                {
-                    if (oldFullPath.equals(newFullPath))
+                    ruleType = ToolsUtil.unParse(ruleType);
+                    //规则复制
+                    newFullPath = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
+                    try
                     {
-                        logger.info("规则[" + ruleName + "]存在当前组件，跳过复制！");
+                        if (oldFullPath.equals(newFullPath))
+                        {
+                            logger.info("规则[" + ruleName + "]存在当前组件，跳过复制！");
+                        }
+                        else
+                        {
+                            invokerService.copyFile(newFullPath, oldFullPath);
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        invokerService.copyFile(newFullPath, oldFullPath);
+                        logger.error("规则复制[" + newFullPath + "]失败!", e);
+                        return ErrorUtil.errorResp(ErrorCode.code_9999);
                     }
-                }
-                catch (Exception e)
-                {
-                    logger.error("规则复制[" + newFullPath + "]失败!", e);
-                    return ErrorUtil.errorResp(ErrorCode.code_9999);
                 }
             }
-            confNodeTemplateMapper.insertSelective(record);
             module.setModuleId(record.getId());
         }
         Map<String, Object> map = new HashMap<String, Object>();
@@ -294,7 +302,7 @@ public class NodeService {
 		Integer nodeId = ToolsUtil.obj2Int(data.get("nodeId"), null);
 		for (Map<String, Object> map : ruleList) {
 		    Integer uid = ToolsUtil.obj2Int(map.get("uid"), null);
-		    ConfNodeTemplate template = confNodeTemplateMapper.selectByNodIdAndUid(nodeId, uid);
+		    ConfNodeTemplate template = confNodeTemplateMapper.selectByNodIdAndUid(nodeId, uid, Constants.DELETE_STATUS_NO);
             ModuleInfo module = new ModuleInfo();
             module.setModuleName("");
             module.setModuleId(template.getId());
@@ -346,7 +354,15 @@ public class NodeService {
 				record.setOrg(org);
 				record.setEffect(Constants.EFFECT_STATUS_VALID);
 				record.setTeller(teller);
-				confProductNodeMapper.insertSelective(record);
+				// 查询是否存在已删除状态的数据，如果有，则更新为正常状态，否则新增数据
+				ConfProductNode  confProductNode  = confProductNodeMapper.selectByCondition(record);
+				if (confProductNode != null && confProductNode.getId() != null) {
+					record.setId(confProductNode.getId());
+					record.setDeleteFlag(0);
+					confProductNodeMapper.updateByPrimaryKeySelective(record);
+				} else {
+					confProductNodeMapper.insertSelective(record);
+				}
 			}
 		}
 		Map<String, Object> map = new HashMap<String, Object>();

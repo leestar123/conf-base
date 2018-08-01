@@ -41,7 +41,8 @@
     <include refid="Base_Column_List" />
     from conf_node_template
     where node_id = #{nodeId}
-    and uid = #{uid} and delete_flag = 0
+    and uid = #{uid} 
+    and delete_flag = #{deleteFlag} 
   </select>
   <insert id="insert" parameterType="com.conf.template.db.model.ConfNodeTemplate">
     insert into conf_node_template (node_id, uid, 

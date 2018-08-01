@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.conf.common.ConfContext;
 import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
@@ -32,7 +33,7 @@ public class RpcHttpRuleService {
 		if (nodeId == null) {
 			return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
 		}
-		ToolsUtil.threadLocalSet(data);
+		ConfContext.threadLocalSet(data);
 		ruleService.doRule(productId, nodeId);
 		return null;
 	}

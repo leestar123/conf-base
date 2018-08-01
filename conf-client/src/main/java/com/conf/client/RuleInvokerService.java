@@ -39,9 +39,12 @@ import com.bstek.urule.model.GeneralEntity;
 import com.bstek.urule.runtime.KnowledgePackage;
 import com.bstek.urule.runtime.KnowledgeSession;
 import com.bstek.urule.runtime.KnowledgeSessionFactory;
+import com.bstek.urule.runtime.KnowledgeSessionImpl;
 import com.bstek.urule.runtime.cache.CacheUtils;
 import com.bstek.urule.runtime.event.KnowledgeEventListener;
+import com.bstek.urule.runtime.rete.Context;
 import com.bstek.urule.runtime.service.KnowledgeService;
+import com.conf.common.ConfContext;
 import com.conf.common.dto.BuildXMlDto;
 
 /**
@@ -265,6 +268,12 @@ public class RuleInvokerService
 		KnowledgePackage knowledgePackage = knowledgeBase.getKnowledgePackage();
 		// knowledgePackage = knowledgeService.getKnowledge(packageId);
 		KnowledgeSession session = KnowledgeSessionFactory.newKnowledgeSession(knowledgePackage);
+		if (session instanceof KnowledgeSessionImpl) 
+		{
+			//添加上下文
+			Context context= ((KnowledgeSessionImpl) session).getContext();
+			ConfContext.setContext(context);
+		}
 		session.addEventListener(knowledgeEventListener);
 		for (Object objNeedChecked : objList) {
 			session.insert(objNeedChecked);

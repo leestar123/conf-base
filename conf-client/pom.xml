@@ -40,9 +40,9 @@
 		<scope>provided</scope>
 	</dependency>
 	<dependency>
-		<groupId>com.hoperun.hrule</groupId>
-		<artifactId>hrule-api</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+			<groupId>com.hoperun.hrule</groupId>
+			<artifactId>hrule-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 	</dependency>
   </dependencies>
 </project>

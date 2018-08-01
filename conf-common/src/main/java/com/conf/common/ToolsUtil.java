@@ -6,17 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.conf.common.dto.ConfOperateInfoDto;
-
 public class ToolsUtil {
 
 	private static SequenceGen gen = new SequenceGen(2L);
-	
-	static ThreadLocal<Map<String,? extends Object>> threadLocal =new ThreadLocal<Map<String, ? extends Object>>();  
-	
-	static ThreadLocal<ConfOperateInfoDto> operateLocal =new ThreadLocal<>(); 
-	
-	static ThreadLocal<String> invokerLocal =new ThreadLocal<>(); 
 	
 	public static int sequence =0;
 	/**
@@ -73,80 +65,6 @@ public class ToolsUtil {
 		return osName;
 	}
 	
-	/**
-	 * 为每个线程存储上下文作为共享变量
-	 * @param map
-	 * @return
-	 */
-	public static ThreadLocal<Map<String, ? extends Object>> threadLocalSet(Map<String, ? extends Object> map)
-	{
-		threadLocal.set(map);
-		return threadLocal;
-	}
-	
-	/**
-	 * 获取每个线程存储上下文
-	 * @return
-	 */
-	public static Map<String, ? extends Object> threadLocalGet()
-	{
-		Map<String, ? extends Object> maps = threadLocal.get();
-		return maps;
-	}
-	
-	/**
-	 * 
-	 * <一句话功能简述>
-	 * <功能详细描述>
-	 * @return
-	 * @see [类、类#方法、类#成员]
-	 */
-	public static ConfOperateInfoDto operateLocalGet()
-    {
-        if (operateLocal.get() == null) 
-        {
-            operateLocal.set(new ConfOperateInfoDto());
-        } 
-        return operateLocal.get();
-    }
-
-	/**
-	 * 
-	 * <一句话功能简述>
-	 * <功能详细描述>
-	 * @param operateLocal
-	 * @see [类、类#方法、类#成员]
-	 */
-    public static void operateLocalSet(ConfOperateInfoDto value)
-    {
-        operateLocal.set(value);
-    }
-    
-    /**
-     * 
-     * <一句话功能简述>
-     * <功能详细描述>
-     * @return
-     * @see [类、类#方法、类#成员]
-     */
-    public static String invokerLocalGet()
-    {
-        return invokerLocal.get();
-    }
-
-    /**
-     * 
-     * <一句话功能简述>
-     * <功能详细描述>
-     * @param operateLocal
-     * @see [类、类#方法、类#成员]
-     */
-    public static void invokerLocalSet(String value)
-    {
-        invokerLocal.set(value);
-    }
-    
-
     /**
 	 * 组装路径
 	 * 

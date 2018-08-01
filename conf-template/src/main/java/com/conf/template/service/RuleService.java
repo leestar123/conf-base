@@ -9,10 +9,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.conf.common.ConfContext;
 import com.conf.common.Constants;
 import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
-import com.conf.common.ToolsUtil;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.model.ConfRuleInfo;
 
@@ -50,7 +50,7 @@ public class RuleService {
 
 		Class<?> cls = null;
 		//获取上下文
-		Map<String, ? extends Object> map = (Map<String, ? extends Object>) ToolsUtil.threadLocalGet();
+		Map<String, ? extends Object> map = (Map<String, ? extends Object>) ConfContext.threadLocalGet();
 		for(ConfRuleInfo ruleInfo :selectRecordList)
 		{
 			try {

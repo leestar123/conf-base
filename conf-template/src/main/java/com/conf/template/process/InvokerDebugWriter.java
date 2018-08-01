@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.bstek.urule.debug.DebugWriter;
 import com.bstek.urule.debug.MessageItem;
-import com.conf.common.ToolsUtil;
+import com.conf.common.ConfContext;
 
 public class InvokerDebugWriter implements DebugWriter
 {
@@ -18,7 +18,7 @@ public class InvokerDebugWriter implements DebugWriter
         {
             sb.append(item.toHtml());
         }
-        ToolsUtil.invokerLocalSet(sb.toString());
+        ConfContext.invokerLocalSet(sb.toString());
     }
     
 }

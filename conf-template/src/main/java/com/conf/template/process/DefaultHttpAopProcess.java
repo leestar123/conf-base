@@ -10,6 +10,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSONObject;
+import com.conf.common.ConfContext;
 import com.conf.common.Constants;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
@@ -29,7 +30,7 @@ public class DefaultHttpAopProcess implements HttpAopProcess
     @Override
     public void beforeProcess(Map<String, ? extends Object> data)
     {
-        ConfOperateInfoDto dto = ToolsUtil.operateLocalGet();
+        ConfOperateInfoDto dto = ConfContext.operateLocalGet();
         //设置请求报文及请求时间
         dto.setTeller(ToolsUtil.obj2Str(data.get(Constants.TELLER)));
         dto.setOrg(ToolsUtil.obj2Str(data.get(Constants.ORG)));
@@ -49,7 +50,7 @@ public class DefaultHttpAopProcess implements HttpAopProcess
     @Override
     public void afterPorcess(Map<String, ? extends Object> data)
     {
-        ConfOperateInfoDto dto = ToolsUtil.operateLocalGet();
+        ConfOperateInfoDto dto = ConfContext.operateLocalGet();
         //保存请求消息
         Boolean success = ErrorUtil.isSuccess(data);
         dto.setSuccess(success ? Constants.EXCUTE_STATUS_SUCCESS : Constants.EXCUTE_STATUS_FAIL);

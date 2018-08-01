@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.console.repository.model.FileType;
 import com.bstek.urule.model.GeneralEntity;
 import com.conf.client.RuleInvokerService;
+import com.conf.common.ConfContext;
 import com.conf.common.Constants;
 import com.conf.common.ErrorCode;
 import com.conf.common.ErrorUtil;
@@ -193,7 +194,7 @@ public class ConfBaseService
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
         
-        ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
+        ConfOperateInfoDto local = ConfContext.operateLocalGet();
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_FLOW);
         local.setRemark("流程新增");
@@ -320,7 +321,7 @@ public class ConfBaseService
 		confStepInfo.setTeller((String)data.get("teller")); // 操作柜员
 		confStepInfo.setOrg((String)data.get("org")); // 操作机构
 		
-		ConfOperateInfoDto local = ToolsUtil.operateLocalGet();
+		ConfOperateInfoDto local = ConfContext.operateLocalGet();
         local.setOperateType(Constants.OPERATE_TYPE_ADD);
         local.setOperateModule(Constants.OPERATE_MODULE_STEP);
         local.setRemark("阶段新增");
@@ -664,7 +665,7 @@ public class ConfBaseService
             Map<String, Object> params = invokerService.executeProcess(files, entityList, processId);
             invokerAopProcess.afterPorcess(params);
             logger.info("End to excute knowledge service");
-            invokInfo.setDetail(ToolsUtil.invokerLocalGet());
+            invokInfo.setDetail(ConfContext.invokerLocalGet());
             invokInfo.setSuccess(Constants.EXCUTE_STATUS_SUCCESS);
         }
         catch (Exception e)

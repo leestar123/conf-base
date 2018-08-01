@@ -90,29 +90,36 @@ public class NodeService {
         List<ModuleInfo> list = new ArrayList<>();
         list.add(module);
         local.setModule(list);
-        
-        try
-        {
-            logger.info("Begin to  create empty project[" + confNodeInfo.getNodeName() + "] on Urule system");
-            invokerService.createProject(confNodeInfo.getNodeName());
-            logger.info("End to  create empty project!");
-        }
-        catch (Exception e)
-        {
-        	logger.error(e.getMessage(), e);
-        	if (e.getMessage().contains("already exist")) {
-        		return ErrorUtil.errorResp(ErrorCode.code_0006, confNodeInfo.getNodeName());
-        	}
-            logger.error("reate empty project[" + confNodeInfo.getNodeName() + "] failly!", e);
-            return ErrorUtil.errorResp(ErrorCode.code_9999);
-        }
-        
         logger.error("Begin to save node info, object is [" + JSONObject.toJSONString(confNodeInfo) + "]!");
-        int result = confNodeInfoMapper.insertSelective(confNodeInfo);
-        if (result != 1)
-        {
-            logger.error("Save node failly, because result doesn`t equal one");
-            return ErrorUtil.errorResp(ErrorCode.code_0002);
+        
+        // 先查询，如果存在已删除状态的数据，则更新为正常状态
+        ConfNodeInfo info = confNodeInfoMapper.queryInfoByNameAndType(confNodeInfo.getNodeName(), confNodeInfo.getNodeType());
+        if (info != null && info.getNodeId() != null) {
+        	 confNodeInfo.setNodeId(info.getNodeId());
+             confNodeInfo.setDeleteFlag(0);
+             confNodeInfoMapper.updateDeleteFlagByPrimaryKey(confNodeInfo);
+        } else {
+        	int result = confNodeInfoMapper.insertSelective(confNodeInfo);
+            if (result != 1)
+            {
+                logger.error("Save node failly, because result doesn`t equal one");
+                return ErrorUtil.errorResp(ErrorCode.code_0002);
+            }
+            try
+            {
+                logger.info("Begin to  create empty project[" + confNodeInfo.getNodeName() + "] on Urule system");
+                invokerService.createProject(confNodeInfo.getNodeName());
+                logger.info("End to  create empty project!");
+            }
+            catch (Exception e)
+            {
+            	logger.error(e.getMessage(), e);
+            	if (e.getMessage().contains("already exist")) {
+            		return ErrorUtil.errorResp(ErrorCode.code_0006, confNodeInfo.getNodeName());
+            	}
+                logger.error("reate empty project[" + confNodeInfo.getNodeName() + "] failly!", e);
+                return ErrorUtil.errorResp(ErrorCode.code_9999);
+            }
         }
         Map<String, Object> body = new HashMap<String, Object>();
         body.put("nodeId", confNodeInfo.getNodeId());
@@ -156,7 +163,10 @@ public class NodeService {
         for (String nodeId : str)
         {
             logger.info("Now delete node[" + nodeId + "]!");
-            confNodeInfoMapper.deleteByPrimaryKey(Integer.parseInt(nodeId));
+            ConfNodeInfo confNodeInfo = new ConfNodeInfo();
+            confNodeInfo.setNodeId(Integer.parseInt(nodeId));
+            confNodeInfo.setDeleteFlag(1);
+            confNodeInfoMapper.updateDeleteFlagByPrimaryKey(confNodeInfo);
         }
         Map<String, Object> body = new HashMap<String, Object>();
         return ErrorUtil.successResp(body);
@@ -291,7 +301,7 @@ public class NodeService {
             List<ModuleInfo> list = new ArrayList<>();
             list.add(module);
             local.setModule(list);
-			confNodeTemplateMapper.deleteByIdAndUid(nodeId, uid);
+			confNodeTemplateMapper.deleteForLogicByIdAndUid(nodeId, uid);
 		}
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -350,7 +360,7 @@ public class NodeService {
 		List<Map<String, Object>> nodeList = (List<Map<String, Object>>) data.get("nodeList");
 		for (int i = 0; i < nodeList.size(); i++) {
 			int nodeId = ToolsUtil.obj2Int(nodeList.get(i).get("nodeId"), null);
-			confProductNodeMapper.deleteByProductAndNodeId(ToolsUtil.obj2Int(productId, null), nodeId);
+			confProductNodeMapper.deleteForLogicByProductAndNodeId(ToolsUtil.obj2Int(productId, null), nodeId);
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		return ErrorUtil.successResp(map);

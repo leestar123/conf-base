@@ -36,6 +36,18 @@
    </where>
   </select>
   
+   <select id="queryInfoByNameAndType" resultMap="BaseResultMap">
+  select t.* from conf_node_info t
+  <where>
+	  <if test="nodeName!=null and nodeName!=''">
+	        and t.node_name like '%${nodeName}%' 
+	   </if>
+	   <if test="nodeType!=null and nodeType!=''">
+	        and t.node_type = #{nodeType}
+	   </if>
+   </where>
+  </select>
+  
   <select id="queryNodeList" resultMap="BaseResultMap">
   select t.* from conf_node_info t
   <where>
@@ -145,6 +157,12 @@
       teller = #{teller,jdbcType=VARCHAR},
       org = #{org,jdbcType=VARCHAR},
       delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where node_id = #{nodeId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateDeleteFlagByPrimaryKey" parameterType="com.conf.template.db.model.ConfNodeInfo">
+    update conf_node_info
+    set  delete_flag = #{deleteFlag,jdbcType=INTEGER}
     where node_id = #{nodeId,jdbcType=INTEGER}
   </update>
   

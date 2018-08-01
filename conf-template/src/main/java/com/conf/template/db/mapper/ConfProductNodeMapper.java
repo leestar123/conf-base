@@ -22,6 +22,8 @@ public interface ConfProductNodeMapper {
     
     int deleteByProductAndNodeId(@Param(value = "productId") Integer productId,
     								@Param(value = "nodeId") Integer nodeId);
+    int deleteForLogicByProductAndNodeId(@Param(value = "productId") Integer productId,
+			@Param(value = "nodeId") Integer nodeId);
     
     List<ConfNodeInfoAndProduct> batchQueryNodeByProduct(@Param(value = "startNum") Integer startNum,
 													@Param(value = "pageSize") Integer pageSize);

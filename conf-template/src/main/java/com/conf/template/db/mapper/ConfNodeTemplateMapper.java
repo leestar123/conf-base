@@ -21,6 +21,8 @@ public interface ConfNodeTemplateMapper {
     
     int deleteByIdAndUid(@Param("nodeId") Integer nodeId,@Param("uid") Integer uid);
     
+    int deleteForLogicByIdAndUid(@Param("nodeId") Integer nodeId,@Param("uid") Integer uid);
+    
     List<ConfNodeTemplate> confNodeTemplateList(Integer nodeId);
     
     ConfNodeTemplate selectByNodIdAndUid(@Param("nodeId") Integer nodeId,@Param("uid") Integer uid);

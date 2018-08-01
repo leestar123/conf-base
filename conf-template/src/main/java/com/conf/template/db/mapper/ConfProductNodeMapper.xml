@@ -150,6 +150,13 @@
     where node_id = #{nodeId}
     and product_id = #{productId}
   </delete>
+  
+  <update id="deleteForLogicByProductAndNodeId">
+  	update conf_product_node
+  	set  delete_flag = 1
+ 	where node_id = #{nodeId}
+    and product_id = #{productId}
+  </update>
 
   <select id="queryProductIdCount"  resultType="java.lang.Integer">
     select 

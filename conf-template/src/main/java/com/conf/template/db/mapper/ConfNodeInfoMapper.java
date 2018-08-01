@@ -8,7 +8,9 @@ import com.conf.template.db.model.ConfNodeInfo;
 
 public interface ConfNodeInfoMapper {
     int deleteByPrimaryKey(Integer nodeId);
-
+    
+    int updateDeleteFlagByPrimaryKey(ConfNodeInfo record);
+    
     int insert(ConfNodeInfo record);
 
     int insertSelective(ConfNodeInfo record);
@@ -38,4 +40,7 @@ public interface ConfNodeInfoMapper {
     ConfNodeInfo queryNodeByStep(@Param("stepId") Integer stepId);
     
     String queryNodeNameByStepId(@Param("stepId") Integer stepId);
+    
+    ConfNodeInfo queryInfoByNameAndType(@Param("nodeName") String nodeName
+			,@Param("nodeType") String nodeType);
 }

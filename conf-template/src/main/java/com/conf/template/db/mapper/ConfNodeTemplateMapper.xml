@@ -30,6 +30,12 @@
     where node_id = #{nodeId}
     and uid = #{uid}
   </delete>
+  <update id="deleteForLogicByIdAndUid" parameterType="com.conf.template.db.model.ConfNodeTemplate">
+    update conf_node_template
+    set  delete_flag = 1
+    where node_id = #{nodeId}
+    and uid = #{uid}
+  </update>
   <select id="selectByNodIdAndUid" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.Utils;
 import com.bstek.urule.console.repository.model.FileType;
+import com.bstek.urule.console.repository.model.ResourcePackage;
 import com.conf.client.RuleInvokerService;
 import com.conf.common.ConfContext;
 import com.conf.common.Constants;
@@ -594,25 +595,25 @@ public class NodeService {
 			List<BuildXMlDto> bind = JSONObject.parseArray(JSONObject.toJSONString(data.get("bind")),
 					BuildXMlDto.class);
 			String nodeName = bind.get(0).getNodeName();
-			//List<ResourcePackage> packages = invokerService.loadProjectResourcePackages(nodeName);
+			List<ResourcePackage> packages = invokerService.loadProjectResourcePackages(nodeName);
 
 			logger.info("Begin to generate RLXML!");
-			//invokerService.generateRLXML(bind, packages);
-			//String xml = invokerService.buildXML(packages).toString();
-			String xml = "<?xml version='1.0' encoding='utf-8'?><res-packages><res-package id='80000088' name='80000088' create_date='2018-07-30 14:06:00'><res-package-item  name='GeneralPrescreening' path='jcr:/资质审查/资质审查-预筛选/通用预筛选.rl.xml' version='LATEST'/></res-package>\r\n" + 
-					"</res-packages>";
+			invokerService.generateRLXML(bind, packages);
+			String xml = invokerService.buildXML(packages).toString();
+			//String xml = "<?xml version='1.0' encoding='utf-8'?><res-packages><res-package id='80000088' name='80000088' create_date='2018-07-30 14:06:00'><res-package-item  name='GeneralPrescreening' path='jcr:/资质审查/资质审查-预筛选/通用预筛选.rl.xml' version='LATEST'/></res-package>\r\n" + 
+			//		"</res-packages>";
 			logger.debug("RLXML context is [" + xml + "] !");
 
 			logger.info("Begin to save packages!");
 			invokerService.saveResourcePackages(nodeName, xml);
 			logger.info("End to save packages!");
 
-//			for (BuildXMlDto dto : bind) {
-//				String files = dto.getPath().startsWith("/") ? "jcr:" + dto.getPath() : "jcr:/" + dto.getPath();
-//				logger.info("Begin to refresh packages, file path is [" + files + "] !");
-//				invokerService.refreshKnowledgeCache(files, dto.getProductId(), nodeName);
-//				logger.info("End to refresh packages!");
-//			}
+			for (BuildXMlDto dto : bind) {
+				String files = dto.getPath().startsWith("/") ? "jcr:" + dto.getPath() : "jcr:/" + dto.getPath();
+				logger.info("Begin to refresh packages, file path is [" + files + "] !");
+				invokerService.refreshKnowledgeCache(files, dto.getProductId(), nodeName);
+				logger.info("End to refresh packages!");
+			}
 
 			Map<String, Object> map = new HashMap<String, Object>();
 			return ErrorUtil.successResp(map);

@@ -20,6 +20,8 @@ public class ConfInvokInfo {
     private Date createDate;
 
     private Date updateTime;
+    
+    private String errorMessage;
 
     public Integer getId() {
         return id;
@@ -92,4 +94,14 @@ public class ConfInvokInfo {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+    
+    
 }

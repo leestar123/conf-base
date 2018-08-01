@@ -669,6 +669,7 @@ public class ConfBaseService
         }
         catch (Exception e)
         {
+        	invokInfo.setErrorMessage(e.getMessage());
             logger.error("Excute knowledge [" + flowInfo.getFlowPath() + "] failly!", e);
             return ErrorUtil.errorResp(ErrorCode.code_9999);
         }

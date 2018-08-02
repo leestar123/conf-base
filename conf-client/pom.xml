@@ -23,17 +23,6 @@
 		<scope>test</scope>
 	</dependency>
 	<dependency>
-		<groupId>com.bstek.urule</groupId>
-		<artifactId>urule-console</artifactId>
-		<version>2.1.5-SNAPSHOT</version>
-		<exclusions>
-			<exclusion>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-jdk14</artifactId>
-			</exclusion>
-		</exclusions>
-	</dependency>
-	<dependency>
 		<groupId>javax.servlet</groupId>
 		<artifactId>servlet-api</artifactId>
 		<version>2.5</version>
@@ -43,6 +32,11 @@
 			<groupId>com.hoperun.hrule</groupId>
 			<artifactId>hrule-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>com.hoperun.hrule</groupId>
+		<artifactId>urule-console</artifactId>
+		<version>2.1.7-SNAPSHOT</version>
 	</dependency>
   </dependencies>
 </project>

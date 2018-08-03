@@ -191,6 +191,10 @@ public class ConfBaseController implements CommController
                 ConfNodeInfo nodeInfo = nodeService.queryNodeByStepId(flowInfo.getStepId());
                 if (nodeInfo == null)
                     continue;
+				if (!invokerService.existCheck(flowInfo.getFlowPath())) {
+					logger.error("File [" + flowInfo.getFlowPath() + "] not exists, skip!");
+					continue;
+				}
                 Document doc = invokerService.getFileSource(flowInfo.getFlowPath());
                 String processId = doc.getRootElement().attributeValue("id");
                 dto.setProductId(productId + "");

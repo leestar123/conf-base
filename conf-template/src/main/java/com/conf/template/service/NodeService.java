@@ -83,10 +83,10 @@ public class NodeService {
         logger.info("Begin to create node[" + confNodeInfo.getNodeName() + "]!");
         
         ConfOperateInfoDto local = ConfContext.operateLocalGet();
-        local.setOperateType(Constants.OPERATE_TYPE_ADD);
-        local.setOperateModule(Constants.OPERATE_MODULE_NODE);
         local.setRemark("节点添加");
         ModuleInfo module = new ModuleInfo();
+        module.setOperateType(Constants.OPERATE_TYPE_ADD);
+        module.setOperateModule(Constants.OPERATE_MODULE_NODE);
         module.setModuleName(confNodeInfo.getNodeName());
         List<ModuleInfo> list = new ArrayList<>();
         list.add(module);
@@ -151,6 +151,12 @@ public class NodeService {
         logger.info("Begin to delete node!");
         String[] str = ToolsUtil.obj2Str(data.get("nodeId")).split(",");
         String[] nodeNames = ToolsUtil.obj2Str(data.get("nodeName")).split(",");
+        
+        ConfOperateInfoDto local = ConfContext.operateLocalGet();
+        local.setRemark("节点删除");
+        List<ModuleInfo> list = new ArrayList<>();
+        local.setModule(list);
+        
         if (nodeNames != null && nodeNames.length > 0) {
         	for (String nodeName : nodeNames) {
         		try {
@@ -168,6 +174,12 @@ public class NodeService {
             confNodeInfo.setNodeId(Integer.parseInt(nodeId));
             confNodeInfo.setDeleteFlag(1);
             confNodeInfoMapper.updateDeleteFlagByPrimaryKey(confNodeInfo);
+            
+            ModuleInfo module = new ModuleInfo();
+            module.setOperateType(Constants.OPERATE_TYPE_ADD);
+            module.setOperateModule(Constants.OPERATE_MODULE_NODE);
+            module.setModuleId(Integer.parseInt(nodeId));
+            list.add(module);
         }
         Map<String, Object> body = new HashMap<String, Object>();
         return ErrorUtil.successResp(body);
@@ -231,8 +243,6 @@ public class NodeService {
         String newFullPath = null;
         
         ConfOperateInfoDto local = ConfContext.operateLocalGet();
-        local.setOperateType(Constants.OPERATE_TYPE_ADD);
-        local.setOperateModule(Constants.OPERATE_MODULE_BUND_NODERULE);
         local.setRemark("节点关联组件添加");
         
         for (int i = 0; i < ruleList.size(); i++)
@@ -247,6 +257,8 @@ public class NodeService {
             oldFullPath = ToolsUtil.obj2Str(ruleList.get(i).get("rulePath"));
             
             ModuleInfo module = new ModuleInfo();
+            module.setOperateType(Constants.OPERATE_TYPE_ADD);
+            module.setOperateModule(Constants.OPERATE_MODULE_BUND_NODERULE);
             module.setModuleName(ruleName);
             List<ModuleInfo> list = new ArrayList<>();
             list.add(module);
@@ -295,8 +307,6 @@ public class NodeService {
 	@SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> deleteRuleByNode(Map<String, ? extends Object> data) {
 	    ConfOperateInfoDto local = ConfContext.operateLocalGet();
-	    local.setOperateType(Constants.OPERATE_TYPE_DEl);
-        local.setOperateModule(Constants.OPERATE_MODULE_BUND_NODERULE);
         local.setRemark("节点关联组件删除");
         
 		List<Map<String, Object>> ruleList = (List<Map<String, Object>>) data.get("ruleList");
@@ -305,6 +315,8 @@ public class NodeService {
 		    Integer uid = ToolsUtil.obj2Int(map.get("uid"), null);
 		    ConfNodeTemplate template = confNodeTemplateMapper.selectByNodIdAndUid(nodeId, uid, Constants.DELETE_STATUS_NO);
             ModuleInfo module = new ModuleInfo();
+            module.setOperateType(Constants.OPERATE_TYPE_DEl);
+    	    module.setOperateModule(Constants.OPERATE_MODULE_BUND_NODERULE);
             module.setModuleName("");
             module.setModuleId(template.getId());
             List<ModuleInfo> list = new ArrayList<>();
@@ -468,11 +480,11 @@ public class NodeService {
         String url = Constants.RULE_URL_BASE;
         
         ConfOperateInfoDto local = ConfContext.operateLocalGet();
-        local.setOperateType(Constants.OPERATE_TYPE_ADD);
-        local.setOperateModule(Constants.OPERATE_MODULE_RULE);
         local.setRemark("组件创建");
         
         ModuleInfo module = new ModuleInfo();
+        module.setOperateType(Constants.OPERATE_TYPE_ADD);
+        module.setOperateModule(Constants.OPERATE_MODULE_RULE);
         module.setModuleName(ruleName);
         List<ModuleInfo> list = new ArrayList<>();
         list.add(module);

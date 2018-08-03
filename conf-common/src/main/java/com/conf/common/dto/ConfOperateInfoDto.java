@@ -8,10 +8,6 @@ public class ConfOperateInfoDto {
 
     private String serialNo;
     
-    private Integer operateType;
-
-    private Integer operateModule;
-    
     private String remark;
 
     private List<ModuleInfo> module;
@@ -34,22 +30,6 @@ public class ConfOperateInfoDto {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getOperateType() {
-        return operateType;
-    }
-
-    public void setOperateType(Integer operateType) {
-        this.operateType = operateType;
-    }
-
-    public Integer getOperateModule() {
-        return operateModule;
-    }
-
-    public void setOperateModule(Integer operateModule) {
-        this.operateModule = operateModule;
     }
 
     public List<ModuleInfo> getModule()

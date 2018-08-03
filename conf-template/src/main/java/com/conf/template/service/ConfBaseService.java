@@ -195,10 +195,10 @@ public class ConfBaseService
         String org = ToolsUtil.obj2Str(data.get("org"));
         
         ConfOperateInfoDto local = ConfContext.operateLocalGet();
-        local.setOperateType(Constants.OPERATE_TYPE_ADD);
-        local.setOperateModule(Constants.OPERATE_MODULE_FLOW);
         local.setRemark("流程新增");
         ModuleInfo module = new ModuleInfo();
+        module.setOperateType(Constants.OPERATE_TYPE_ADD);
+        module.setOperateModule(Constants.OPERATE_MODULE_FLOW);
         module.setModuleName(flowName);
         List<ModuleInfo> list = new ArrayList<>();
         list.add(module);
@@ -322,10 +322,10 @@ public class ConfBaseService
 		confStepInfo.setOrg((String)data.get("org")); // 操作机构
 		
 		ConfOperateInfoDto local = ConfContext.operateLocalGet();
-        local.setOperateType(Constants.OPERATE_TYPE_ADD);
-        local.setOperateModule(Constants.OPERATE_MODULE_STEP);
         local.setRemark("阶段新增");
         ModuleInfo module = new ModuleInfo();
+        module.setOperateType(Constants.OPERATE_TYPE_ADD);
+        module.setOperateModule(Constants.OPERATE_MODULE_STEP);
         module.setModuleName(confStepInfo.getStepName());
         List<ModuleInfo> list = new ArrayList<>();
         list.add(module);
@@ -403,6 +403,11 @@ public class ConfBaseService
 		confProductStep.setTeller((String)data.get("teller")); // 操作柜员
 		confProductStep.setOrg((String)data.get("org")); // 操作机构
 		
+		ConfOperateInfoDto local = ConfContext.operateLocalGet();
+        local.setRemark("产品或业务类型绑定流程");
+        List<ModuleInfo> moduleList = new ArrayList<>();
+        local.setModule(moduleList);
+        
 		// 根据产品编号和业务类型查询列表
 		List<ConfProductStep> infoList = confProductStepMapper.queryListByProductIdAndBusinessType(productId, businessType);
 		
@@ -428,6 +433,13 @@ public class ConfBaseService
 					confProductStep.setFlowId(ToolsUtil.obj2Int( obj.get("flowId"), null));
 					// 保存数据
 					confProductStepMapper.insertSelective(confProductStep);
+					
+				    ModuleInfo module = new ModuleInfo();
+				    module.setOperateType(Constants.OPERATE_TYPE_ADD);
+				    module.setOperateModule(Constants.OPERATE_MODULE_BUND_PRODUCTSTEP);
+				    module.setModuleName("");
+				    module.setModuleId(ToolsUtil.obj2Int( obj.get("flowId"), null));
+				    moduleList.add(module);
 				});
 			}
 			
@@ -439,6 +451,13 @@ public class ConfBaseService
 					record.setId(id);
 					record.setDeleteFlag(0);
 					confProductStepMapper.updateByPrimaryKeySelective(record);
+					
+				    ModuleInfo module = new ModuleInfo();
+				    module.setOperateType(Constants.OPERATE_TYPE_MOD);
+				    module.setOperateModule(Constants.OPERATE_MODULE_BUND_PRODUCTSTEP);
+				    module.setModuleName("");
+				    module.setModuleId(ToolsUtil.obj2Int( obj.get("flowId"), null));
+				    moduleList.add(module);
 				});
 			}
 			
@@ -452,6 +471,13 @@ public class ConfBaseService
 					record.setId(id);
 					record.setDeleteFlag(1);
 					confProductStepMapper.updateByPrimaryKeySelective(record);
+					
+				    ModuleInfo module = new ModuleInfo();
+				    module.setOperateType(Constants.OPERATE_TYPE_DEl);
+				    module.setOperateModule(Constants.OPERATE_MODULE_BUND_PRODUCTSTEP);
+				    module.setModuleName("");
+				    module.setModuleId(ToolsUtil.obj2Int( delObj.get("flowId"), null));
+				    moduleList.add(module);
 				}
 			});
 			filter.add(map);

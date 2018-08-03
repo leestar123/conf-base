@@ -55,16 +55,18 @@ public class DefaultHttpAopProcess implements HttpAopProcess
         Boolean success = ErrorUtil.isSuccess(data);
         dto.setSuccess(success ? Constants.EXCUTE_STATUS_SUCCESS : Constants.EXCUTE_STATUS_FAIL);
         //查询操作不添加记录
-        if (dto.getOperateType() != null)
+        if (dto.getModule() != null && dto.getModule().size() > 0)
         {
+        	ConfOperateInfo record =
+        			JSONObject.parseObject(JSONObject.toJSONString(dto), ConfOperateInfo.class);
             for (ModuleInfo module : dto.getModule())
             {
                 try
                 {
-                    ConfOperateInfo record =
-                        JSONObject.parseObject(JSONObject.toJSONString(dto), ConfOperateInfo.class);
                     record.setModuleName(module.getModuleName());
                     record.setModuleId(module.getModuleId());
+                    record.setOperateModule(module.getOperateModule());
+                    record.setOperateType(module.getOperateType());
                     confOperateInfoMapper.insertSelective(record);
                 }
                 catch (Exception e)

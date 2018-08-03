@@ -205,6 +205,25 @@ public class RuleInvokerService
     }
     
     /**
+     * 保存文件内容
+     * 
+     * @param newVersion
+     * @param projectName
+     * @param xml
+     * @return
+     * @throws Exception 
+     * @see [类、类#方法、类#成员]
+     */
+    public void saveFile(String path, String xml)
+        throws Exception
+    {
+        HttpServletRequest req = RequestHolder.getRequest();
+        HttpServletResponse resp = RequestHolder.getResponse();
+        User user = EnvironmentUtils.getLoginUser(new RequestContext(req, resp));
+        repositoryService.saveFile(path, xml, false, null, user);
+    }
+    
+    /**
      * 自动发布知识包
      * 
      * @param files

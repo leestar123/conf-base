@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -228,7 +229,6 @@ public class NodeService {
 	@SuppressWarnings("unchecked")
     public Map<String, ? extends Object> addRuleByNode(Map<String, ? extends Object> data)
     {
-        
         List<Map<String, Object>> ruleList = (List<Map<String, Object>>)data.get("ruleList");
         String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
         String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
@@ -323,12 +323,51 @@ public class NodeService {
             list.add(module);
             local.setModule(list);
 			confNodeTemplateMapper.deleteForLogicByIdAndUid(nodeId, uid);
+			//TODO:删除Urule文件
 		}
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		return ErrorUtil.successResp(map);
 	}
 
+	@Transactional
+	public Map<String, ? extends Object> deleteRule(Map<String, ? extends Object> data) {
+		Map<String, Object> body = new HashMap<String, Object>();
+		ConfOperateInfoDto local = ConfContext.operateLocalGet();
+		local.setRemark("组件删除");
+		Integer uid = ToolsUtil.obj2Int(data.get("uid"), null);
+		ConfRuleInfo record = confRuleInfoMapper.selectByPrimaryKey(uid);
+		if (record == null || StringUtils.isBlank(record.getRulePath())) {
+			logger.info("rule info is null or rule path is null!");
+			return ErrorUtil.successResp(body);
+		}
+
+		List<Map<String, Object>> list = confNodeTemplateMapper.queryNodeTemplateList(uid, Constants.DELETE_STATUS_NO);
+		if (list != null && list.size() > 0) {
+			// TODO:已经有绑定不能删除，需要先解除绑定
+			logger.error("Rule has bunded some node,then can`t delete!");
+			String nodeName = ToolsUtil.obj2Str(list.get(0).get("node_name"));
+			return ErrorUtil.errorResp(ErrorCode.code_0013, nodeName);
+		}
+
+		try {
+			logger.info("Begint to delete urule file[" + record.getRulePath() + "]");
+			if (invokerService.existCheck(record.getRulePath()))
+			{
+				invokerService.deleteFile(record.getRulePath());
+				logger.info("End to delete urule file");
+			}
+			ConfRuleInfo nodeInfo = new ConfRuleInfo();
+			nodeInfo.setUid(uid);
+			nodeInfo.setDeleteFlag(Constants.DELETE_STATUS_YES);
+			confRuleInfoMapper.updateByPrimaryKeySelective(nodeInfo);
+			return ErrorUtil.successResp(body);
+		} catch (Exception e) {
+			logger.info("Delete rule file failly!", e);
+			return ErrorUtil.errorResp(ErrorCode.code_9999);
+		}
+	}
+	
 	@Transactional
 	public Map<String, ? extends Object> queryNodeByProduct(Map<String, ? extends Object> data) {
 		String productId = ToolsUtil.obj2Str(data.get("productId"));
@@ -472,8 +511,15 @@ public class NodeService {
         String ruleName = ToolsUtil.obj2Str(data.get("ruleName"));
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
-        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
+        //String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
         String remark = ToolsUtil.obj2Str(data.get("remark"));
+        
+		List<ConfNodeInfo> nodeList = confNodeInfoMapper.queryNodeList(null, null, 0, 1);
+        if(nodeList == null || nodeList.size() == 0)
+        {
+        	return ErrorUtil.errorResp(ErrorCode.code_0012);
+        }
+        String nodeName = nodeList.get(0).getNodeName();
         
         ruleName = Utils.decodeURL(ruleName).trim();
         String path = null;
@@ -539,23 +585,68 @@ public class NodeService {
         logger.info("Begin to save rule[" + ruleName + "], Object is[" + JSONObject.toJSONString(record) + "]!");
         confRuleInfoMapper.insertSelective(record);
         
-        Map<String, Object> newData = new HashMap<>();
-        List<Map<String, Object>> ruleList = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
-        map.put("uid", record.getUid());
-        map.put("ruleType", ruleType);
-        map.put("ruleName", data.get("ruleName"));
-        ruleList.add(map);
-        newData.put("ruleList", ruleList);
-        newData.put("nodeName", data.get("nodeName"));
-        newData.put("nodeId", data.get("nodeId"));
-        addRuleByNode(newData);
+//        Map<String, Object> newData = new HashMap<>();
+//        List<Map<String, Object>> ruleList = new ArrayList<>();
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("uid", record.getUid());
+//        map.put("ruleType", ruleType);
+//        map.put("ruleName", data.get("ruleName"));
+//        ruleList.add(map);
+//        newData.put("ruleList", ruleList);
+//        newData.put("nodeName", data.get("nodeName"));
+//        newData.put("nodeId", data.get("nodeId"));
+//        addRuleByNode(newData);
         
         Map<String, Object> body = new HashMap<>();
         body.put("uid", record.getUid());
         body.put("url", url);
         module.setModuleId(record.getUid());
         return ErrorUtil.successResp(body);
+    }
+	
+	/**
+	 * 刷新规则，因为规则复用是通过拷贝方式，因此需要刷新其他工程下的组件
+	 * 
+	 * @param data
+	 * @return
+	 */
+	@Transactional
+    public Map<String, ? extends Object> refreshRule(Map<String, ? extends Object> data)
+    {
+		Map<String, Object> body = new HashMap<>();
+		Integer uid = ToolsUtil.obj2Int(data.get("uid"), null);
+		ConfRuleInfo ruleInfo = confRuleInfoMapper.selectByPrimaryKey(uid);
+		if (ruleInfo == null || StringUtils.isBlank(ruleInfo.getRulePath())) {
+			logger.info("rule info is null or rule path is null!");
+			return ErrorUtil.successResp(body);
+		}
+		String nodeName = ruleInfo.getRulePath().split("/")[1];
+		List<Map<String, Object>> list = confNodeTemplateMapper.queryNodeTemplateList(uid, Constants.DELETE_STATUS_NO);
+		if (list == null || list.size() == 0) {
+			logger.info("rule doesn`t bund any nodes,then skip!");
+			return ErrorUtil.successResp(body);
+		}
+		try {
+			for (Map<String, Object> map : list) {
+				String newNodeName = ToolsUtil.obj2Str(map.get("node_name"));
+				String ruleName = ToolsUtil.obj2Str(map.get("rule_name"));
+				String ruleType = ToolsUtil.obj2Str(map.get("rule_type"));
+				if (nodeName.equals(newNodeName)) {
+					logger.info("Node [" + newNodeName + "] skip refresh");
+					continue;
+				}
+				String path = ToolsUtil.combPath(nodeName, ruleName + "." + ruleType);
+				logger.info("Begin to save urule file[" + path + "]!");
+				Document doc = invokerService.getFileSource(path);
+				String xml = doc.asXML();
+				invokerService.saveFile(path, xml);
+				logger.info("End to save urule file!");
+			}
+			return ErrorUtil.successResp(body);
+		}catch (Exception e) {
+			logger.error("Save urule file failly!", e);
+			return ErrorUtil.errorResp(ErrorCode.code_9999);
+		}
     }
 	
     public Map<String, ? extends Object> ruleflowdesigner(Map<String, ? extends Object> data)

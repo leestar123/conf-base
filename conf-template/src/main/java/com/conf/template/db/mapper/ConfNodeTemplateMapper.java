@@ -1,6 +1,7 @@
 package com.conf.template.db.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -26,4 +27,6 @@ public interface ConfNodeTemplateMapper {
     List<ConfNodeTemplate> confNodeTemplateList(Integer nodeId);
     
     ConfNodeTemplate selectByNodIdAndUid(@Param("nodeId") Integer nodeId, @Param("uid") Integer uid, @Param("deleteFlag") Integer deleteFlag);
+    
+    List<Map<String, Object>> queryNodeTemplateList(@Param("uid") Integer uid, @Param("deleteFlag") Integer deleteFlag);
 }

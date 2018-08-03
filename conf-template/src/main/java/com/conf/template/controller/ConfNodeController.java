@@ -253,27 +253,19 @@ public class ConfNodeController implements CommController{
     {
         String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
         String ruleName = ToolsUtil.obj2Str(data.get("ruleName"));
-        String nodeId = ToolsUtil.obj2Str(data.get("nodeId"));
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
-        String nodeName = ToolsUtil.obj2Str(data.get("nodeName"));
         if (StringUtils.isBlank(ruleType)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleType");
         }
         if (StringUtils.isBlank(ruleName)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "ruleName");
         }
-        if (StringUtils.isBlank(nodeId)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeId");
-        }
         if (StringUtils.isBlank(teller)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "teller");
         }
         if (StringUtils.isBlank(org)) {
             return ErrorUtil.errorResp(ErrorCode.code_0001, "org");
-        }
-        if (StringUtils.isBlank(nodeName)) {
-            return ErrorUtil.errorResp(ErrorCode.code_0001, "nodeName");
         }
         
         return nodeService.createRule(data);
@@ -393,6 +385,43 @@ public class ConfNodeController implements CommController{
         return nodeService.queryActionRule(data);
     }
 
+	/**
+	 * 刷新规则
+	 * 
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+    public Map<String, ? extends Object> refreshRule(Map<String, ? extends Object> data)
+    {
+        //规则ID
+        String uid = ToolsUtil.obj2Str(data.get("uid"));
+        if (StringUtils.isBlank(uid))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "uid");
+        }
+        return nodeService.refreshRule(data);
+    }
+	
+	/**
+	 * 删除规则
+	 * 
+	 * @param data
+	 * @return
+	 */
+	@ApiException
+    public Map<String, ? extends Object> deleteRule(Map<String, ? extends Object> data)
+    {
+        //规则ID
+        String uid = ToolsUtil.obj2Str(data.get("uid"));
+        if (StringUtils.isBlank(uid))
+        {
+            return ErrorUtil.errorResp(ErrorCode.code_0001, "uid");
+        }
+        return nodeService.deleteRule(data);
+    }
+	
+	
     @Override
     public String url()
     {

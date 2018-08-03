@@ -117,7 +117,7 @@ public class ScheduleScanMgrImpl extends ScheduleTask implements ScanMgr{
 				// }
 				// 执行规则入库操作
 				annotationParsing.insertAnnotationInfo(cls);
-			} catch (ClassNotFoundException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

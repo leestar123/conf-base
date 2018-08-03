@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.conf.common.Constants;
+import com.conf.common.ToolsUtil;
 import com.conf.common.annotation.Rule;
 import com.conf.template.db.mapper.ConfRuleInfoMapper;
 import com.conf.template.db.model.ConfRuleInfo;
@@ -22,8 +23,9 @@ public class AnnotationParsing {
 	/**
 	 * 扫描class文件方法入库
 	 * @param clazz
+	 * @throws Exception 
 	 */
-	public void insertAnnotationInfo(Class<?> clazz)
+	public void insertAnnotationInfo(Class<?> clazz) throws Exception
 	{
 		logger.info("The insertAnnotationInfo method start " );
 		ConfRuleInfo record = null;
@@ -45,8 +47,13 @@ public class AnnotationParsing {
         confRuleInfo = confRuleInfoMapper.selectByName(rule.name());
         if(confRuleInfo == null){
             //入库操作
+        	logger.info("Current version is new,then insert information!");
             confRuleInfoMapper.insertSelective(record);
             logger.info("The rule["+rule.name()+"] is added into record successly！");
+        } else if (ToolsUtil.compareVersion(rule.version(), confRuleInfo.getVersion()) > 0) {
+        	logger.info("Current version is higher,then update information!");
+        	record.setUid(confRuleInfo.getUid());
+        	confRuleInfoMapper.updateByPrimaryKeySelective(record);
         }
 	}
 }

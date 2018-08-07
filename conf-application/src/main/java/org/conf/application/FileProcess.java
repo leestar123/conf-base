@@ -1,9 +1,9 @@
 package org.conf.application;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class FileProcess<T,B> {
 
@@ -18,20 +18,32 @@ public abstract class FileProcess<T,B> {
 	 */
 	public String readFile(Integer startLine, Integer endLine, String... filekey) throws IOException {
 		LineNumberReader reader = null;
-		String line = null;
+		String returnStr = null;
 		try {
-			String newFileName = null;
-			File file = readData(filekey);
-			reader = new LineNumberReader(new FileReader(file));
-			while ((line = reader.readLine()) != null || reader.getLineNumber() >= endLine) {
-				Integer lineNum = reader.getLineNumber();
-				if (lineNum >= startLine && lineNum < endLine) {
-					T t = lineParase(line);
-					B b = lineProcess(lineNum, t);
-					newFileName = writeData(b);
+			List<T> list = readData(startLine, endLine, filekey);
+			if (list == null || list.isEmpty())
+			{
+				return null;
+			}
+			Integer lineNum = startLine;
+			List<B> resultList = new ArrayList<>();
+			int count = 0;
+			for (T t : list) {
+				lineNum ++;
+				count ++;
+				B b = lineProcess(lineNum, t);
+				resultList.add(b);
+				if (count == getCommitInterval()) {
+					returnStr = writeData(resultList);
+					count = 0;
+					resultList = new ArrayList<>();
 				}
 			}
-			return newFileName;
+			
+			if (resultList.size() > 0) {
+				writeData(resultList);
+			}
+			return returnStr;
 		} finally {
 			if (reader != null)
 				reader.close();
@@ -44,7 +56,7 @@ public abstract class FileProcess<T,B> {
 	 * @param filekey
 	 * @return
 	 */
-	public abstract File readData(String... filekey);
+	public abstract List<T> readData(Integer startLine, Integer endLine, String... filekey);
 	
 	/**
 	 * 单行根据执行结果写入结果
@@ -52,15 +64,7 @@ public abstract class FileProcess<T,B> {
 	 * @param b
 	 * @return
 	 */
-	public abstract String writeData(B b);
-	
-	/**
-	 * 每行记录的转行成对象
-	 * 
-	 * @param line
-	 * @return
-	 */
-	public abstract T lineParase(String line);
+	public abstract String writeData(List<B> list);
 	
 	/**
 	 * 每行数据的处理
@@ -70,5 +74,27 @@ public abstract class FileProcess<T,B> {
 	 * @return
 	 */
 	public abstract B lineProcess(Integer lineNum, T t);
+	
+	/**
+	 * 获取数据总条数
+	 * 
+	 * @param filekey
+	 * @return
+	 */
+	public abstract Integer getTotalNum(String... filekey);
+	
+	/**
+	 * 整合返回Future中的值
+	 * 
+	 * @param returnData
+	 */
+	public abstract void combineData(List<String> returnData);
+	
+	/**
+	 * 整合返回Future中的值
+	 * 
+	 * @param returnData
+	 */
+	public abstract Integer getCommitInterval();
 	
 }

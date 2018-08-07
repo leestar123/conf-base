@@ -324,6 +324,16 @@ public class NodeService {
             local.setModule(list);
 			confNodeTemplateMapper.deleteForLogicByIdAndUid(nodeId, uid);
 			//TODO:删除Urule文件
+			String rulePath = ToolsUtil.obj2Str(map.get("rulePath"));
+			String nodeName = ToolsUtil.obj2Str(map.get("nodeName"));
+			String[] path = rulePath.split("/");
+			if (!(path.length > 1 && path[1].equals(nodeName))) {
+				try {
+					invokerService.deleteFile(nodeName);
+				} catch (Exception e) {
+					return ErrorUtil.errorResp(ErrorCode.code_9999);
+				}
+			} 
 		}
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -343,8 +353,7 @@ public class NodeService {
 		}
 
 		List<Map<String, Object>> list = confNodeTemplateMapper.queryNodeTemplateList(uid, Constants.DELETE_STATUS_NO);
-		if (list != null && list.size() > 0) {
-			// TODO:已经有绑定不能删除，需要先解除绑定
+		if (list != null && !list.isEmpty()) {
 			logger.error("Rule has bunded some node,then can`t delete!");
 			String nodeName = ToolsUtil.obj2Str(list.get(0).get("node_name"));
 			return ErrorUtil.errorResp(ErrorCode.code_0013, nodeName);

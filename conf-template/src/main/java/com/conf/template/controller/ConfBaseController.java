@@ -26,6 +26,8 @@ import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfProductStep;
 import com.conf.template.service.ConfBaseService;
 import com.conf.template.service.ConfBeanService;
+import com.conf.template.service.ConfFlowService;
+import com.conf.template.service.ConfStepService;
 import com.conf.template.service.NodeService;
 
 @Component
@@ -44,6 +46,12 @@ public class ConfBaseController implements CommController
     
     @Autowired
     private RuleInvokerService invokerService;
+    
+    @Autowired
+    private ConfFlowService confFlowService;
+    
+    @Autowired
+    private ConfStepService confStepService;
 	
 	public void setConfBaseService(ConfBaseService confBaseService) {
 		this.confBaseService = confBaseService;
@@ -51,6 +59,14 @@ public class ConfBaseController implements CommController
 	
 	public void setConfBeanService(ConfBeanService confBeanService) {
 		this.confBeanService = confBeanService;
+	}
+	
+	public void setConfFlowService(ConfFlowService confFlowService) {
+		this.confFlowService = confFlowService;
+	}
+
+	public void setConfStepService(ConfStepService confStepService) {
+		this.confStepService = confStepService;
 	}
 
 	/**
@@ -270,6 +286,19 @@ public class ConfBaseController implements CommController
     }
     
     /**
+     * 分页流程查询
+     * 
+     * @param data
+     * @return
+     * @see [类、类#方法、类#成员]
+     */
+    @ApiException
+    public Map<String, ? extends Object> queryFlowListByPage(Map<String, ? extends Object> data)
+    {
+        return confBaseService.queryFlowListByPage(data);
+    }
+    
+    /**
      * 流程明细查询
      * 
      * @param data
@@ -360,5 +389,46 @@ public class ConfBaseController implements CommController
     	
     	return confBeanService.confBeanField(data);
     }
+    
+    /**
+     * 更新流程
+     * 
+     */
+    @ApiException
+    public Map<String, ? extends Object> updateFlow(Map<String, ? extends Object> data)
+    {
+        return confFlowService.updateByPrimaryKey(data);
+    }
+    
+    /**
+     * 删除流程
+     * 
+     */
+    @ApiException
+    public Map<String, ? extends Object> deleteFlow(Map<String, ? extends Object> data)
+    {
+        return confFlowService.deleteFlow(data);
+    }
+    
+    /**
+     * 更新阶段
+     * 
+     */
+    @ApiException
+    public Map<String, ? extends Object> updateStep(Map<String, ? extends Object> data)
+    {
+        return confStepService.updateByPrimaryKeySelective(data);
+    }
+    
+    /**
+     * 删除阶段
+     * 
+     */
+    @ApiException
+    public Map<String, ? extends Object> deleteStep(Map<String, ? extends Object> data)
+    {
+        return confStepService.deleteStep(data);
+    }
+    
     
 }

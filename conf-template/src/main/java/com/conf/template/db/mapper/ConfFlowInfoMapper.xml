@@ -23,6 +23,23 @@
     from conf_flow_info
     where flow_id = #{flowId,jdbcType=INTEGER}
   </select>
+  
+  <select id="queryCount" resultType="java.lang.Integer">
+    select 
+    count(1)
+    from conf_flow_info
+    where delete_flag = 0
+  </select>
+  
+  <select id="selectByPage" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_flow_info
+    where delete_flag = 0
+    ORDER BY flow_id desc
+    limit #{startNum},#{pageSize}  
+  </select>
+  
   <select id="selectByStep" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -161,13 +178,29 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.conf.template.db.model.ConfFlowInfo">
     update conf_flow_info
-    set step_id = #{stepId,jdbcType=INTEGER},
-      flow_name = #{flowName,jdbcType=VARCHAR},
-      flow_path = #{flowPath,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
-      teller = #{teller,jdbcType=VARCHAR},
-      org = #{org,jdbcType=VARCHAR},
-      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    <set>
+      <if test="stepId != null">
+        step_id = #{stepId,jdbcType=INTEGER},
+      </if>
+      <if test="flowName != null">
+        flow_name = #{flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="flowPath != null">
+        flow_path = #{flowPath,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="teller != null">
+        teller = #{teller,jdbcType=VARCHAR},
+      </if>
+      <if test="org != null">
+        org = #{org,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER}
+      </if>
+    </set>
     where flow_id = #{flowId,jdbcType=INTEGER}
   </update>
 </mapper>

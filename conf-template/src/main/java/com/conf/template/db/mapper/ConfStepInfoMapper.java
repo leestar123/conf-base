@@ -46,4 +46,11 @@ public interface ConfStepInfoMapper {
     		@Param("productId") Integer productId,
     		@Param("stepId") Integer stepId);
     
+    /**
+     * 根据stepId查询节点名称
+     * @param stepId
+     * @return
+     */
+    String queryNodeNameByStep(@Param("stepId") Integer stepId);
+    
 }

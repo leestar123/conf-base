@@ -11,6 +11,7 @@
     <result column="org" jdbcType="VARCHAR" property="org" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="error_message" jdbcType="VARCHAR" property="errorMessage" />
   </resultMap>
   <sql id="Base_Column_List">
     id, service, request, success, detail, teller, org, create_date, update_time, error_message

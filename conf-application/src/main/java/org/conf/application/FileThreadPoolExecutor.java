@@ -7,21 +7,28 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.conf.application.util.FileUtil;
+import com.conf.common.ConfContext;
 
+/**
+ * 数据处理的线程池
+ * 
+ * @author li_mingxing
+ *
+ */
 public class FileThreadPoolExecutor {
 	
 	private int corePoolSize;
 	
-	//private int maxPoolSize;
-	
-	private long keepAliveTime;
-	
 	private ThreadPoolExecutor executor;
 	
-	public FileThreadPoolExecutor() {
+	private FileProcess<?,?> process;
+
+	
+	public FileThreadPoolExecutor(int corePoolSize, long keepAliveTime) {
+		this.corePoolSize = corePoolSize;
 		executor = new ThreadPoolExecutor(corePoolSize, corePoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
 				new SynchronousQueue<Runnable>()) ;
+		process = ConfContext.getApplicationContext().getBean(FileProcess.class);
 	}
 	
 	/**
@@ -31,8 +38,7 @@ public class FileThreadPoolExecutor {
 	 */
 	public void doExecutor(String... fileKey) {
 		try {
-			String fileName = downloadFile(fileKey);
-			Integer totalNum = FileUtil.getFileLineCount(fileName);
+			Integer totalNum = process.getTotalNum(fileKey);
 			Integer avg = totalNum / corePoolSize;
 			if (avg * corePoolSize - totalNum < 0) {
 				avg = avg + 1;
@@ -56,7 +62,7 @@ public class FileThreadPoolExecutor {
 			for (Future<String> future : list) {
 				files.add(future.get());
 			}
-			combineFile(files);
+			process.combineData(files);
 			
 			while (list.size() > 0) {
 				if (list.get(0).isDone())
@@ -68,33 +74,5 @@ public class FileThreadPoolExecutor {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-	}
-	
-	/**
-	 * 下载文件
-	 * 
-	 * @param fileKey 下载文件的关键要素
-	 * @return
-	 */
-	private String downloadFile(String... fileKey) {
-		//TODO:获取文件
-		return null;
-	}
-	
-	/**
-	 * 整合文件
-	 * 
-	 * @param files
-	 */
-	private void combineFile(List<String> files) {
-		//TODO:整合文件
-	}
-	
-	public void setCorePoolSize(int corePoolSize) {
-		this.corePoolSize = corePoolSize;
-	}
-
-	public void setKeepAliveTime(long keepAliveTime) {
-		this.keepAliveTime = keepAliveTime;
 	}
 }

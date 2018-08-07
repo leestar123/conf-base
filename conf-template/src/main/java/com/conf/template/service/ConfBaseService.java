@@ -590,6 +590,35 @@ public class ConfBaseService
     }
     
     /**
+	 * 分页查询流程列表
+	 * 
+	 * @param data
+	 * @return
+	 * @see [类、类#方法、类#成员]
+	 */
+    public Map<String, ? extends Object> queryFlowListByPage(Map<String, ? extends Object> data)
+    {
+    	Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
+        Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
+        Integer totalNum = confFlowInfoMapper.queryCount();
+        List<ConfFlowInfo> list =confFlowInfoMapper.selectByPage(pageNum, pageSize);
+        List<JSONObject> jsonList = new ArrayList<>();
+        Map<String, Object> body = new HashMap<>();
+        for (ConfFlowInfo confFlowInfo : list)
+        {
+        	ConfStepInfo confStepInfo = confStepInfoMapper.selectByPrimaryKey(confFlowInfo.getStepId());
+            JSONObject json = JSONObject.parseObject(JSONObject.toJSONString(confFlowInfo));
+            String url =
+                Constants.RULE_URL_BASE + "ruleflowdesigner?file=".concat(confFlowInfo.getFlowPath()).concat("&nodeId=" + confStepInfo.getNodeId());
+            json.put("key", url);
+            jsonList.add(json);
+        }
+        body.put("list", jsonList);
+        body.put("totalNum", totalNum);
+        return ErrorUtil.successResp(body);
+    }
+    
+    /**
      * 根据flowId查询流程信息
      * 
      * @param flowId

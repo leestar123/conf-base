@@ -14,6 +14,10 @@
 	
 	<bean id="confBaseService" class="com.conf.template.service.ConfBaseService"/>
 	
+	<bean id="confFlowService" class="com.conf.template.service.ConfFlowService"/>
+	
+	<bean id="confStepService" class="com.conf.template.service.ConfStepService"/>
+	
 	<bean id="eventListener" class="com.conf.template.process.QualificationInvokerAopProcess" ></bean>
 	
 	<bean id="invokerService" class="com.conf.client.RuleInvokerService">
@@ -31,6 +35,8 @@
 	
 	<bean id="confBaseCtroller" class="com.conf.template.controller.ConfBaseController">
 		<property name="confBaseService" ref="confBaseService"></property>
+		<property name="confFlowService" ref="confFlowService"></property>
+		<property name="confStepService" ref="confStepService"></property>
 	</bean>
 	
 	<bean id="httpAopProcess" class="com.conf.template.process.DefaultHttpAopProcess"/>

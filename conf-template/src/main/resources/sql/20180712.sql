@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `conf_flow_info` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`flow_id`),
-  UNIQUE KEY `FLOW_INFO_IDX1` (`step_id`,`flow_name`)
+  NORMAL KEY `FLOW_INFO_IDX1` (`step_id`,`flow_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=50000000 DEFAULT CHARSET=utf8 MAX_ROWS=59999999 CHARSET=utf8;
 
 -- 正在导出表  demo.conf_flow_info 的数据：~0 rows (大约)

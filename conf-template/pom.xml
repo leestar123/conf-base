@@ -8,21 +8,13 @@
 		<artifactId>conf-base</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.lmx.conf</groupId>
 	<artifactId>conf-template</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>conf-template</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
@@ -66,6 +58,11 @@
 		<dependency>
 			<groupId>com.lmx.conf</groupId>
 			<artifactId>conf-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lmx.conf</groupId>
+			<artifactId>conf-application</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

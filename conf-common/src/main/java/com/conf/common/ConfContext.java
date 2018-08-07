@@ -2,6 +2,8 @@ package com.conf.common;
 
 import java.util.Map;
 
+import org.springframework.web.context.WebApplicationContext;
+
 import com.bstek.urule.runtime.rete.Context;
 import com.conf.common.dto.ConfOperateInfoDto;
 
@@ -20,6 +22,8 @@ public class ConfContext {
 	static ThreadLocal<String> invokerLocal =new ThreadLocal<>(); 
 	
 	static Context context;
+	
+	static WebApplicationContext applicationContext;
 	
 	public static Context getContext() {
 		return context;
@@ -102,4 +106,23 @@ public class ConfContext {
         invokerLocal.set(value);
     }
     
+    /**
+     * 设置spring上下文
+     * 
+     * @return
+     */
+    public static void setApplicationContext(WebApplicationContext applicationContext) 
+    {
+    	ConfContext.applicationContext = applicationContext;
+    }
+    
+    /**
+     * 获取spring上下文
+     * 
+     * @return
+     */
+    public static WebApplicationContext getApplicationContext() 
+    {
+    	return applicationContext;
+    }
 }

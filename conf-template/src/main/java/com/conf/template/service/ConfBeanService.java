@@ -100,7 +100,14 @@ public class ConfBeanService {
 	private Map<String, ? extends Object> setFieldsValue(ConfRuleInfo rule, JSONArray jsonArray) throws ClassNotFoundException{
 		String packageName = rule.getPackageName();
 		String clazzName = rule.getClazz();
-		Field[] fields = Class.forName(packageName + "." + clazzName).getDeclaredFields();
+		Field[] fields = null;
+		try
+		{
+			fields = Class.forName(packageName + "." + clazzName).getDeclaredFields();
+		}catch (ClassNotFoundException e) {
+			logger.error(packageName + "." + clazzName + "找不到对应的类！");
+			//TODO: 实例化失败后如何处理
+		}
 		if (fields == null) {
             return ErrorUtil.errorResp(ErrorCode.code_9999);
 		}

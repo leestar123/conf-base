@@ -7,17 +7,17 @@
     <artifactId>conf-base</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>conf-common</artifactId>
-  <name>conf-cache</name>
+  <artifactId>conf-application</artifactId>
+  <name>conf-application</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
-	<dependency>
-	    <groupId>commons-net</groupId>
-	    <artifactId>commons-net</artifactId>
-	    <version>3.6</version>
-	</dependency>
+  	<dependency>
+  		<groupId>com.lmx.conf</groupId>
+  		<artifactId>conf-common</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>

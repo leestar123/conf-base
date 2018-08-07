@@ -20,6 +20,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.console.servlet.RequestHolder;
+import com.conf.common.ConfContext;
 import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
 import com.conf.common.process.HttpAopProcess;
@@ -39,6 +40,7 @@ public class ConfBaseServlet extends HttpServlet
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         WebApplicationContext applicationContext=getWebApplicationContext(config);
+        ConfContext.setApplicationContext(applicationContext);
         Collection<CommController> handlers=applicationContext.getBeansOfType(CommController.class).values();
         for(CommController handler:handlers){
             String url=handler.url();

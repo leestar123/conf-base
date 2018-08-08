@@ -22,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.console.servlet.RequestHolder;
 import com.conf.common.ConfContext;
 import com.conf.common.ErrorUtil;
+import com.conf.common.HttpUtil;
 import com.conf.common.ToolsUtil;
 import com.conf.common.process.HttpAopProcess;
 

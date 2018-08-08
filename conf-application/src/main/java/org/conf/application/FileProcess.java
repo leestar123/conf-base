@@ -41,7 +41,7 @@ public abstract class FileProcess<T,B> {
 			}
 			
 			if (resultList.size() > 0) {
-				writeData(resultList);
+				writeData(resultList, filekey);
 			}
 			return returnStr;
 		} finally {
@@ -64,7 +64,7 @@ public abstract class FileProcess<T,B> {
 	 * @param b
 	 * @return
 	 */
-	public abstract String writeData(List<B> list);
+	public abstract String writeData(List<B> list, String... filekey);
 	
 	/**
 	 * 每行数据的处理
@@ -73,7 +73,7 @@ public abstract class FileProcess<T,B> {
 	 * @param t
 	 * @return
 	 */
-	public abstract B lineProcess(Integer lineNum, T t);
+	public abstract B lineProcess(Integer lineNum, T t, String... filekey);
 	
 	/**
 	 * 获取数据总条数

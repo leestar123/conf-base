@@ -19,18 +19,17 @@ public class FileThreadPoolExecutor {
 	
 	private int corePoolSize;
 	
+	private long keepAliveTime;
+	
 	private ThreadPoolExecutor executor;
 	
-	private FileProcess<?,?> process;
-
-	
-	public FileThreadPoolExecutor(int corePoolSize, long keepAliveTime) {
-		this.corePoolSize = corePoolSize;
-		executor = new ThreadPoolExecutor(corePoolSize, corePoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
-				new SynchronousQueue<Runnable>()) ;
-		process = ConfContext.getApplicationContext().getBean(FileProcess.class);
+	private FileThreadPoolExecutor() {
 	}
 	
+	public void init() {
+		executor = new ThreadPoolExecutor(corePoolSize, corePoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
+				new SynchronousQueue<Runnable>()) ;
+	}
 	/**
 	 * 执行
 	 * 
@@ -38,6 +37,7 @@ public class FileThreadPoolExecutor {
 	 */
 	public void doExecutor(String... fileKey) {
 		try {
+			FileProcess<?,?> process = ConfContext.getApplicationContext().getBean(FileProcess.class);
 			Integer totalNum = process.getTotalNum(fileKey);
 			Integer avg = totalNum / corePoolSize;
 			if (avg * corePoolSize - totalNum < 0) {
@@ -74,5 +74,13 @@ public class FileThreadPoolExecutor {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+	}
+
+	public void setCorePoolSize(int corePoolSize) {
+		this.corePoolSize = corePoolSize;
+	}
+
+	public void setKeepAliveTime(long keepAliveTime) {
+		this.keepAliveTime = keepAliveTime;
 	}
 }

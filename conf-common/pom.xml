@@ -19,5 +19,10 @@
 	    <artifactId>commons-net</artifactId>
 	    <version>3.6</version>
 	</dependency>
+	<dependency>
+	    <groupId>com.alibaba.csb.sdk</groupId>
+	    <artifactId>http-client</artifactId>
+	    <version>1.1.4.1</version>
+	</dependency>
   </dependencies>
 </project>

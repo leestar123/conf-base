@@ -430,5 +430,13 @@ public class ConfBaseController implements CommController
         return confStepService.deleteStep(data);
     }
     
-    
+    /**
+     * pi
+     * 
+     */
+    @ApiException
+    public Map<String, ? extends Object> batchExecuteQuality(Map<String, ? extends Object> data)
+    {
+        return confBaseService.batchExecuteQuality(data);
+    }
 }

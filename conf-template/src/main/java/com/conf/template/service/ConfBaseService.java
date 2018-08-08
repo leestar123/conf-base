@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.conf.application.FileThreadPoolExecutor;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -81,6 +82,9 @@ public class ConfBaseService
     
     @Autowired
     private InvokerAopProcess invokerAopProcess;
+    
+    @Autowired
+    private FileThreadPoolExecutor excutor;
     
     public void setInvokerService(RuleInvokerService invokerService)
     {
@@ -808,4 +812,19 @@ public class ConfBaseService
     	logger.info("End to refresh packages!");
         return ErrorUtil.successResp(body);
     } 
+    
+    /**
+     * 批量执行资质审查
+     * 
+     * @param data
+     * @return
+     */
+	public Map<String, ? extends Object> batchExecuteQuality(Map<String, ? extends Object> data) {
+		String[] fileKey = { "12323", ToolsUtil.obj2Str(data.get("productId")), ToolsUtil.obj2Str(data.get("stepId")),
+				ToolsUtil.obj2Str(data.get("flowId")), ToolsUtil.obj2Str(data.get("teller")),
+				ToolsUtil.obj2Str(data.get("org")) };
+		excutor.doExecutor(fileKey);
+		Map<String, Object> body = new HashMap<>();
+		return ErrorUtil.successResp(body);
+	}
 }

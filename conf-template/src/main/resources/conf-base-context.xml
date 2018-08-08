@@ -32,11 +32,7 @@
 <!-- 		<property name="invokerService" ref="invokerService"></property>	 -->
 	</bean>
 	
-	<bean id="confBaseCtroller" class="com.conf.template.controller.ConfBaseController">
-		<property name="confBaseService" ref="confBaseService"></property>
-		<property name="confFlowService" ref="confFlowService"></property>
-		<property name="confStepService" ref="confStepService"></property>
-	</bean>
+	<bean id="confBaseCtroller" class="com.conf.template.controller.ConfBaseController"/>
 	
 	<bean id="httpAopProcess" class="com.conf.template.process.DefaultHttpAopProcess"/>
 	

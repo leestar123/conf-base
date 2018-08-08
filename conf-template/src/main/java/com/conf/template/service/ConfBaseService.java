@@ -813,14 +813,15 @@ public class ConfBaseService
         return ErrorUtil.successResp(body);
     } 
     
-    /**
-     * 批量执行资质审查
-     * 
-     * @param data
-     * @return
-     */
+	/**
+	 * 批量执行资质审查
+	 * 
+	 * @param data
+	 * @return
+	 */
 	public Map<String, ? extends Object> batchExecuteQuality(Map<String, ? extends Object> data) {
-		String[] fileKey = { "12323", ToolsUtil.obj2Str(data.get("productId")), ToolsUtil.obj2Str(data.get("stepId")),
+		String[] fileKey = { ToolsUtil.obj2Str(data.get("marketingCampaigntId")),
+				ToolsUtil.obj2Str(data.get("productId")), ToolsUtil.obj2Str(data.get("stepId")),
 				ToolsUtil.obj2Str(data.get("flowId")), ToolsUtil.obj2Str(data.get("teller")),
 				ToolsUtil.obj2Str(data.get("org")) };
 		excutor.doExecutor(fileKey);

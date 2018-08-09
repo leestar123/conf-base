@@ -812,7 +812,7 @@ public class ConfBaseService
 							logger.info("Konwledge doesn`t exist,then publish the konwledge now!");
 							invokerService.generateRLXML("/" + nodeName, product.getProductId() + "", flowId + "", path, list);
 							String xml = invokerService.buildXML(list).toString();
-							invokerService.saveFile(nodeName, xml);
+							invokerService.saveResourcePackages(nodeName, xml);
 						}
 						invokerService.refreshKnowledgeCache(files, product.getProductId().toString(), nodeName);
 					} catch (Exception e) {

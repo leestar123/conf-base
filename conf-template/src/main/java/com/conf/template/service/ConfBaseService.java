@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bstek.urule.console.repository.model.FileType;
+import com.bstek.urule.console.repository.model.ResourcePackage;
 import com.bstek.urule.model.GeneralEntity;
 import com.conf.client.RuleInvokerService;
 import com.conf.common.ConfContext;
@@ -605,7 +606,7 @@ public class ConfBaseService
     	Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
         Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
         Integer totalNum = confFlowInfoMapper.queryCount();
-        List<ConfFlowInfo> list =confFlowInfoMapper.selectByPage(pageNum, pageSize);
+        List<ConfFlowInfo> list =confFlowInfoMapper.selectByPage((pageNum - 1)*pageSize, pageSize);
         List<JSONObject> jsonList = new ArrayList<>();
         Map<String, Object> body = new HashMap<>();
         for (ConfFlowInfo confFlowInfo : list)
@@ -791,6 +792,7 @@ public class ConfBaseService
     	// 判断是否空文件，空文件不做任何处理
     	Document doc;
 		try {
+			
 			doc = invokerService.getFileSource(path);
 			String processId = doc.getRootElement().attributeValue("id");
 	    	if (processId != null) {
@@ -798,6 +800,20 @@ public class ConfBaseService
 		        logger.info("Begin to refresh packages, file path is [" + files + "] !");
 		    	productList.stream().forEach(product -> {
 					try {
+						boolean addFlag = false;
+						List<ResourcePackage> list = invokerService.loadProjectResourcePackages(nodeName);
+						for (ResourcePackage resourcePackage : list) {
+							if (resourcePackage.getId().equals(product.getProductId() + "")) {
+								addFlag = true;
+								break;
+							}
+						}
+						if (!addFlag) {
+							logger.info("Konwledge doesn`t exist,then publish the konwledge now!");
+							invokerService.generateRLXML("/" + nodeName, product.getProductId() + "", flowId + "", path, list);
+							String xml = invokerService.buildXML(list).toString();
+							invokerService.saveFile(nodeName, xml);
+						}
 						invokerService.refreshKnowledgeCache(files, product.getProductId().toString(), nodeName);
 					} catch (Exception e) {
 						logger.error("Publish knowledge [" + path + "] failly!", e);

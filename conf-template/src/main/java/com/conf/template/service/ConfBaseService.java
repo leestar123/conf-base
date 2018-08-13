@@ -661,6 +661,7 @@ public class ConfBaseService
     {
         logger.info("Begin to excute knowledge service!");
         
+        Map<String, Object> body = new HashMap<>();
         Integer productId = ToolsUtil.obj2Int(data.get("productId"), null);
         String businessType = ToolsUtil.obj2Str(data.get("businessType"));
         Integer stepId = ToolsUtil.obj2Int(data.get("stepId"), null);
@@ -723,6 +724,7 @@ public class ConfBaseService
             logger.debug("Begin to excute Konwledge");
             String files = "jcr:".concat(flowInfo.getFlowPath()).concat(",LATEST");
             Map<String, Object> params = invokerService.executeProcess(files, entityList, processId);
+            body.putAll(params);
             invokerAopProcess.afterPorcess(params);
             logger.info("End to excute knowledge service");
             invokInfo.setDetail(ConfContext.invokerLocalGet());
@@ -745,7 +747,6 @@ public class ConfBaseService
                 logger.warn("调用日志表插入失败！", e);
             }
         }
-        Map<String, Object> body = new HashMap<>();
         return ErrorUtil.successResp(body);
     }
     

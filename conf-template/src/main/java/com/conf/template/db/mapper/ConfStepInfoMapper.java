@@ -30,6 +30,8 @@ public interface ConfStepInfoMapper {
 			@Param("startNum") Integer startNum,
 			@Param("pageSize") Integer pageSize);
     
+    ConfStepInfo queryStepIdByStepName(@Param("stepName") String stepName);
+    
     int queryCount(@Param("nodeId") String nodeId, @Param("nodeName") String nodeName, @Param("stepId") String stepId);
     
     List<ConfStepInfo> queryStepList(@Param("productId") Integer productId, @Param("nodeId") Integer nodeId);

@@ -45,7 +45,17 @@ public interface ConfProductStepMapper {
     		@Param("productId")Integer productId,@Param("businessType")String businessType);
     
     /**
-     * 根据产品编号和业务类型查询列表
+     * 
+     * @param stepId
+     * @param productId
+     * @param businessType
+     * @return
+     */
+    ConfProductStep queryFlowIdByCondition(@Param("stepId")Integer stepId,
+    		@Param("productId")Integer productId,@Param("businessType")String businessType);
+    
+    /**
+     * 
      * @param productId
      * @param businessType
      * @return

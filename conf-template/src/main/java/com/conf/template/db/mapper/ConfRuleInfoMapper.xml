@@ -99,6 +99,9 @@
  	select m.*
     from  conf_rule_info m 
     <where>
+    <if test="uid != null">
+   		and m.uid = #{uid}
+      </if>
       <if test="ruleName != null">
    		and m.rule_name like '%${ruleName}%'
       </if> 
@@ -115,6 +118,9 @@
  	select count(1)
     from  conf_rule_info m 
     <where>
+    <if test="uid != null">
+   		and m.uid = #{uid}
+      </if>
     <if test="ruleName != null">
    	 and m.rule_name like '%${ruleName}%'  
    	</if>

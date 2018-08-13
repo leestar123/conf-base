@@ -228,6 +228,29 @@
    	</where>
   </select>
   
+   <select id="queryFlowIdByCondition"  resultMap="BaseResultMap">
+ 	select ps.flow_id, ps.delete_flag
+    from  conf_product_step ps 
+    <where>
+    <if test="stepId != null and stepId != ''">
+   	 and ps.step_id = #{stepId}
+   	</if>
+     <if test="productId != null and productId != ''">
+   		and ps.product_id = #{productId}
+   	</if>
+      <if test="productId == null or productId == ''">
+      and ps.product_id is null
+      </if>
+     
+      <if test="businessType != null and businessType != ''">
+   		and ps.business_type = #{businessType}
+   	  </if>
+      <if test="businessType == null or businessType == ''">
+      and ps.business_type is null
+      </if>
+   	</where>
+  </select>
+  
   <select id="queryListByProductIdAndBusinessType"  resultMap="BaseResultMap">
  	select ps.id, ps.step_id, ps.flow_id
     from  conf_product_step ps 

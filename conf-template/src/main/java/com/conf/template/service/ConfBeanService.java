@@ -171,6 +171,7 @@ public class ConfBeanService {
 					paramMap.put("name", field.getName());
 					paramMap.put("value", actionParam.defaultValue());
 					paramMap.put("desc", actionParam.desc());
+					paramMap.put("length", actionParam.length());
 					jsonArray.add(paramMap);
 				}
 			}

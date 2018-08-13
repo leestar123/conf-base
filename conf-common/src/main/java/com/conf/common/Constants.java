@@ -79,4 +79,14 @@ public class Constants {
     public final static Integer DELETE_STATUS_NO = 0;
     
     public final static Integer DELETE_STATUS_YES = 1;
+    
+    //阶段类型编码	 01：准入筛选 02：预筛选 03：信审评分
+    public final static String STAGE_TYPE_01 = "01";
+    
+    public final static String STAGE_TYPE_02 = "02";
+    
+    public final static String STAGE_TYPE_03 = "03";
+    
+    public final static String QUALITY_INFO_STR = "UserInfo";
+    
 }

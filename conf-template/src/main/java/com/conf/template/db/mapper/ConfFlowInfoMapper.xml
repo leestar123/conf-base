@@ -29,6 +29,12 @@
     count(1)
     from conf_flow_info
     where delete_flag = 0
+    <if test="flowId != null">
+        and flow_id = #{flowId,jdbcType=INTEGER}
+      </if>
+      <if test="flowName != null">
+        and flow_name like '%${flowName}%'
+      </if>
   </select>
   
   <select id="selectByPage" resultMap="BaseResultMap">
@@ -36,6 +42,12 @@
     <include refid="Base_Column_List" />
     from conf_flow_info
     where delete_flag = 0
+    <if test="flowId != null">
+        and flow_id = #{flowId,jdbcType=INTEGER}
+      </if>
+     <if test="flowName != null">
+        and flow_name like '%${flowName}%'
+      </if>
     ORDER BY flow_id desc
     limit #{startNum},#{pageSize}  
   </select>

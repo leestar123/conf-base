@@ -19,9 +19,9 @@ public interface ConfFlowInfoMapper {
     
     List<ConfFlowInfo> selectByStep(Integer stepId);
     
-    List<ConfFlowInfo> selectByPage(@Param("startNum")Integer startNum, @Param("pageSize")Integer pageSize);
+    List<ConfFlowInfo> selectByPage(@Param("flowId")Integer flowId, @Param("flowName")String flowName, @Param("startNum")Integer startNum, @Param("pageSize")Integer pageSize);
     
-    int queryCount();
+    int queryCount(@Param("flowId")Integer flowId, @Param("flowName")String flowName);
     
     int updateByPrimaryKeySelective(ConfFlowInfo record);
 

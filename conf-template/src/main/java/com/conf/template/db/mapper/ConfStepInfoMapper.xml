@@ -262,6 +262,16 @@
    limit #{startNum},#{pageSize}
   </select>
   
+   <select id="queryStepIdByStepName" resultMap="BaseResultMap">
+  	select si.step_id
+  	from conf_step_info si
+  <where>
+	   <if test="stepName != null and stepName != ''">
+	        and si.step_name = #{stepName}
+	   </if>
+   </where>  
+  </select>
+  
   <select id="queryNodeNameByStep" resultType="java.lang.String">
   select n.node_name from conf_step_info s , conf_node_info n
   <where>

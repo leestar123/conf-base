@@ -28,6 +28,7 @@ import com.conf.template.service.ConfBaseService;
 import com.conf.template.service.ConfBeanService;
 import com.conf.template.service.ConfFlowService;
 import com.conf.template.service.ConfStepService;
+import com.conf.template.service.ConfUruleService;
 import com.conf.template.service.NodeService;
 
 @Component
@@ -52,23 +53,10 @@ public class ConfBaseController implements CommController
     
     @Autowired
     private ConfStepService confStepService;
+    
+    @Autowired
+    private ConfUruleService confUruleService;
 	
-	public void setConfBaseService(ConfBaseService confBaseService) {
-		this.confBaseService = confBaseService;
-	}
-	
-	public void setConfBeanService(ConfBeanService confBeanService) {
-		this.confBeanService = confBeanService;
-	}
-	
-	public void setConfFlowService(ConfFlowService confFlowService) {
-		this.confFlowService = confFlowService;
-	}
-
-	public void setConfStepService(ConfStepService confStepService) {
-		this.confStepService = confStepService;
-	}
-
 	/**
 	 * 阶段创建
 	 * 
@@ -438,5 +426,15 @@ public class ConfBaseController implements CommController
     public Map<String, ? extends Object> batchExecuteQuality(Map<String, ? extends Object> data)
     {
         return confBaseService.batchExecuteQuality(data);
+    }
+    
+    /**
+     * 资质审查校验
+     * 
+     */
+    @ApiException
+    public Map<String, ? extends Object> checkQualification(Map<String, ? extends Object> data)
+    {
+        return confUruleService.excuteKnowledgeForList(data);
     }
 }

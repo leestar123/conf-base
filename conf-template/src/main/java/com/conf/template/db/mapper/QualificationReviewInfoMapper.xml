@@ -7,6 +7,7 @@
     <result column="PROCESS_ID" jdbcType="VARCHAR" property="processId" />
     <result column="CUST_NO" jdbcType="VARCHAR" property="custNo" />
     <result column="CUST_NAME" jdbcType="VARCHAR" property="custName" />
+    <result column="CUST_TYPE" jdbcType="VARCHAR" property="custType" />
     <result column="CARD_NO" jdbcType="VARCHAR" property="cardNo" />
     <result column="CARD_TYPE" jdbcType="VARCHAR" property="cardType" />
     <result column="TELEPHONE_NO" jdbcType="VARCHAR" property="telephoneNo" />
@@ -34,7 +35,7 @@
     <result column="CREATED_TX_STAMP" jdbcType="TIMESTAMP" property="createdTxStamp" />
   </resultMap>
   <sql id="Base_Column_List">
-    QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, PROCESS_ID, CUST_NO, CUST_NAME, CARD_NO, CARD_TYPE, 
+    QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, PROCESS_ID, CUST_NO, CUST_NAME, CUST_TYPE, CARD_NO, CARD_TYPE, 
     TELEPHONE_NO, IS_CREDIT_AUTHORIZED, STAGE_TYPE, CREDIT_PRODUCT, CREDIT_QUOTA, CREDIT_TERM, 
     GUARANTEE_QUOTA, GUARANTEE_TYPE, SOURCE_SYSTEM, TELLER_NO, TELLER_ORG, QUALIFICATION_REVIEW_RESULT, 
     QUALIFICATION_REVIEW_FAIL_CODE, QUALIFICATION_REVIEW_REASON, CREIDT_VALUE, CREIDT_LEVEL, 
@@ -53,7 +54,7 @@
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.QualificationReviewInfo">
     insert into qualification_review_info (QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, 
-      PROCESS_ID, CUST_NO, CUST_NAME, 
+      PROCESS_ID, CUST_NO, CUST_TYPE, CUST_NAME, 
       CARD_NO, CARD_TYPE, TELEPHONE_NO, 
       IS_CREDIT_AUTHORIZED, STAGE_TYPE, CREDIT_PRODUCT, 
       CREDIT_QUOTA, CREDIT_TERM, GUARANTEE_QUOTA, 
@@ -64,7 +65,7 @@
       OVER_PERCENT, LAST_UPDATED_STAMP, LAST_UPDATED_TX_STAMP, 
       CREATED_STAMP, CREATED_TX_STAMP)
     values (#{qualificationReviewId,jdbcType=INTEGER}, #{tranSeqNo,jdbcType=VARCHAR}, 
-      #{processId,jdbcType=VARCHAR}, #{custNo,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR}, 
+      #{processId,jdbcType=VARCHAR}, #{custNo,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR}, #{custType,jdbcType=VARCHAR},
       #{cardNo,jdbcType=VARCHAR}, #{cardType,jdbcType=VARCHAR}, #{telephoneNo,jdbcType=VARCHAR}, 
       #{isCreditAuthorized,jdbcType=VARCHAR}, #{stageType,jdbcType=VARCHAR}, #{creditProduct,jdbcType=VARCHAR}, 
       #{creditQuota,jdbcType=DECIMAL}, #{creditTerm,jdbcType=VARCHAR}, #{guaranteeQuota,jdbcType=DECIMAL}, 
@@ -92,6 +93,9 @@
       </if>
       <if test="custName != null">
         CUST_NAME,
+      </if>
+      <if test="custType != null">
+        CUST_TYPE,
       </if>
       <if test="cardNo != null">
         CARD_NO,
@@ -185,6 +189,9 @@
       <if test="custName != null">
         #{custName,jdbcType=VARCHAR},
       </if>
+      <if test="custType != null">
+        #{custType,jdbcType=VARCHAR},
+      </if>      
       <if test="cardNo != null">
         #{cardNo,jdbcType=VARCHAR},
       </if>
@@ -277,6 +284,9 @@
       <if test="custName != null">
         CUST_NAME = #{custName,jdbcType=VARCHAR},
       </if>
+      <if test="custType != null">
+        CUST_TYPE = #{custType,jdbcType=VARCHAR},
+      </if>      
       <if test="cardNo != null">
         CARD_NO = #{cardNo,jdbcType=VARCHAR},
       </if>
@@ -361,6 +371,7 @@
       PROCESS_ID = #{processId,jdbcType=VARCHAR},
       CUST_NO = #{custNo,jdbcType=VARCHAR},
       CUST_NAME = #{custName,jdbcType=VARCHAR},
+      CUST_TYPE = #{custType,jdbcType=VARCHAR},
       CARD_NO = #{cardNo,jdbcType=VARCHAR},
       CARD_TYPE = #{cardType,jdbcType=VARCHAR},
       TELEPHONE_NO = #{telephoneNo,jdbcType=VARCHAR},

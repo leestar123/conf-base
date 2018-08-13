@@ -18,4 +18,5 @@ import java.lang.annotation.Target;
 public @interface ActionParam {
 	String desc();
 	String defaultValue() default "";
+	int length() default 200;
 }

@@ -116,7 +116,7 @@ public class NodeService {
             catch (Exception e)
             {
             	logger.error(e.getMessage(), e);
-            	if (e.getMessage().contains("already exist")) {
+            	if (e.getMessage() != null && e.getMessage().contains("already exist")) {
             		return ErrorUtil.errorResp(ErrorCode.code_0006, confNodeInfo.getNodeName());
             	}
                 logger.error("reate empty project[" + confNodeInfo.getNodeName() + "] failly!", e);
@@ -215,9 +215,10 @@ public class NodeService {
 		String ruleType = ToolsUtil.obj2Str(data.get("ruleType"));
 		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
 		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
+		Integer uid = ToolsUtil.obj2Int(data.get("uid"), null);
 		int startNum = (pageNum - 1) * pageSize;
-		int totalNum = confRuleInfoMapper.queryCountByName(ruleName, ruleType);
-		List<ConfRuleInfo> list = confRuleInfoMapper.queryRuleListByName(ruleName, ruleType, startNum, pageSize);
+		int totalNum = confRuleInfoMapper.queryCountByName(uid, ruleName, ruleType);
+		List<ConfRuleInfo> list = confRuleInfoMapper.queryRuleListByName(uid, ruleName, ruleType, startNum, pageSize);
 		// Map<String,Object> map = new HashMap<String, Object>();
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("totalNum", totalNum);
@@ -264,12 +265,14 @@ public class NodeService {
             list.add(module);
             local.setModule(list);
             // 查询是否存在已删除状态的记录。如果有，则修改为正常状态；否则新增记录
-            ConfNodeTemplate confNodeTemplate = confNodeTemplateMapper.selectByNodIdAndUid(record.getNodeId(), record.getUid(), 1);
+            ConfNodeTemplate confNodeTemplate = confNodeTemplateMapper.selectByNodIdAndUid(record.getNodeId(), record.getUid(), Constants.DELETE_STATUS_YES);
+            // 查询是否存在已存在正常状态的记录
+            ConfNodeTemplate existRecord = confNodeTemplateMapper.selectByNodIdAndUid(record.getNodeId(), record.getUid(), Constants.DELETE_STATUS_NO);
             if (confNodeTemplate != null && confNodeTemplate.getId() != null) {
             	record.setId(confNodeTemplate.getId());
             	record.setDeleteFlag(0);
             	confNodeTemplateMapper.updateByPrimaryKeySelective(record);
-            } else {
+            } else if (existRecord == null || existRecord.getId() == null){
             	confNodeTemplateMapper.insertSelective(record);
             	if (!Constants.RULE_TYPE_ACTION.equals(ruleType) && StringUtils.isBlank(oldFullPath))
                 {
@@ -326,14 +329,16 @@ public class NodeService {
 			//TODO:删除Urule文件
 			String rulePath = ToolsUtil.obj2Str(map.get("rulePath"));
 			String nodeName = ToolsUtil.obj2Str(map.get("nodeName"));
-			String[] path = rulePath.split("/");
-			if (!(path.length > 1 && path[1].equals(nodeName))) {
-				try {
-					invokerService.deleteFile(nodeName);
-				} catch (Exception e) {
-					return ErrorUtil.errorResp(ErrorCode.code_9999);
-				}
-			} 
+			if (rulePath != null && rulePath.contains("/")){
+				String[] path = rulePath.split("/");
+				if (!(path.length > 1 && path[1].equals(nodeName))) {
+					try {
+						invokerService.deleteFile(nodeName);
+					} catch (Exception e) {
+						return ErrorUtil.errorResp(ErrorCode.code_9999);
+					}
+				} 
+			}
 		}
 
 		Map<String, Object> map = new HashMap<String, Object>();

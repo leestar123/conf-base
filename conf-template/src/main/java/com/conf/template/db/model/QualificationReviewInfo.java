@@ -14,8 +14,10 @@ public class QualificationReviewInfo {
 
     private String custName;
 
-    private String cardNo;
+    private String custType;
 
+    private String cardNo;
+    
     private String cardType;
 
     private String telephoneNo;
@@ -303,4 +305,12 @@ public class QualificationReviewInfo {
     public void setCreatedTxStamp(Date createdTxStamp) {
         this.createdTxStamp = createdTxStamp;
     }
+
+	public String getCustType() {
+		return custType;
+	}
+
+	public void setCustType(String custType) {
+		this.custType = custType;
+	}
 }

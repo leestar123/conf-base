@@ -562,7 +562,7 @@ public class ConfBaseService
 			});
 		});
 		Map<String, Object> body = new HashMap<>();
-		List<Map<String, Object>> pageData = ToolsUtil.getListPageData(pageNum, pageSize, resultList);
+		List<Map<String, Object>> pageData = ToolsUtil.getListPageData((pageNum - 1) * pageSize, pageSize, resultList);
 		body.put("list", pageData);
 		body.put("totalNum", resultList.size());
 		return ErrorUtil.successResp(body);
@@ -605,8 +605,10 @@ public class ConfBaseService
     {
     	Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10);
         Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);
-        Integer totalNum = confFlowInfoMapper.queryCount();
-        List<ConfFlowInfo> list =confFlowInfoMapper.selectByPage((pageNum - 1)*pageSize, pageSize);
+        Integer flowId = ToolsUtil.obj2Int(data.get("flowId"), null);
+        String flowName = ToolsUtil.obj2Str(data.get("flowName"));
+        Integer totalNum = confFlowInfoMapper.queryCount(flowId, flowName);
+        List<ConfFlowInfo> list =confFlowInfoMapper.selectByPage(flowId, flowName, (pageNum - 1) * pageSize, pageSize);
         List<JSONObject> jsonList = new ArrayList<>();
         Map<String, Object> body = new HashMap<>();
         for (ConfFlowInfo confFlowInfo : list)

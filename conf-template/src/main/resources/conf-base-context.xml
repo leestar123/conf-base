@@ -17,6 +17,8 @@
 	
 	<bean id="confStepService" class="com.conf.template.service.ConfStepService"/>
 	
+	<bean id="confUruleService" class="com.conf.template.service.ConfUruleService"/>
+	
 	<bean id="eventListener" class="com.conf.template.process.QualificationInvokerAopProcess" ></bean>
 	
 	<bean id="invokerService" class="com.conf.client.RuleInvokerService">

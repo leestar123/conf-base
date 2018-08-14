@@ -76,7 +76,8 @@ public class ConfUruleService
     	List<Map<String, ? extends Object>> resultList = new ArrayList<>();
     	String identityIsTrue = ToolsUtil.obj2Str(queryMap.get("identityIsTrue"));
     	Long time = System.currentTimeMillis();
-    	body.put("dateTIme", time);
+    	body.put("dateTime", time);
+    	body.put("result", Constants.QUALITY_RESULT_SUCCESS);
     	userInfoArray.stream().forEach( userInfo -> {
      	 	List<Map<String, Object>> objList = new ArrayList<>();
           	Map<String, Object> objMap = new HashMap<>();
@@ -100,6 +101,11 @@ public class ConfUruleService
           			body.put("lastScore", resultMap.get("lastScore"));//系统评分
           			body.put("sysAdvice", resultMap.get("sysAdvice"));//系统建议额度
           			body.put("riskCode", resultMap.get("riskCode"));//风险评级
+          		}
+          		String reviewResult = ToolsUtil.obj2Str(resultMap.get("qualificationReviewResult"));
+          		if (Constants.QUALITY_RESULT_FAIL.equals(reviewResult)) 
+          		{
+          			body.put("result", Constants.QUALITY_RESULT_FAIL);
           		}
           		ErrorUtil.getBody(resultMap).putAll(userInfo);
           		resultList.add(ErrorUtil.getBody(resultMap));

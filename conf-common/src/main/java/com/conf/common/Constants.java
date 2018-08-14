@@ -92,4 +92,9 @@ public class Constants {
     
     public final static String QUALITY_INFO_STR = "UserInfo";
     
+    //资质审查结果 0-成功 1-失败
+    public final static String QUALITY_RESULT_SUCCESS = "0";
+    
+    public final static String QUALITY_RESULT_FAIL = "1";
+    
 }

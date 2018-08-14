@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.conf.common.Constants;
+import com.conf.common.ErrorUtil;
 import com.conf.common.ToolsUtil;
 import com.conf.template.db.mapper.ConfProductStepMapper;
 import com.conf.template.db.mapper.ConfStepInfoMapper;
@@ -41,7 +43,6 @@ public class ConfUruleService
     @SuppressWarnings("unchecked")
 	public Map<String, ? extends Object> excuteKnowledgeForList(Map<String, ? extends Object> data)
     {
-    	Map<String, Object> returnMap = new HashMap<>();
     	Integer productId = ToolsUtil.obj2Int(data.get("creditProduct"), null);
         String businessType = ToolsUtil.obj2Str(data.get("businessLines"));
     	
@@ -60,9 +61,8 @@ public class ConfUruleService
     	
     	// 循环调用urule知识包
     	List<Map<String, Object>> userInfoArray = (List<Map<String, Object>>)data.get("userInfoArray"); // 用户信息组
-    	List<Map<String, ? extends Object>> resultList = excuteKnowledgeForEach(userInfoArray, queryMap);
-        returnMap.put("resultList", resultList);
-		return returnMap;
+    	Map<String, ? extends Object> body = excuteKnowledgeForEach(userInfoArray, queryMap);
+		return ErrorUtil.successResp(body);
     }
     
     /**
@@ -71,12 +71,16 @@ public class ConfUruleService
      * @param queryMap
      * @return
      */
-    private List<Map<String, ? extends Object>> excuteKnowledgeForEach(List<Map<String, Object>> userInfoArray, Map<String, Object> queryMap) {
+    private Map<String, ? extends Object> excuteKnowledgeForEach(List<Map<String, Object>> userInfoArray, Map<String, Object> queryMap) {
+    	Map<String, Object>  body = new HashMap<>();
     	List<Map<String, ? extends Object>> resultList = new ArrayList<>();
     	String identityIsTrue = ToolsUtil.obj2Str(queryMap.get("identityIsTrue"));
+    	Long time = System.currentTimeMillis();
+    	body.put("dateTIme", time);
     	userInfoArray.stream().forEach( userInfo -> {
      	 	List<Map<String, Object>> objList = new ArrayList<>();
           	Map<String, Object> objMap = new HashMap<>();
+          	String custType = ToolsUtil.obj2Str(userInfo.get("custType"));
           	objMap.put("key", Constants.QUALITY_INFO_STR);
           	objMap.put("IDENTITY_IS_TRUE", identityIsTrue); // 是否资质审查 0-需要
           	objMap.put("CLIENT_NAME", userInfo.get("custName")); // 客户名称
@@ -85,13 +89,24 @@ public class ConfUruleService
           	objMap.put("GLOBAL_TYPE", userInfo.get("globalType")); // 证件类型
           	objMap.put("GLOBAL_ID", userInfo.get("globalId")); // 证件号码
           	objMap.put("PHONE_NO", userInfo.get("telphoneNo")); // 手机号
-          	objMap.put("CLIENT_TYPE_CODE", userInfo.get("custType")); // 客户类型 01-借款人 02-共同借款人 03-担保人
+          	objMap.put("CLIENT_TYPE_CODE", custType); // 客户类型 01-借款人 02-共同借款人 03-担保人
           	objList.add(objMap);
           	queryMap.put("objList", objList);
           	Map<String, ? extends Object> resultMap = confBaseService.excuteKnowledge(queryMap);
-          	resultList.add(resultMap);
+          	if (ErrorUtil.isSuccess(resultMap))
+          	{
+          		if (Constants.CUST_TYPE_LOAN.equals(custType))
+          		{
+          			body.put("lastScore", resultMap.get("lastScore"));//系统评分
+          			body.put("sysAdvice", resultMap.get("sysAdvice"));//系统建议额度
+          			body.put("riskCode", resultMap.get("riskCode"));//风险评级
+          		}
+          		ErrorUtil.getBody(resultMap).putAll(userInfo);
+          		resultList.add(ErrorUtil.getBody(resultMap));
+          	}
          });
-		return resultList;
+    	body.put("evalArray", resultList);
+		return body;
 	}
 
 	/**

@@ -64,4 +64,20 @@ public class ErrorUtil {
             flag = (boolean)success;
         return flag;
     }
+    
+	/**
+     * 获取报文体
+     * 
+     * @param data
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+	public static Map<String, Object> getBody(Map<String, ? extends Object> data)
+    {
+        Object body = data.get("body");
+        if (body instanceof Map)
+        	return (Map<String, Object>)body;
+        else 
+        	return new HashMap<>();
+    }
 }

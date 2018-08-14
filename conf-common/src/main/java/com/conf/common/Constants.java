@@ -87,6 +87,9 @@ public class Constants {
     
     public final static String STAGE_TYPE_03 = "03";
     
+    //01-借款人 02-共同借款人 03-担保人
+    public final static String CUST_TYPE_LOAN = "01";
+    
     public final static String QUALITY_INFO_STR = "UserInfo";
     
 }

@@ -4,107 +4,72 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class QualificationReviewInfo {
-	
-	//自增主键
     private Integer qualificationReviewId;
 
-    //业务流水
     private String tranSeqNo;
 
-    //流程编号
     private String processId;
 
-    //客户号
     private String custNo;
 
-    //客户名称
     private String custName;
 
-    //客户类型 01-借款人  02-共同借款人 03-担保人
     private String custType;
 
-    //证件号
     private String cardNo;
-    
-    //证件类型
+
     private String cardType;
 
-    //手机号
     private String telephoneNo;
 
-    //是否征信授权
     private String isCreditAuthorized;
 
-    //阶段类型
     private String stageType;
 
-    //授信产品
     private String creditProduct;
 
-    //授信额度
     private BigDecimal creditQuota;
 
-    //授信期限
     private String creditTerm;
 
-    //担保额度
     private BigDecimal guaranteeQuota;
 
-    //担保方式
     private String guaranteeType;
 
-    //来源系统
     private String sourceSystem;
 
-    //经办人
     private String tellerNo;
 
-    //经办机构
     private String tellerOrg;
 
-    //资质审查结果
     private String qualificationReviewResult;
 
-    //资质审查失败节点
     private String qualificationReviewFailCode;
 
-    //资质审查失败原因
     private String qualificationReviewReason;
 
-    //信用评分
     private String creidtValue;
 
-    //信用评级
     private String creidtLevel;
 
-    //评分评级通过标识
     private String passFlag;
 
-    //建议通过率
     private String passRate;
 
-    //可能逾期率
     private String overPercent;
-    
-    //建议额度
-    private String sysAdvice;
-    
-    //建议利率
+
+    private String adviceQuota;
+
     private String sysRate;
-    
-    //贷款额度
-    private String loanAdvice;
-    
-    //贷款利率
+
+    private String loanQuota;
+
     private String loanRate;
-    
-    //流失等级
+
     private String lossLevel;
-    
-    //调查方式
+
     private String investType;
-    
-    //报表编制
+
     private String reportType;
 
     private Date lastUpdatedStamp;
@@ -153,6 +118,14 @@ public class QualificationReviewInfo {
 
     public void setCustName(String custName) {
         this.custName = custName == null ? null : custName.trim();
+    }
+
+    public String getCustType() {
+        return custType;
+    }
+
+    public void setCustType(String custType) {
+        this.custType = custType == null ? null : custType.trim();
     }
 
     public String getCardNo() {
@@ -323,6 +296,62 @@ public class QualificationReviewInfo {
         this.overPercent = overPercent == null ? null : overPercent.trim();
     }
 
+    public String getAdviceQuota() {
+        return adviceQuota;
+    }
+
+    public void setAdviceQuota(String adviceQuota) {
+        this.adviceQuota = adviceQuota == null ? null : adviceQuota.trim();
+    }
+
+    public String getSysRate() {
+        return sysRate;
+    }
+
+    public void setSysRate(String sysRate) {
+        this.sysRate = sysRate == null ? null : sysRate.trim();
+    }
+
+    public String getLoanQuota() {
+        return loanQuota;
+    }
+
+    public void setLoanQuota(String loanQuota) {
+        this.loanQuota = loanQuota == null ? null : loanQuota.trim();
+    }
+
+    public String getLoanRate() {
+        return loanRate;
+    }
+
+    public void setLoanRate(String loanRate) {
+        this.loanRate = loanRate == null ? null : loanRate.trim();
+    }
+
+    public String getLossLevel() {
+        return lossLevel;
+    }
+
+    public void setLossLevel(String lossLevel) {
+        this.lossLevel = lossLevel == null ? null : lossLevel.trim();
+    }
+
+    public String getInvestType() {
+        return investType;
+    }
+
+    public void setInvestType(String investType) {
+        this.investType = investType == null ? null : investType.trim();
+    }
+
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType == null ? null : reportType.trim();
+    }
+
     public Date getLastUpdatedStamp() {
         return lastUpdatedStamp;
     }
@@ -354,68 +383,4 @@ public class QualificationReviewInfo {
     public void setCreatedTxStamp(Date createdTxStamp) {
         this.createdTxStamp = createdTxStamp;
     }
-
-	public String getCustType() {
-		return custType;
-	}
-
-	public void setCustType(String custType) {
-		this.custType = custType;
-	}
-
-	public String getSysAdvice() {
-		return sysAdvice;
-	}
-
-	public void setSysAdvice(String sysAdvice) {
-		this.sysAdvice = sysAdvice;
-	}
-
-	public String getSysRate() {
-		return sysRate;
-	}
-
-	public void setSysRate(String sysRate) {
-		this.sysRate = sysRate;
-	}
-
-	public String getLoanAdvice() {
-		return loanAdvice;
-	}
-
-	public void setLoanAdvice(String loanAdvice) {
-		this.loanAdvice = loanAdvice;
-	}
-
-	public String getLoanRate() {
-		return loanRate;
-	}
-
-	public void setLoanRate(String loanRate) {
-		this.loanRate = loanRate;
-	}
-
-	public String getLossLevel() {
-		return lossLevel;
-	}
-
-	public void setLossLevel(String lossLevel) {
-		this.lossLevel = lossLevel;
-	}
-
-	public String getInvestType() {
-		return investType;
-	}
-
-	public void setInvestType(String investType) {
-		this.investType = investType;
-	}
-
-	public String getReportType() {
-		return reportType;
-	}
-
-	public void setReportType(String reportType) {
-		this.reportType = reportType;
-	}
 }

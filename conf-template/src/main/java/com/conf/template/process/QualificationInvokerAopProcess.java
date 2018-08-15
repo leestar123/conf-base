@@ -98,7 +98,7 @@ public class QualificationInvokerAopProcess implements AbstractInvokerAopProcess
 		info.setInvestType(investType);
 		info.setReportType(reportType);
 		info.setLossLevel(lossLevel);
-		info.setLoanAdvice(loanAdvice);
+		info.setLoanQuota(loanAdvice);
 		info.setLoanRate(loanRate);
 		reviewInfoMapper.insertSelective(info);
 	}

@@ -138,7 +138,7 @@ public class ConfUruleService
           	objMap.put("CLIENT_TYPE_CODE", custType); // 客户类型 01-借款人 02-共同借款人 03-担保人
           	objList.add(objMap);
           	queryMap.put("objList", objList);
-          	Map<String, ? extends Object> resultMap = excuteKnowledge(queryMap);
+          	Map<String, ? extends Object> resultMap = excuteKnowledge(ToolsUtil.obj2Str(userInfo.get("custNo")), queryMap);
           	if (ErrorUtil.isSuccess(resultMap))
           	{
           		if (Constants.CUST_TYPE_LOAN.equals(custType))
@@ -197,13 +197,18 @@ public class ConfUruleService
 		return stepName;
 	}
     
+    public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data)
+    {
+    	return excuteKnowledge(null, data);
+    }
+    
     /**
      * 调用知识包
      * @param data
      * @return
      */
     @SuppressWarnings("unchecked")
-    public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data)
+    public Map<String, ? extends Object> excuteKnowledge(String custNo, Map<String, ? extends Object> data)
     {
         logger.info("Begin to excute knowledge service!");
         
@@ -274,10 +279,13 @@ public class ConfUruleService
       		if (Constants.STAGE_TYPE_02.equals(ToolsUtil.obj2Str(data.get("stageType"))))
       		{
       			ModelSystemReq modelSystem = new ModelSystemReq();
+      			modelSystem.setCustNo(custNo);
       			ModelSystemRes modelSystemRes =InvokerESBServer.modelSystem(modelSystem);
       			LossWarningReq lossWarn = new LossWarningReq();
+      			lossWarn.setCustNo(custNo);
       			LossWarningRes lossWarningRes = InvokerESBServer.lossWarning(lossWarn);
       			QuotaPriceReq quota = new QuotaPriceReq();
+      			quota.setCLIENT_NO(custNo);
       			QuotaPriceRes quotaProces = InvokerESBServer.quotaPrice(quota);
       			buildParam(modelSystemRes, lossWarningRes, quotaProces, params);
       		}

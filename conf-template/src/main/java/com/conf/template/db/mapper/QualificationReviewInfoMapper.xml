@@ -29,55 +29,69 @@
     <result column="PASS_FLAG" jdbcType="VARCHAR" property="passFlag" />
     <result column="PASS_RATE" jdbcType="VARCHAR" property="passRate" />
     <result column="OVER_PERCENT" jdbcType="VARCHAR" property="overPercent" />
+    <result column="ADVICE_QUOTA" jdbcType="VARCHAR" property="adviceQuota" />
+    <result column="SYS_RATE" jdbcType="VARCHAR" property="sysRate" />
+    <result column="LOAN_QUOTA" jdbcType="VARCHAR" property="loanQuota" />
+    <result column="LOAN_RATE" jdbcType="VARCHAR" property="loanRate" />
+    <result column="LOSS_LEVEL" jdbcType="VARCHAR" property="lossLevel" />
+    <result column="INVEST_TYPE" jdbcType="VARCHAR" property="investType" />
+    <result column="REPORT_TYPE" jdbcType="VARCHAR" property="reportType" />
     <result column="LAST_UPDATED_STAMP" jdbcType="TIMESTAMP" property="lastUpdatedStamp" />
     <result column="LAST_UPDATED_TX_STAMP" jdbcType="TIMESTAMP" property="lastUpdatedTxStamp" />
     <result column="CREATED_STAMP" jdbcType="TIMESTAMP" property="createdStamp" />
     <result column="CREATED_TX_STAMP" jdbcType="TIMESTAMP" property="createdTxStamp" />
   </resultMap>
   <sql id="Base_Column_List">
-    QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, PROCESS_ID, CUST_NO, CUST_NAME, CUST_TYPE, CARD_NO, CARD_TYPE, 
-    TELEPHONE_NO, IS_CREDIT_AUTHORIZED, STAGE_TYPE, CREDIT_PRODUCT, CREDIT_QUOTA, CREDIT_TERM, 
-    GUARANTEE_QUOTA, GUARANTEE_TYPE, SOURCE_SYSTEM, TELLER_NO, TELLER_ORG, QUALIFICATION_REVIEW_RESULT, 
-    QUALIFICATION_REVIEW_FAIL_CODE, QUALIFICATION_REVIEW_REASON, CREIDT_VALUE, CREIDT_LEVEL, 
-    PASS_FLAG, PASS_RATE, OVER_PERCENT, LAST_UPDATED_STAMP, LAST_UPDATED_TX_STAMP, CREATED_STAMP, 
-    CREATED_TX_STAMP
+    QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, PROCESS_ID, CUST_NO, CUST_NAME, CUST_TYPE, 
+    CARD_NO, CARD_TYPE, TELEPHONE_NO, IS_CREDIT_AUTHORIZED, STAGE_TYPE, CREDIT_PRODUCT, 
+    CREDIT_QUOTA, CREDIT_TERM, GUARANTEE_QUOTA, GUARANTEE_TYPE, SOURCE_SYSTEM, TELLER_NO, 
+    TELLER_ORG, QUALIFICATION_REVIEW_RESULT, QUALIFICATION_REVIEW_FAIL_CODE, QUALIFICATION_REVIEW_REASON, 
+    CREIDT_VALUE, CREIDT_LEVEL, PASS_FLAG, PASS_RATE, OVER_PERCENT, ADVICE_QUOTA, SYS_RATE, 
+    LOAN_QUOTA, LOAN_RATE, LOSS_LEVEL, INVEST_TYPE, REPORT_TYPE, LAST_UPDATED_STAMP, 
+    LAST_UPDATED_TX_STAMP, CREATED_STAMP, CREATED_TX_STAMP
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from qualification_review_info
+    from QUALIFICATION_REVIEW_INFO
     where QUALIFICATION_REVIEW_ID = #{qualificationReviewId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from qualification_review_info
+    delete from QUALIFICATION_REVIEW_INFO
     where QUALIFICATION_REVIEW_ID = #{qualificationReviewId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.conf.template.db.model.QualificationReviewInfo">
-    insert into qualification_review_info (QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, 
-      PROCESS_ID, CUST_NO, CUST_TYPE, CUST_NAME, 
-      CARD_NO, CARD_TYPE, TELEPHONE_NO, 
-      IS_CREDIT_AUTHORIZED, STAGE_TYPE, CREDIT_PRODUCT, 
-      CREDIT_QUOTA, CREDIT_TERM, GUARANTEE_QUOTA, 
-      GUARANTEE_TYPE, SOURCE_SYSTEM, TELLER_NO, 
-      TELLER_ORG, QUALIFICATION_REVIEW_RESULT, QUALIFICATION_REVIEW_FAIL_CODE, 
-      QUALIFICATION_REVIEW_REASON, CREIDT_VALUE, 
-      CREIDT_LEVEL, PASS_FLAG, PASS_RATE, 
-      OVER_PERCENT, LAST_UPDATED_STAMP, LAST_UPDATED_TX_STAMP, 
+    insert into QUALIFICATION_REVIEW_INFO (QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, 
+      PROCESS_ID, CUST_NO, CUST_NAME, 
+      CUST_TYPE, CARD_NO, CARD_TYPE, 
+      TELEPHONE_NO, IS_CREDIT_AUTHORIZED, STAGE_TYPE, 
+      CREDIT_PRODUCT, CREDIT_QUOTA, CREDIT_TERM, 
+      GUARANTEE_QUOTA, GUARANTEE_TYPE, SOURCE_SYSTEM, 
+      TELLER_NO, TELLER_ORG, QUALIFICATION_REVIEW_RESULT, 
+      QUALIFICATION_REVIEW_FAIL_CODE, QUALIFICATION_REVIEW_REASON, 
+      CREIDT_VALUE, CREIDT_LEVEL, PASS_FLAG, 
+      PASS_RATE, OVER_PERCENT, ADVICE_QUOTA, 
+      SYS_RATE, LOAN_QUOTA, LOAN_RATE, 
+      LOSS_LEVEL, INVEST_TYPE, REPORT_TYPE, 
+      LAST_UPDATED_STAMP, LAST_UPDATED_TX_STAMP, 
       CREATED_STAMP, CREATED_TX_STAMP)
     values (#{qualificationReviewId,jdbcType=INTEGER}, #{tranSeqNo,jdbcType=VARCHAR}, 
-      #{processId,jdbcType=VARCHAR}, #{custNo,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR}, #{custType,jdbcType=VARCHAR},
-      #{cardNo,jdbcType=VARCHAR}, #{cardType,jdbcType=VARCHAR}, #{telephoneNo,jdbcType=VARCHAR}, 
-      #{isCreditAuthorized,jdbcType=VARCHAR}, #{stageType,jdbcType=VARCHAR}, #{creditProduct,jdbcType=VARCHAR}, 
-      #{creditQuota,jdbcType=DECIMAL}, #{creditTerm,jdbcType=VARCHAR}, #{guaranteeQuota,jdbcType=DECIMAL}, 
-      #{guaranteeType,jdbcType=VARCHAR}, #{sourceSystem,jdbcType=VARCHAR}, #{tellerNo,jdbcType=VARCHAR}, 
-      #{tellerOrg,jdbcType=VARCHAR}, #{qualificationReviewResult,jdbcType=VARCHAR}, #{qualificationReviewFailCode,jdbcType=VARCHAR}, 
-      #{qualificationReviewReason,jdbcType=VARCHAR}, #{creidtValue,jdbcType=VARCHAR}, 
-      #{creidtLevel,jdbcType=VARCHAR}, #{passFlag,jdbcType=VARCHAR}, #{passRate,jdbcType=VARCHAR}, 
-      #{overPercent,jdbcType=VARCHAR}, #{lastUpdatedStamp,jdbcType=TIMESTAMP}, #{lastUpdatedTxStamp,jdbcType=TIMESTAMP}, 
+      #{processId,jdbcType=VARCHAR}, #{custNo,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR}, 
+      #{custType,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, #{cardType,jdbcType=VARCHAR}, 
+      #{telephoneNo,jdbcType=VARCHAR}, #{isCreditAuthorized,jdbcType=VARCHAR}, #{stageType,jdbcType=VARCHAR}, 
+      #{creditProduct,jdbcType=VARCHAR}, #{creditQuota,jdbcType=DECIMAL}, #{creditTerm,jdbcType=VARCHAR}, 
+      #{guaranteeQuota,jdbcType=DECIMAL}, #{guaranteeType,jdbcType=VARCHAR}, #{sourceSystem,jdbcType=VARCHAR}, 
+      #{tellerNo,jdbcType=VARCHAR}, #{tellerOrg,jdbcType=VARCHAR}, #{qualificationReviewResult,jdbcType=VARCHAR}, 
+      #{qualificationReviewFailCode,jdbcType=VARCHAR}, #{qualificationReviewReason,jdbcType=VARCHAR}, 
+      #{creidtValue,jdbcType=VARCHAR}, #{creidtLevel,jdbcType=VARCHAR}, #{passFlag,jdbcType=VARCHAR}, 
+      #{passRate,jdbcType=VARCHAR}, #{overPercent,jdbcType=VARCHAR}, #{adviceQuota,jdbcType=VARCHAR}, 
+      #{sysRate,jdbcType=VARCHAR}, #{loanQuota,jdbcType=VARCHAR}, #{loanRate,jdbcType=VARCHAR}, 
+      #{lossLevel,jdbcType=VARCHAR}, #{investType,jdbcType=VARCHAR}, #{reportType,jdbcType=VARCHAR}, 
+      #{lastUpdatedStamp,jdbcType=TIMESTAMP}, #{lastUpdatedTxStamp,jdbcType=TIMESTAMP}, 
       #{createdStamp,jdbcType=TIMESTAMP}, #{createdTxStamp,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.conf.template.db.model.QualificationReviewInfo">
-    insert into qualification_review_info
+    insert into QUALIFICATION_REVIEW_INFO
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="qualificationReviewId != null">
         QUALIFICATION_REVIEW_ID,
@@ -160,6 +174,27 @@
       <if test="overPercent != null">
         OVER_PERCENT,
       </if>
+      <if test="adviceQuota != null">
+        ADVICE_QUOTA,
+      </if>
+      <if test="sysRate != null">
+        SYS_RATE,
+      </if>
+      <if test="loanQuota != null">
+        LOAN_QUOTA,
+      </if>
+      <if test="loanRate != null">
+        LOAN_RATE,
+      </if>
+      <if test="lossLevel != null">
+        LOSS_LEVEL,
+      </if>
+      <if test="investType != null">
+        INVEST_TYPE,
+      </if>
+      <if test="reportType != null">
+        REPORT_TYPE,
+      </if>
       <if test="lastUpdatedStamp != null">
         LAST_UPDATED_STAMP,
       </if>
@@ -191,7 +226,7 @@
       </if>
       <if test="custType != null">
         #{custType,jdbcType=VARCHAR},
-      </if>      
+      </if>
       <if test="cardNo != null">
         #{cardNo,jdbcType=VARCHAR},
       </if>
@@ -255,6 +290,27 @@
       <if test="overPercent != null">
         #{overPercent,jdbcType=VARCHAR},
       </if>
+      <if test="adviceQuota != null">
+        #{adviceQuota,jdbcType=VARCHAR},
+      </if>
+      <if test="sysRate != null">
+        #{sysRate,jdbcType=VARCHAR},
+      </if>
+      <if test="loanQuota != null">
+        #{loanQuota,jdbcType=VARCHAR},
+      </if>
+      <if test="loanRate != null">
+        #{loanRate,jdbcType=VARCHAR},
+      </if>
+      <if test="lossLevel != null">
+        #{lossLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="investType != null">
+        #{investType,jdbcType=VARCHAR},
+      </if>
+      <if test="reportType != null">
+        #{reportType,jdbcType=VARCHAR},
+      </if>
       <if test="lastUpdatedStamp != null">
         #{lastUpdatedStamp,jdbcType=TIMESTAMP},
       </if>
@@ -270,7 +326,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.conf.template.db.model.QualificationReviewInfo">
-    update qualification_review_info
+    update QUALIFICATION_REVIEW_INFO
     <set>
       <if test="tranSeqNo != null">
         TRAN_SEQ_NO = #{tranSeqNo,jdbcType=VARCHAR},
@@ -286,7 +342,7 @@
       </if>
       <if test="custType != null">
         CUST_TYPE = #{custType,jdbcType=VARCHAR},
-      </if>      
+      </if>
       <if test="cardNo != null">
         CARD_NO = #{cardNo,jdbcType=VARCHAR},
       </if>
@@ -350,6 +406,27 @@
       <if test="overPercent != null">
         OVER_PERCENT = #{overPercent,jdbcType=VARCHAR},
       </if>
+      <if test="adviceQuota != null">
+        ADVICE_QUOTA = #{adviceQuota,jdbcType=VARCHAR},
+      </if>
+      <if test="sysRate != null">
+        SYS_RATE = #{sysRate,jdbcType=VARCHAR},
+      </if>
+      <if test="loanQuota != null">
+        LOAN_QUOTA = #{loanQuota,jdbcType=VARCHAR},
+      </if>
+      <if test="loanRate != null">
+        LOAN_RATE = #{loanRate,jdbcType=VARCHAR},
+      </if>
+      <if test="lossLevel != null">
+        LOSS_LEVEL = #{lossLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="investType != null">
+        INVEST_TYPE = #{investType,jdbcType=VARCHAR},
+      </if>
+      <if test="reportType != null">
+        REPORT_TYPE = #{reportType,jdbcType=VARCHAR},
+      </if>
       <if test="lastUpdatedStamp != null">
         LAST_UPDATED_STAMP = #{lastUpdatedStamp,jdbcType=TIMESTAMP},
       </if>
@@ -366,7 +443,7 @@
     where QUALIFICATION_REVIEW_ID = #{qualificationReviewId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.conf.template.db.model.QualificationReviewInfo">
-    update qualification_review_info
+    update QUALIFICATION_REVIEW_INFO
     set TRAN_SEQ_NO = #{tranSeqNo,jdbcType=VARCHAR},
       PROCESS_ID = #{processId,jdbcType=VARCHAR},
       CUST_NO = #{custNo,jdbcType=VARCHAR},
@@ -393,6 +470,13 @@
       PASS_FLAG = #{passFlag,jdbcType=VARCHAR},
       PASS_RATE = #{passRate,jdbcType=VARCHAR},
       OVER_PERCENT = #{overPercent,jdbcType=VARCHAR},
+      ADVICE_QUOTA = #{adviceQuota,jdbcType=VARCHAR},
+      SYS_RATE = #{sysRate,jdbcType=VARCHAR},
+      LOAN_QUOTA = #{loanQuota,jdbcType=VARCHAR},
+      LOAN_RATE = #{loanRate,jdbcType=VARCHAR},
+      LOSS_LEVEL = #{lossLevel,jdbcType=VARCHAR},
+      INVEST_TYPE = #{investType,jdbcType=VARCHAR},
+      REPORT_TYPE = #{reportType,jdbcType=VARCHAR},
       LAST_UPDATED_STAMP = #{lastUpdatedStamp,jdbcType=TIMESTAMP},
       LAST_UPDATED_TX_STAMP = #{lastUpdatedTxStamp,jdbcType=TIMESTAMP},
       CREATED_STAMP = #{createdStamp,jdbcType=TIMESTAMP},

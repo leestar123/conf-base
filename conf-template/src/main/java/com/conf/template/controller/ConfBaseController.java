@@ -348,7 +348,7 @@ public class ConfBaseController implements CommController
                 return ErrorUtil.errorResp(ErrorCode.code_0001, "productId");
             }
         }
-        return confBaseService.excuteKnowledge(data);
+        return confUruleService.excuteKnowledge(data);
     }
     
     /**
@@ -357,7 +357,7 @@ public class ConfBaseController implements CommController
     @ApiException
     public Map<String, ? extends Object> refreshKnowledgeCacheByStepAndFlow(Map<String, ? extends Object> data) {
     	
-    	return confBaseService.refreshKnowledgeCacheByStepAndFlow(data);
+    	return confUruleService.refreshKnowledgeCacheByStepAndFlow(data);
     }
     
     /**
@@ -425,7 +425,7 @@ public class ConfBaseController implements CommController
     @ApiException
     public Map<String, ? extends Object> batchExecuteQuality(Map<String, ? extends Object> data)
     {
-        return confBaseService.batchExecuteQuality(data);
+        return confUruleService.batchExecuteQuality(data);
     }
     
     /**

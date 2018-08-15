@@ -82,8 +82,24 @@ public class QualificationInvokerAopProcess implements AbstractInvokerAopProcess
 		QualificationReviewInfo info = thread.get();
 		String failReason = ToolsUtil.obj2Str(data.get("failReason"));
 		String failResult = ToolsUtil.obj2Str(data.get("failResult"));
+		//调查方式
+		String investType = ToolsUtil.obj2Str(data.get("investType"));
+		//报表编制
+		String reportType = ToolsUtil.obj2Str(data.get("reportType"));
+		//流失等级
+		String lossLevel = ToolsUtil.obj2Str(data.get("lossLevel"));
+		//贷款额度
+		String loanAdvice = ToolsUtil.obj2Str(data.get("loanAdvice"));
+		//贷款利率
+		String loanRate = ToolsUtil.obj2Str(data.get("loanRate"));
+		
 		info.setQualificationReviewReason(failReason);
 		info.setQualificationReviewResult(failResult);
+		info.setInvestType(investType);
+		info.setReportType(reportType);
+		info.setLossLevel(lossLevel);
+		info.setLoanAdvice(loanAdvice);
+		info.setLoanRate(loanRate);
 		reviewInfoMapper.insertSelective(info);
 	}
 	

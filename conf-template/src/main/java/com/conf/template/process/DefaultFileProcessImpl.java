@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSONObject;
 import com.conf.common.HttpUtil;
-import com.conf.template.service.ConfBaseService;
+import com.conf.template.service.ConfUruleService;
 
 public class DefaultFileProcessImpl extends FileProcess<QualityDataDto, QualityResultDto>{
 
@@ -31,7 +31,7 @@ public class DefaultFileProcessImpl extends FileProcess<QualityDataDto, QualityR
 	private Integer commitInterval;
 	
 	@Autowired
-	ConfBaseService confBaseService;
+	ConfUruleService confUruleService;
 	
 	@Override
 	public QualityResultDto lineProcess(Integer lineNum, QualityDataDto t, String... filekey) {
@@ -42,7 +42,7 @@ public class DefaultFileProcessImpl extends FileProcess<QualityDataDto, QualityR
         map.put("flowId", filekey[4]);
         map.put("teller", filekey[5]);
         map.put("org", filekey[6]);
-        Map<String, ? extends Object> result = confBaseService.excuteKnowledge(map);
+        Map<String, ? extends Object> result = confUruleService.excuteKnowledge(map);
         //TODO:进行对象QualityResultDto转换
 		return null;
 	}

@@ -42,6 +42,7 @@ import com.conf.template.db.model.ConfInvokInfo;
 import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfProductStep;
 import com.conf.template.db.model.ConfStepInfo;
+import com.conf.template.process.TestQualificationInvokerAopProcess;
 
 /**
  * 调用urule相关服务
@@ -228,6 +229,9 @@ public class ConfUruleService
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
         Integer doTest = ToolsUtil.obj2Int(data.get("doTest"), 0);
+        if ( doTest == 1) {// 仿真测试数据不入库
+        	invokerAopProcess = new TestQualificationInvokerAopProcess();
+        }
         ConfProductStep product = confProductStepMapper.queryIdByCondition(stepId, flowId, productId, businessType);
         if (product == null)
             return ErrorUtil.errorResp(ErrorCode.code_0011, flowId);
@@ -298,9 +302,7 @@ public class ConfUruleService
       			QuotaPriceRes quotaProces = InvokerESBServer.quotaPrice(quota);
       			buildParam(modelSystemRes, lossWarningRes, quotaProces, params);
       		}
-      		if (doTest != 1) {
-      			invokerAopProcess.afterPorcess(params);
-      		}
+      		invokerAopProcess.afterPorcess(params);
       		body.putAll(params);
             logger.info("End to excute knowledge service");
             invokInfo.setDetail(ConfContext.invokerLocalGet());
@@ -316,10 +318,7 @@ public class ConfUruleService
         {
             try
             {
-            	// 仿真测试数据不入库
-            	if (doTest != 1) {
-            		confInvokInfoMapper.insertSelective(invokInfo);
-            	}
+            	confInvokInfoMapper.insertSelective(invokInfo);
             }
             catch (Exception e)
             {

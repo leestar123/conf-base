@@ -433,11 +433,7 @@ public class ConfUruleService
 	 * @return
 	 */
 	public Map<String, ? extends Object> batchExecuteQuality(Map<String, ? extends Object> data) {
-		String[] fileKey = { ToolsUtil.obj2Str(data.get("marketingCampaigntId")),
-				ToolsUtil.obj2Str(data.get("productId")), ToolsUtil.obj2Str(data.get("stepId")),
-				ToolsUtil.obj2Str(data.get("flowId")), ToolsUtil.obj2Str(data.get("teller")),
-				ToolsUtil.obj2Str(data.get("org")) };
-		excutor.doExecutor(fileKey);
+		excutor.doExecutor(data);
 		Map<String, Object> body = new HashMap<>();
 		return ErrorUtil.successResp(body);
 	}

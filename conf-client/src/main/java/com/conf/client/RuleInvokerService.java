@@ -274,7 +274,7 @@ public class RuleInvokerService
      * @param processId
      * @throws Exception
      */
-    public Map<String, Object> executeProcess(String files, List<GeneralEntity> objList, String processId)
+	public Map<String, Object> executeProcess(String files, List<GeneralEntity> objList, String processId)
         throws Exception
 	{
 		HttpServletRequest req = RequestHolder.getRequest();
@@ -304,6 +304,9 @@ public class RuleInvokerService
     
     private boolean getClassify(HttpServletRequest req, HttpServletResponse resp)
     {
+    	if (req == null) {
+    		return true;
+    	}
         String classifyValue = req.getParameter("classify");
         if (StringUtils.isBlank(classifyValue))
         {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class FileProcess<T,B> {
 
@@ -16,33 +17,42 @@ public abstract class FileProcess<T,B> {
 	 * @return
 	 * @throws IOException
 	 */
-	public String readFile(Integer startLine, Integer endLine, String... filekey) throws IOException {
+	public String readFile(Integer startLine, Integer endLine, Map<String, ? extends Object> filekey) throws IOException {
 		LineNumberReader reader = null;
 		String returnStr = null;
 		try {
-			List<T> list = readData(startLine, endLine, filekey);
-			if (list == null || list.isEmpty())
-			{
-				return null;
-			}
-			Integer lineNum = startLine;
-			List<B> resultList = new ArrayList<>();
-			int count = 0;
-			for (T t : list) {
-				lineNum ++;
-				count ++;
-				B b = lineProcess(lineNum, t);
-				resultList.add(b);
-				if (count == getCommitInterval()) {
-					returnStr = writeData(resultList);
-					count = 0;
-					resultList = new ArrayList<>();
+			Integer interval = getCommitInterval();
+			do {
+				if ((startLine + startLine) > endLine) {
+					interval = (endLine - startLine);
 				}
-			}
+				List<T> list = readData(startLine, interval, filekey);
+				if (list == null || list.isEmpty())
+				{
+					return null;
+				}
+				startLine += interval;
+				
+				Integer lineNum = startLine;
+				List<B> resultList = new ArrayList<>();
+				int count = 0;
+				for (T t : list) {
+					lineNum ++;
+					count ++;
+					B b = lineProcess(lineNum, t, filekey);
+					resultList.add(b);
+					if (count == getCommitInterval()) {
+						returnStr = writeData(resultList, filekey);
+						count = 0;
+						resultList = new ArrayList<>();
+					}
+				}
+				
+				if (resultList.size() > 0) {
+					writeData(resultList, filekey);
+				}
+			} while ((startLine + startLine) < endLine);
 			
-			if (resultList.size() > 0) {
-				writeData(resultList, filekey);
-			}
 			return returnStr;
 		} finally {
 			if (reader != null)
@@ -56,7 +66,7 @@ public abstract class FileProcess<T,B> {
 	 * @param filekey
 	 * @return
 	 */
-	public abstract List<T> readData(Integer startLine, Integer endLine, String... filekey);
+	public abstract List<T> readData(Integer startLine, Integer endLine, Map<String, ? extends Object> filekey);
 	
 	/**
 	 * 单行根据执行结果写入结果
@@ -64,7 +74,7 @@ public abstract class FileProcess<T,B> {
 	 * @param b
 	 * @return
 	 */
-	public abstract String writeData(List<B> list, String... filekey);
+	public abstract String writeData(List<B> list, Map<String, ? extends Object> filekey);
 	
 	/**
 	 * 每行数据的处理
@@ -73,7 +83,7 @@ public abstract class FileProcess<T,B> {
 	 * @param t
 	 * @return
 	 */
-	public abstract B lineProcess(Integer lineNum, T t, String... filekey);
+	public abstract B lineProcess(Integer lineNum, T t, Map<String, ? extends Object> filekey);
 	
 	/**
 	 * 获取数据总条数
@@ -81,7 +91,7 @@ public abstract class FileProcess<T,B> {
 	 * @param filekey
 	 * @return
 	 */
-	public abstract Integer getTotalNum(String... filekey);
+	public abstract Integer getTotalNum(Map<String, ? extends Object> filekey);
 	
 	/**
 	 * 整合返回Future中的值

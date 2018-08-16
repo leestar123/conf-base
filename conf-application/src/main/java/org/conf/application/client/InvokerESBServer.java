@@ -1,5 +1,8 @@
 package org.conf.application.client;
 
+import org.conf.application.client.dto.ApplyUserInfoRes;
+import org.conf.application.client.dto.CustomerByTopicIdReq;
+import org.conf.application.client.dto.CustomerByTopicIdRes;
 import org.conf.application.client.dto.LossWarningReq;
 import org.conf.application.client.dto.LossWarningRes;
 import org.conf.application.client.dto.ModelSystemReq;
@@ -60,6 +63,53 @@ public class InvokerESBServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	/**
+	 * 获取信息总条数
+	 * 
+	 * @param marketingCampaigntId
+	 * @return
+	 */
+	public static Integer getCustListNum(String marketingCampaigntId) {
+		try {
+			CustomerByTopicIdReq req = new CustomerByTopicIdReq();
+			req.setMarketingCampaigntId(marketingCampaigntId);
+			req.setPageNum(1);
+			req.setCountNum(10);
+			String result = HttpUtil.doPost("http://192.168.30.174:12000/mock/5b73c9ad49521a06e27fb16f/marketingCampaigntId", JSONObject.toJSONString(req));
+			CustomerByTopicIdRes res = JSONObject.parseObject(result, CustomerByTopicIdRes.class);
+			return res.getTotalNum();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取信息列表
+	 * 
+	 * @param marketingCampaigntId
+	 * @return
+	 */
+	public static CustomerByTopicIdRes getCustList(CustomerByTopicIdReq req) {
+		try {
+			String result = HttpUtil.doPost("http://192.168.30.174:12000/mock/5b73c9ad49521a06e27fb16f/marketingCampaigntId", JSONObject.toJSONString(req));
+			return JSONObject.parseObject(result, CustomerByTopicIdRes.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取授信申请编号
+	 * 
+	 * @param applyNo
+	 * @return
+	 */
+	public static ApplyUserInfoRes getApplyUserList(String applyNo) {
 		return null;
 	}
 }

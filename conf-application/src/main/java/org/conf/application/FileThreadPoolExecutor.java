@@ -2,6 +2,7 @@ package org.conf.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -35,7 +36,7 @@ public class FileThreadPoolExecutor {
 	 * 
 	 * @param fileKey
 	 */
-	public void doExecutor(String... fileKey) {
+	public void doExecutor(Map<String, ? extends Object> fileKey) {
 		try {
 			FileProcess<?,?> process = ConfContext.getApplicationContext().getBean(FileProcess.class);
 			Integer totalNum = process.getTotalNum(fileKey);

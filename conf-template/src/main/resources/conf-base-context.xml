@@ -57,10 +57,6 @@
 	<bean id="invokerDebugWriter" class="com.conf.template.process.InvokerDebugWriter" />
 	
 	<bean id="fileProcess" class="com.conf.template.process.DefaultFileProcessImpl">
-		<property name="ip" value="${process.ip}"></property>
-		<property name="port" value="${process.port}"></property>
-		<property name="readService" value="${process.read.url}"></property>
-		<property name="writeService" value="${process.write.url}"></property>
 		<property name="commitInterval" value="${process.commit.interval}"></property>
 	</bean>
 	

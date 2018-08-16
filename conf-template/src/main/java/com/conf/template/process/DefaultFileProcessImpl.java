@@ -1,67 +1,66 @@
 package com.conf.template.process;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.conf.application.FileProcess;
-import org.conf.application.dto.QualityDataDto;
-import org.conf.application.dto.QualityResultDto;
+import org.conf.application.client.InvokerESBServer;
+import org.conf.application.client.dto.ApplyUserInfoRes;
+import org.conf.application.client.dto.CheckQulityResultRes;
+import org.conf.application.client.dto.CustomerByTopicIdReq;
+import org.conf.application.client.dto.CustomerByTopicIdRes.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSONObject;
-import com.conf.common.HttpUtil;
+import com.conf.common.Constants;
+import com.conf.common.ErrorUtil;
+import com.conf.common.ToolsUtil;
 import com.conf.template.service.ConfUruleService;
 
-public class DefaultFileProcessImpl extends FileProcess<QualityDataDto, QualityResultDto>{
+public class DefaultFileProcessImpl extends FileProcess<UserInfo, CheckQulityResultRes>{
 
-	//访问IP地址
-	private String ip;
-	
-	//访问端口
-	private String port;
-	
-	//读数据服务
-	private String readService;
-	
-	//写数据服务
-	private String writeService;
-	
 	//提交间隔
 	private Integer commitInterval;
 	
 	@Autowired
 	ConfUruleService confUruleService;
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public QualityResultDto lineProcess(Integer lineNum, QualityDataDto t, String... filekey) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("productId", filekey[1]);
-        map.put("businessType", filekey[2]);
-        map.put("stepId", filekey[3]);
-        map.put("flowId", filekey[4]);
-        map.put("teller", filekey[5]);
-        map.put("org", filekey[6]);
-        Map<String, ? extends Object> result = confUruleService.excuteKnowledge(map);
-        //TODO:进行对象QualityResultDto转换
+	public CheckQulityResultRes lineProcess(Integer lineNum, UserInfo t, Map<String, ? extends Object> filekey) {
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		//授信申请书编号
+		String applyNo = ToolsUtil.obj2Str(filekey.get("applyNo"));
+		ApplyUserInfoRes res = InvokerESBServer.getApplyUserList(applyNo);
+		if (res != null) {
+			//TODO:添加担保人、共同借款人信息
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("custType", Constants.CUST_TYPE_LOAN);
+		map.put("custNo", t.getCustId());
+		map.put("custName", t.getCustName());
+		map.put("globalType", t.getIdType());
+		map.put("globalId", t.getIdNo());
+		map.put("telphoneNo", t.getMobilePhone());
+		map.put("acountNo", t.getCardNo());
+		list.add(map);
+		String json = JSONObject.toJSONString(filekey);
+		Map req = JSONObject.parseObject(json, Map.class);
+		req.put("userInfoArray", list);
+        Map<String, ? extends Object> result = confUruleService.excuteKnowledgeForList(req);
+        if (ErrorUtil.isSuccess(result)) {
+        	String body = JSONObject.toJSONString(ErrorUtil.getBody(result));
+        	return JSONObject.parseObject(body, CheckQulityResultRes.class);
+        }
 		return null;
 	}
 
 	@Override
-	public Integer getTotalNum(String... filekey) {
-		String url = "http://".concat(ip).concat(":").concat(port).concat(readService);
-		JSONObject json = new JSONObject();
-		json.put("marketingCampaigntId", filekey[0]);
-		json.put("pageNum", 1);
-		json.put("countNum", 5);
-		try {
-			String result = HttpUtil.doPost(url,json.toJSONString());
-			JSONObject obj = JSONObject.parseObject(result); 
-			return obj.getInteger("totalNum");
-		} catch (Exception e) {
-			
-		}
-		return null;
+	public Integer getTotalNum(Map<String, ? extends Object> filekey) {
+		String marketingCampaigntId = ToolsUtil.obj2Str(filekey.get("marketingCampaigntId"));
+		return InvokerESBServer.getCustListNum(marketingCampaigntId);
 	}
 
 	@Override
@@ -70,17 +69,14 @@ public class DefaultFileProcessImpl extends FileProcess<QualityDataDto, QualityR
 	}
 
 	@Override
-	public List<QualityDataDto> readData(Integer startLine, Integer endLine, String... filekey) {
-		String url = "http://".concat(ip).concat(":").concat(port).concat(readService);
-		JSONObject json = new JSONObject();
-		json.put("marketingCampaigntId", filekey[0]);
-		json.put("pageNum", startLine);
-		json.put("countNum", endLine);
+	public List<UserInfo> readData(Integer startLine, Integer endLine, Map<String, ? extends Object> filekey) {
+		String marketingCampaigntId = ToolsUtil.obj2Str(filekey.get("marketingCampaigntId"));
+		CustomerByTopicIdReq req = new CustomerByTopicIdReq();
+		req.setMarketingCampaigntId(marketingCampaigntId);
+		req.setCountNum(endLine);
+		req.setPageNum(startLine);
 		try {
-			String result = HttpUtil.doPost(url,json.toJSONString());
-			JSONObject obj = JSONObject.parseObject(result); 
-			String customer = obj.getString("customerList");
-			return JSONObject.parseArray(customer, QualityDataDto.class);
+			return InvokerESBServer.getCustList(req).getCustomerList();
 		} catch (Exception e) {
 			
 		}
@@ -88,38 +84,13 @@ public class DefaultFileProcessImpl extends FileProcess<QualityDataDto, QualityR
 	}
 
 	@Override
-	public String writeData(List<QualityResultDto> list, String... filekey) {
-		String url = "http://".concat(ip).concat(":").concat(port).concat(writeService);
-		JSONObject json = new JSONObject();
-		json.put("marketingCampaigntId", filekey[0]);
-		json.put("documentDataList", list);
-		try {
-			HttpUtil.doPost(url,json.toJSONString());
-		} catch (Exception e) {
-			
-		}
+	public String writeData(List<CheckQulityResultRes> list, Map<String, ? extends Object> filekey) {
 		return null;
 	}
 
 	@Override
 	public Integer getCommitInterval() {
 		return commitInterval;
-	}
-
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
-
-	public void setPort(String port) {
-		this.port = port;
-	}
-
-	public void setReadService(String readService) {
-		this.readService = readService;
-	}
-
-	public void setWriteService(String writeService) {
-		this.writeService = writeService;
 	}
 
 	public void setCommitInterval(Integer commitInterval) {

@@ -1,6 +1,7 @@
 package org.conf.application;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import com.conf.common.ConfContext;
@@ -11,9 +12,9 @@ public class FileProcessTask implements Callable<String>{
 	
 	private Integer end;
 	
-	private String []fileKey;
+	private Map<String, ? extends Object> fileKey;
 	
-	FileProcessTask(Integer start, Integer end, String... fileKey) {
+	FileProcessTask(Integer start, Integer end, Map<String, ? extends Object> fileKey) {
 		this.start = start;
 		this.end = end;
 		this.fileKey = fileKey;

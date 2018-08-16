@@ -146,6 +146,11 @@ public class ConfUruleService
           			body.put("lastScore", resultMap.get("lastScore"));//系统评分
           			body.put("sysAdvice", resultMap.get("sysAdvice"));//系统建议额度
           			body.put("riskCode", resultMap.get("riskCode"));//风险评级
+          			body.put("investType", resultMap.get("investType"));//调查方式
+          			body.put("reportType", resultMap.get("reportType"));//报表编制
+          			body.put("lossLevel", resultMap.get("lossLevel"));//流失等级
+          			body.put("loanAdvice", resultMap.get("loanAdvice"));//贷款额度
+          			body.put("loanRate", resultMap.get("loanRate"));//贷款利率
           		}
           		String reviewResult = ToolsUtil.obj2Str(resultMap.get("qualificationReviewResult"));
           		if (Constants.QUALITY_RESULT_FAIL.equals(reviewResult)) 
@@ -153,6 +158,7 @@ public class ConfUruleService
           			body.put("result", Constants.QUALITY_RESULT_FAIL);
           		}
           		ErrorUtil.getBody(resultMap).putAll(userInfo);
+          		resultList.add(ErrorUtil.getBody(resultMap));
            	}
          });
     	body.put("evalArray", resultList);

@@ -548,7 +548,7 @@ public class ConfBaseService
 			});
 		});
 		Map<String, Object> body = new HashMap<>();
-		List<Map<String, Object>> pageData = ToolsUtil.getListPageData((pageNum - 1) * pageSize, pageSize, resultList);
+		List<Map<String, Object>> pageData = ToolsUtil.getListPageData(pageNum, pageSize, resultList);
 		body.put("list", pageData);
 		body.put("totalNum", resultList.size());
 		return ErrorUtil.successResp(body);

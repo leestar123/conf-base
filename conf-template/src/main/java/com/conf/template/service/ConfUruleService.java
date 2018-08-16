@@ -179,7 +179,9 @@ public class ConfUruleService
     	queryMap.put("stepId", stepId);
     	queryMap.put("productId", data.get("creditProduct"));
     	queryMap.put("businessType", data.get("businessLines"));
-    	queryMap.put("flowId", confProductStep.getFlowId());
+    	if (confProductStep != null) {
+    		queryMap.put("flowId", confProductStep.getFlowId());
+    	}
     	queryMap.put("teller", data.get("teller")); // 交易柜员
     	queryMap.put("org", data.get("org")); // 交易机构
     	queryMap.put("stageType", data.get("stageType"));
@@ -225,6 +227,7 @@ public class ConfUruleService
         Integer flowId = ToolsUtil.obj2Int(data.get("flowId"), null);
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
+        Integer doTest = ToolsUtil.obj2Int(data.get("doTest"), null);
         ConfProductStep product = confProductStepMapper.queryIdByCondition(stepId, flowId, productId, businessType);
         if (product == null)
             return ErrorUtil.errorResp(ErrorCode.code_0011, flowId);
@@ -296,7 +299,9 @@ public class ConfUruleService
       			buildParam(modelSystemRes, lossWarningRes, quotaProces, params);
       		}
       		body.putAll(params);
-            invokerAopProcess.afterPorcess(params);
+      		if (doTest != 1) {
+      			invokerAopProcess.afterPorcess(params);
+      		}
             logger.info("End to excute knowledge service");
             invokInfo.setDetail(ConfContext.invokerLocalGet());
             invokInfo.setSuccess(Constants.EXCUTE_STATUS_SUCCESS);
@@ -311,7 +316,10 @@ public class ConfUruleService
         {
             try
             {
-                confInvokInfoMapper.insertSelective(invokInfo);
+            	// 仿真测试数据不入库
+            	if (doTest != 1) {
+            		confInvokInfoMapper.insertSelective(invokInfo);
+            	}
             }
             catch (Exception e)
             {

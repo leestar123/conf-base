@@ -2,8 +2,6 @@ package org.conf.application.client.dto;
 
 import java.util.List;
 
-import org.conf.application.client.dto.LossWarningRes.Strategy;
-
 /**
  * 模型系统返回对象
  * 
@@ -32,4 +30,6 @@ public class ModelSystemRes {
 	public void setStrategyList(List<Strategy> strategyList) {
 		this.strategyList = strategyList;
 	}
+	
+
 }

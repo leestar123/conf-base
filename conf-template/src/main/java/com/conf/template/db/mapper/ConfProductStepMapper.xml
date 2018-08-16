@@ -255,6 +255,7 @@
       <if test="businessType == null or businessType == ''">
       and ps.business_type is null
       </if>
+      and ps.delete_flag = 0
    	</where>
   </select>
   

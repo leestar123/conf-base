@@ -227,7 +227,7 @@ public class ConfUruleService
         Integer flowId = ToolsUtil.obj2Int(data.get("flowId"), null);
         String teller = ToolsUtil.obj2Str(data.get("teller"));
         String org = ToolsUtil.obj2Str(data.get("org"));
-        Integer doTest = ToolsUtil.obj2Int(data.get("doTest"), null);
+        Integer doTest = ToolsUtil.obj2Int(data.get("doTest"), 0);
         ConfProductStep product = confProductStepMapper.queryIdByCondition(stepId, flowId, productId, businessType);
         if (product == null)
             return ErrorUtil.errorResp(ErrorCode.code_0011, flowId);
@@ -298,10 +298,10 @@ public class ConfUruleService
       			QuotaPriceRes quotaProces = InvokerESBServer.quotaPrice(quota);
       			buildParam(modelSystemRes, lossWarningRes, quotaProces, params);
       		}
-      		body.putAll(params);
       		if (doTest != 1) {
       			invokerAopProcess.afterPorcess(params);
       		}
+      		body.putAll(params);
             logger.info("End to excute knowledge service");
             invokInfo.setDetail(ConfContext.invokerLocalGet());
             invokInfo.setSuccess(Constants.EXCUTE_STATUS_SUCCESS);

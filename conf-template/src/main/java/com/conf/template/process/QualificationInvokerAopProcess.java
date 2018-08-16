@@ -77,7 +77,7 @@ public class QualificationInvokerAopProcess implements AbstractInvokerAopProcess
 	}
 
 	@Override
-	public void afterPorcess(Map<String, ? extends Object> data) {
+	public void afterPorcess(Map<String, Object> data) {
 		logger.info("Start to excute afterPorcess method!");
 		QualificationReviewInfo info = thread.get();
 		String failReason = ToolsUtil.obj2Str(data.get("failReason"));
@@ -100,6 +100,7 @@ public class QualificationInvokerAopProcess implements AbstractInvokerAopProcess
 		info.setLossLevel(lossLevel);
 		info.setLoanQuota(loanAdvice);
 		info.setLoanRate(loanRate);
+		data.put("failNode", info.getQualificationReviewFailCode());
 		reviewInfoMapper.insertSelective(info);
 	}
 	

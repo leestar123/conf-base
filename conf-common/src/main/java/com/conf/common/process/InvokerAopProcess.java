@@ -22,5 +22,5 @@ public interface InvokerAopProcess {
      * 
      * @param data Urule返回参数
      */
-    public void afterPorcess(Map<String, ? extends Object> data);
+    public void afterPorcess(Map<String, Object> data);
 }

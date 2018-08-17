@@ -3,6 +3,14 @@ package com.conf.template.process;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.conf.application.client.InvokerESBServer;
+import org.conf.application.client.dto.LossWarningReq;
+import org.conf.application.client.dto.LossWarningRes;
+import org.conf.application.client.dto.ModelSystemReq;
+import org.conf.application.client.dto.ModelSystemRes;
+import org.conf.application.client.dto.QuotaPriceReq;
+import org.conf.application.client.dto.QuotaPriceRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +85,23 @@ public class QualificationInvokerAopProcess implements AbstractInvokerAopProcess
 	}
 
 	@Override
-	public void afterPorcess(Map<String, Object> data) {
+	public void afterPorcess(String custNo, String custType, Map<String, ? extends Object> data, Map<String, Object> params) {
 		logger.info("Start to excute afterPorcess method!");
+  		//如果是预筛选阶段，则需要特殊处理
+		if (StringUtils.isNotBlank(custNo) && Constants.CUST_TYPE_LOAN.equals(custType)
+				&& Constants.STAGE_TYPE_02.equals(ToolsUtil.obj2Str(data.get("stageType"))))
+  		{
+  			ModelSystemReq modelSystem = new ModelSystemReq();
+  			modelSystem.setCustNo(custNo);
+  			ModelSystemRes modelSystemRes =InvokerESBServer.modelSystem(modelSystem);
+  			LossWarningReq lossWarn = new LossWarningReq();
+  			lossWarn.setCustNo(custNo);
+  			LossWarningRes lossWarningRes = InvokerESBServer.lossWarning(lossWarn);
+  			QuotaPriceReq quota = new QuotaPriceReq();
+  			quota.setCLIENT_NO(custNo);
+  			QuotaPriceRes quotaProces = InvokerESBServer.quotaPrice(quota);
+  			buildParam(modelSystemRes, lossWarningRes, quotaProces, params);
+  		}
 		QualificationReviewInfo info = thread.get();
 		String failReason = ToolsUtil.obj2Str(data.get("failReason"));
 		String failResult = ToolsUtil.obj2Str(data.get("failResult"));
@@ -100,8 +123,39 @@ public class QualificationInvokerAopProcess implements AbstractInvokerAopProcess
 		info.setLossLevel(lossLevel);
 		info.setLoanQuota(loanAdvice);
 		info.setLoanRate(loanRate);
-		data.put("failNode", info.getQualificationReviewFailCode());
+		params.put("failNode", info.getQualificationReviewFailCode());
 		reviewInfoMapper.insertSelective(info);
+	}
+	
+    /**
+     * 根据模型系统、流失预警、定额定价对象，构建返回参数
+     * 
+     * @param modelSystemRes
+     * @param lossWarningRes
+     * @param quotaProces
+     * @param params
+     */
+	private void buildParam(ModelSystemRes modelSystemRes, LossWarningRes lossWarningRes, QuotaPriceRes quotaProces,
+			Map<String, Object> params) {
+		if (modelSystemRes != null && !modelSystemRes.getStrategyList().isEmpty())
+		{
+			//调查方式
+			params.put("investType", modelSystemRes.getStrategyList().get(0).getInvestType());
+			//报表编制
+			params.put("reportType", modelSystemRes.getStrategyList().get(0).getReportType());
+		}
+		if (lossWarningRes != null && !lossWarningRes.getStrategyList().isEmpty())
+		{
+			//流失等级
+			params.put("lossLevel", lossWarningRes.getStrategyList().get(0).getLossLevel());
+		}
+		if (quotaProces != null )
+		{
+			//贷款额度
+			params.put("loanAdvice", quotaProces.getSYS_ADVICE());
+			//贷款利率
+			params.put("loanRate", quotaProces.getSYS_RATE());
+		}
 	}
 	
 	@Override

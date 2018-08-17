@@ -7,13 +7,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.conf.application.FileThreadPoolExecutor;
-import org.conf.application.client.InvokerESBServer;
-import org.conf.application.client.dto.LossWarningReq;
-import org.conf.application.client.dto.LossWarningRes;
-import org.conf.application.client.dto.ModelSystemReq;
-import org.conf.application.client.dto.ModelSystemRes;
-import org.conf.application.client.dto.QuotaPriceReq;
-import org.conf.application.client.dto.QuotaPriceRes;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -144,7 +137,7 @@ public class ConfUruleService
           	objMap.put("CLIENT_TYPE_CODE", custType); // 客户类型 01-借款人 02-共同借款人 03-担保人
           	objList.add(objMap);
           	queryMap.put("objList", objList);
-          	Map<String, ? extends Object> resultMap = excuteKnowledge(ToolsUtil.obj2Str(userInfo.get("custNo")), queryMap);
+          	Map<String, ? extends Object> resultMap = excuteKnowledge(ToolsUtil.obj2Str(userInfo.get("custNo")), custType, queryMap);
           	if (ErrorUtil.isSuccess(resultMap))
           	{
           		if (Constants.CUST_TYPE_LOAN.equals(custType))
@@ -213,7 +206,7 @@ public class ConfUruleService
     
     public Map<String, ? extends Object> excuteKnowledge(Map<String, ? extends Object> data)
     {
-    	return excuteKnowledge(null, data);
+    	return excuteKnowledge(null, null, data);
     }
     
     /**
@@ -222,7 +215,7 @@ public class ConfUruleService
      * @return
      */
     @SuppressWarnings("unchecked")
-    public Map<String, ? extends Object> excuteKnowledge(String custNo, Map<String, ? extends Object> data)
+    public Map<String, ? extends Object> excuteKnowledge(String custNo, String custType, Map<String, ? extends Object> data)
     {
         logger.info("Begin to excute knowledge service!");
         
@@ -293,21 +286,7 @@ public class ConfUruleService
             logger.debug("Begin to excute Konwledge");
             String files = "jcr:".concat(flowInfo.getFlowPath()).concat(",LATEST");
             Map<String, Object> params = invokerService.executeProcess(files, entityList, processId);
-      		//如果是预筛选阶段，则需要特殊处理
-      		if (Constants.STAGE_TYPE_02.equals(ToolsUtil.obj2Str(data.get("stageType"))))
-      		{
-      			ModelSystemReq modelSystem = new ModelSystemReq();
-      			modelSystem.setCustNo(custNo);
-      			ModelSystemRes modelSystemRes =InvokerESBServer.modelSystem(modelSystem);
-      			LossWarningReq lossWarn = new LossWarningReq();
-      			lossWarn.setCustNo(custNo);
-      			LossWarningRes lossWarningRes = InvokerESBServer.lossWarning(lossWarn);
-      			QuotaPriceReq quota = new QuotaPriceReq();
-      			quota.setCLIENT_NO(custNo);
-      			QuotaPriceRes quotaProces = InvokerESBServer.quotaPrice(quota);
-      			buildParam(modelSystemRes, lossWarningRes, quotaProces, params);
-      		}
-      		invokerAopProcess.afterPorcess(params);
+      		invokerAopProcess.afterPorcess(custNo, custType, data, params);
       		body.putAll(params);
             logger.info("End to excute knowledge service");
             invokInfo.setDetail(ConfContext.invokerLocalGet());
@@ -332,37 +311,6 @@ public class ConfUruleService
         }
         return ErrorUtil.successResp(body);
     }
-    
-    /**
-     * 根据模型系统、流失预警、定额定价对象，构建返回参数
-     * 
-     * @param modelSystemRes
-     * @param lossWarningRes
-     * @param quotaProces
-     * @param params
-     */
-	private void buildParam(ModelSystemRes modelSystemRes, LossWarningRes lossWarningRes, QuotaPriceRes quotaProces,
-			Map<String, Object> params) {
-		if (modelSystemRes != null && !modelSystemRes.getStrategyList().isEmpty())
-		{
-			//调查方式
-			params.put("investType", modelSystemRes.getStrategyList().get(0).getInvestType());
-			//报表编制
-			params.put("reportType", modelSystemRes.getStrategyList().get(0).getReportType());
-		}
-		if (lossWarningRes != null && !lossWarningRes.getStrategyList().isEmpty())
-		{
-			//流失等级
-			params.put("lossLevel", lossWarningRes.getStrategyList().get(0).getLossLevel());
-		}
-		if (quotaProces != null )
-		{
-			//贷款额度
-			params.put("loanAdvice", quotaProces.getSYS_ADVICE());
-			//贷款利率
-			params.put("loanRate", quotaProces.getSYS_RATE());
-		}
-	}
     
     @SuppressWarnings("unchecked")
     private synchronized void buildKnowledgeObject (String path, String key) throws Exception {

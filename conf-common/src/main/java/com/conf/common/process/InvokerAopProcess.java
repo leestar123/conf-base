@@ -20,7 +20,9 @@ public interface InvokerAopProcess {
     /**
      * 服务调用结束后处理
      * 
-     * @param data Urule返回参数
+     * @param custNo	客户号
+     * @param req		请求报文
+     * @param res		返回报文
      */
-    public void afterPorcess(Map<String, Object> data);
+    public void afterPorcess(String custNo, String custType, Map<String, ? extends Object> req, Map<String, Object> res);
 }

@@ -22,9 +22,9 @@ public class TestQualificationInvokerAopProcess implements AbstractInvokerAopPro
 	}
 
 	@Override
-	public void afterPorcess(Map<String, Object> data) {
+	public void afterPorcess(String custNo, String custType, Map<String, ? extends Object> data, Map<String, Object> params) {
 		QualificationReviewInfo info = thread.get();
-		data.put("failNode", info.getQualificationReviewFailCode());		
+		params.put("failNode", info.getQualificationReviewFailCode());		
 	}
 
 	@Override

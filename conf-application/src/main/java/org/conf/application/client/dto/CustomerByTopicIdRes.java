@@ -43,6 +43,10 @@ public class CustomerByTopicIdRes {
 		private String mobilePhone;
 		
 		private String cardNo;
+		
+		private String advocateManagePerson;//主联系人
+		
+		private String advocateManageOrg;//主联系人机构
 
 		public String getCustId() {
 			return custId;
@@ -90,6 +94,22 @@ public class CustomerByTopicIdRes {
 
 		public void setCardNo(String cardNo) {
 			this.cardNo = cardNo;
+		}
+
+		public String getAdvocateManagePerson() {
+			return advocateManagePerson;
+		}
+
+		public void setAdvocateManagePerson(String advocateManagePerson) {
+			this.advocateManagePerson = advocateManagePerson;
+		}
+
+		public String getAdvocateManageOrg() {
+			return advocateManageOrg;
+		}
+
+		public void setAdvocateManageOrg(String advocateManageOrg) {
+			this.advocateManageOrg = advocateManageOrg;
 		}
 	}
 }

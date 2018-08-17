@@ -1,8 +1,11 @@
 package org.conf.application.client;
 
 import org.conf.application.client.dto.ApplyUserInfoRes;
+import org.conf.application.client.dto.CommonBorrowerInfoRes;
 import org.conf.application.client.dto.CustomerByTopicIdReq;
 import org.conf.application.client.dto.CustomerByTopicIdRes;
+import org.conf.application.client.dto.GuaranteeInfoReq;
+import org.conf.application.client.dto.GuaranteeInfoRes;
 import org.conf.application.client.dto.LossWarningReq;
 import org.conf.application.client.dto.LossWarningRes;
 import org.conf.application.client.dto.ModelSystemReq;
@@ -110,6 +113,44 @@ public class InvokerESBServer {
 	 * @return
 	 */
 	public static ApplyUserInfoRes getApplyUserList(String applyNo) {
+		return null;
+	}
+	
+	/**
+	 * 查询担保人信息
+	 * 
+	 * @param applyNo
+	 * @return
+	 */
+	public static GuaranteeInfoRes getGuaranteeInfoList(String applyNo) {
+		try {
+			GuaranteeInfoReq req = new GuaranteeInfoReq();
+			req.setApplyNo(applyNo);
+			req.setQuestionType("guaranteeInfo");
+			String result = HttpUtil.doPost("http://192.168.30.174:12000/mock/5b73c9ad49521a06e27fb16f/marketingCampaigntId", JSONObject.toJSONString(req));
+			return JSONObject.parseObject(result, GuaranteeInfoRes.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 查询共同借款人信息
+	 * 
+	 * @param applyNo
+	 * @return
+	 */
+	public static CommonBorrowerInfoRes getCommonBorrowerInfoList(String applyNo) {
+		try {
+			GuaranteeInfoReq req = new GuaranteeInfoReq();
+			req.setApplyNo(applyNo);
+			req.setQuestionType("commonLoanInfo");
+			String result = HttpUtil.doPost("http://192.168.30.174:12000/mock/5b73c9ad49521a06e27fb16f/marketingCampaigntId", JSONObject.toJSONString(req));
+			return JSONObject.parseObject(result, CommonBorrowerInfoRes.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

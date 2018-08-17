@@ -37,12 +37,13 @@ import com.conf.template.db.mapper.ConfInvokInfoMapper;
 import com.conf.template.db.mapper.ConfNodeInfoMapper;
 import com.conf.template.db.mapper.ConfProductStepMapper;
 import com.conf.template.db.mapper.ConfStepInfoMapper;
+import com.conf.template.db.mapper.QualificationReviewInfoMapper;
 import com.conf.template.db.model.ConfFlowInfo;
 import com.conf.template.db.model.ConfInvokInfo;
 import com.conf.template.db.model.ConfNodeInfo;
 import com.conf.template.db.model.ConfProductStep;
 import com.conf.template.db.model.ConfStepInfo;
-import com.conf.template.process.TestQualificationInvokerAopProcess;
+import com.conf.template.db.model.QualificationReviewInfo;
 
 /**
  * 调用urule相关服务
@@ -80,6 +81,10 @@ public class ConfUruleService
     
     @Autowired
     private FileThreadPoolExecutor excutor;
+    
+    @Autowired
+    private QualificationReviewInfoMapper qualificationReviewInfoMapper;
+    
     
     /**
      * 批量调用知识包
@@ -144,14 +149,14 @@ public class ConfUruleService
           	{
           		if (Constants.CUST_TYPE_LOAN.equals(custType))
           		{
-          			body.put("lastScore", resultMap.get("lastScore"));//系统评分
-          			body.put("sysAdvice", resultMap.get("sysAdvice"));//系统建议额度
-          			body.put("riskCode", resultMap.get("riskCode"));//风险评级
-          			body.put("investType", resultMap.get("investType"));//调查方式
-          			body.put("reportType", resultMap.get("reportType"));//报表编制
-          			body.put("lossLevel", resultMap.get("lossLevel"));//流失等级
-          			body.put("loanAdvice", resultMap.get("loanAdvice"));//贷款额度
-          			body.put("loanRate", resultMap.get("loanRate"));//贷款利率
+          			body.put("lastScore", ErrorUtil.getBody(resultMap).get("lastScore"));//系统评分
+          			body.put("sysAdvice", ErrorUtil.getBody(resultMap).get("sysAdvice"));//系统建议额度
+          			body.put("riskCode", ErrorUtil.getBody(resultMap).get("riskCode"));//风险评级
+          			body.put("investType", ErrorUtil.getBody(resultMap).get("investType"));//调查方式
+          			body.put("reportType", ErrorUtil.getBody(resultMap).get("reportType"));//报表编制
+          			body.put("lossLevel", ErrorUtil.getBody(resultMap).get("lossLevel"));//流失等级
+          			body.put("loanAdvice", ErrorUtil.getBody(resultMap).get("loanAdvice"));//贷款额度
+          			body.put("loanRate", ErrorUtil.getBody(resultMap).get("loanRate"));//贷款利率
           		}
           		String reviewResult = ToolsUtil.obj2Str(resultMap.get("qualificationReviewResult"));
           		if (Constants.QUALITY_RESULT_FAIL.equals(reviewResult)) 
@@ -230,7 +235,7 @@ public class ConfUruleService
         String org = ToolsUtil.obj2Str(data.get("org"));
         Integer doTest = ToolsUtil.obj2Int(data.get("doTest"), 0);
         if ( doTest == 1) {// 仿真测试数据不入库
-        	invokerAopProcess = new TestQualificationInvokerAopProcess();
+        	//invokerAopProcess = new TestQualificationInvokerAopProcess();
         }
         ConfProductStep product = confProductStepMapper.queryIdByCondition(stepId, flowId, productId, businessType);
         if (product == null)
@@ -450,4 +455,32 @@ public class ConfUruleService
 		Map<String, Object> body = new HashMap<>();
 		return ErrorUtil.successResp(body);
 	}
+	
+	/**
+	 * 查询资质审查列表
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public Map<String, ? extends Object> queryQualificationReviewInfoList(Map<String, ? extends Object> data) {
+		String custNo = ToolsUtil.obj2Str(data.get("custNo"));
+		String custName = ToolsUtil.obj2Str(data.get("custName"));
+		String advocateManagePerson = ToolsUtil.obj2Str(data.get("advocateManagePerson"));
+		String tellerOrg = ToolsUtil.obj2Str(data.get("tellerOrg"));
+		String startDate = ToolsUtil.obj2Str(data.get("startDate"));
+		String endDate = ToolsUtil.obj2Str(data.get("endDate"));
+		Integer pageSize = ToolsUtil.obj2Int(data.get("pageSize"), 10); // 分页大小
+		Integer pageNum = ToolsUtil.obj2Int(data.get("pageNum"), 1);// 当前页数
+		int startNum = (pageNum - 1) * pageSize;
+		List<QualificationReviewInfo> list = qualificationReviewInfoMapper.queryQualificationReviewInfoList(
+	    		custNo, custName, advocateManagePerson, tellerOrg, startDate, endDate, startNum, pageSize);
+		int totalNum = qualificationReviewInfoMapper.queryCount(
+				custNo, custName, advocateManagePerson, tellerOrg, startDate, endDate, startNum, pageSize);
+		Map<String, Object> body = new HashMap<>();
+		body.put("list", list);
+		body.put("totalNum", totalNum);
+		return ErrorUtil.successResp(body);
+	}
+	
+	
 }

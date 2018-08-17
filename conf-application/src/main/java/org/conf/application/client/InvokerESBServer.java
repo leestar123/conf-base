@@ -1,5 +1,7 @@
 package org.conf.application.client;
 
+import java.util.List;
+
 import org.conf.application.client.dto.ApplyUserInfoRes;
 import org.conf.application.client.dto.CommonBorrowerInfoRes;
 import org.conf.application.client.dto.CustomerByTopicIdReq;
@@ -122,13 +124,14 @@ public class InvokerESBServer {
 	 * @param applyNo
 	 * @return
 	 */
-	public static GuaranteeInfoRes getGuaranteeInfoList(String applyNo) {
+	public static List<GuaranteeInfoRes> getGuaranteeInfoList(String applyNo) {
 		try {
 			GuaranteeInfoReq req = new GuaranteeInfoReq();
 			req.setApplyNo(applyNo);
 			req.setQuestionType("guaranteeInfo");
-			String result = HttpUtil.doPost("http://192.168.30.174:12000/mock/5b73c9ad49521a06e27fb16f/marketingCampaigntId", JSONObject.toJSONString(req));
-			return JSONObject.parseObject(result, GuaranteeInfoRes.class);
+			String result = HttpUtil.doPost("http://192.168.30.174:12000/mock/5b73c9ad49521a06e27fb16f/getGuaranteeInfoList", JSONObject.toJSONString(req));
+			String list = JSONObject.parseObject(result).getString("list");
+			return JSONObject.parseArray(list, GuaranteeInfoRes.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -141,13 +144,14 @@ public class InvokerESBServer {
 	 * @param applyNo
 	 * @return
 	 */
-	public static CommonBorrowerInfoRes getCommonBorrowerInfoList(String applyNo) {
+	public static List<CommonBorrowerInfoRes> getCommonBorrowerInfoList(String applyNo) {
 		try {
 			GuaranteeInfoReq req = new GuaranteeInfoReq();
 			req.setApplyNo(applyNo);
 			req.setQuestionType("commonLoanInfo");
-			String result = HttpUtil.doPost("http://192.168.30.174:12000/mock/5b73c9ad49521a06e27fb16f/marketingCampaigntId", JSONObject.toJSONString(req));
-			return JSONObject.parseObject(result, CommonBorrowerInfoRes.class);
+			String result = HttpUtil.doPost("http://192.168.30.174:12000/mock/5b73c9ad49521a06e27fb16f/getCommonBorrowerInfoList", JSONObject.toJSONString(req));
+			String list = JSONObject.parseObject(result).getString("list");
+			return JSONObject.parseArray(list, CommonBorrowerInfoRes.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

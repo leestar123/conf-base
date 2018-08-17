@@ -7,6 +7,7 @@
     <result column="PROCESS_ID" jdbcType="VARCHAR" property="processId" />
     <result column="CUST_NO" jdbcType="VARCHAR" property="custNo" />
     <result column="CUST_NAME" jdbcType="VARCHAR" property="custName" />
+    <result column="ADVOCATE_MANAGE_PERSON" jdbcType="VARCHAR" property="advocateManagePerson" />
     <result column="CUST_TYPE" jdbcType="VARCHAR" property="custType" />
     <result column="CARD_NO" jdbcType="VARCHAR" property="cardNo" />
     <result column="CARD_TYPE" jdbcType="VARCHAR" property="cardType" />
@@ -42,7 +43,7 @@
     <result column="CREATED_TX_STAMP" jdbcType="TIMESTAMP" property="createdTxStamp" />
   </resultMap>
   <sql id="Base_Column_List">
-    QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, PROCESS_ID, CUST_NO, CUST_NAME, CUST_TYPE, 
+    QUALIFICATION_REVIEW_ID, TRAN_SEQ_NO, PROCESS_ID, CUST_NO, CUST_NAME,ADVOCATE_MANAGE_PERSON CUST_TYPE, 
     CARD_NO, CARD_TYPE, TELEPHONE_NO, IS_CREDIT_AUTHORIZED, STAGE_TYPE, CREDIT_PRODUCT, 
     CREDIT_QUOTA, CREDIT_TERM, GUARANTEE_QUOTA, GUARANTEE_TYPE, SOURCE_SYSTEM, TELLER_NO, 
     TELLER_ORG, QUALIFICATION_REVIEW_RESULT, QUALIFICATION_REVIEW_FAIL_CODE, QUALIFICATION_REVIEW_REASON, 
@@ -56,6 +57,55 @@
     from QUALIFICATION_REVIEW_INFO
     where QUALIFICATION_REVIEW_ID = #{qualificationReviewId,jdbcType=INTEGER}
   </select>
+  
+  <select id="queryQualificationReviewInfoList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from QUALIFICATION_REVIEW_INFO
+    <where>
+	  <if test="custNo != null and custNo != ''">
+	        and cust_no = #{custNo} 
+	   </if>
+	   <if test="custName != null and custName != ''">
+	        and cust_name = #{custName} 
+	   </if>
+	   <if test="advocateManagePerson != null and advocateManagePerson != ''">
+	        and advocate_manage_person = #{advocateManagePerson} 
+	   </if>
+	   <if test="tellerOrg != null and tellerOrg != ''">
+	        and teller_org = #{tellerOrg}
+	   </if>
+	    <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+	        and created_stamp between #{startDate} and #{endDate}
+	   </if>
+   </where>  
+    order by QUALIFICATION_REVIEW_ID desc
+   limit #{startNum},#{pageSize}
+  </select>
+  
+  <select id="queryCount" resultType="java.lang.Integer">
+    select 
+    count(*)
+    from QUALIFICATION_REVIEW_INFO
+    <where>
+	  <if test="custNo != null and custNo != ''">
+	        and cust_no = #{custNo} 
+	   </if>
+	   <if test="custName != null and custName != ''">
+	        and cust_name = #{custName} 
+	   </if>
+	   <if test="advocateManagePerson != null and advocateManagePerson != ''">
+	        and advocate_manage_person = #{advocateManagePerson} 
+	   </if>
+	   <if test="tellerOrg != null and tellerOrg != ''">
+	        and teller_org = #{tellerOrg}
+	   </if>
+	    <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+	        and created_stamp between #{startDate} and #{endDate}
+	   </if>
+   </where>  
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from QUALIFICATION_REVIEW_INFO
     where QUALIFICATION_REVIEW_ID = #{qualificationReviewId,jdbcType=INTEGER}

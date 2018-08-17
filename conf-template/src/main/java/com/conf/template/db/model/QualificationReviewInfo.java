@@ -18,6 +18,9 @@ public class QualificationReviewInfo {
 
     //客户名称
     private String custName;
+    
+    //主联系人
+    private String advocateManagePerson;
 
     //客户类型 01-借款人  02-共同借款人 03-担保人
     private String custType;
@@ -417,4 +420,13 @@ public class QualificationReviewInfo {
     public void setCreatedTxStamp(Date createdTxStamp) {
         this.createdTxStamp = createdTxStamp;
     }
+
+	public String getAdvocateManagePerson() {
+		return advocateManagePerson;
+	}
+
+	public void setAdvocateManagePerson(String advocateManagePerson) {
+		this.advocateManagePerson = advocateManagePerson;
+	}
+    
 }

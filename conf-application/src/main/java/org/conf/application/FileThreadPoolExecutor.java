@@ -39,12 +39,19 @@ public class FileThreadPoolExecutor {
 	public void doExecutor(Map<String, ? extends Object> fileKey) {
 		try {
 			FileProcess<?,?> process = ConfContext.getApplicationContext().getBean(FileProcess.class);
+			Integer interval = process.getCommitInterval();
 			Integer totalNum = process.getTotalNum(fileKey);
-			Integer avg = totalNum / corePoolSize;
-			if (avg * corePoolSize - totalNum < 0) {
-				avg = avg + 1;
+			
+			Integer pageSize = totalNum / interval;
+			if (pageSize * corePoolSize - totalNum < 0) {
+				pageSize = pageSize + 1;
 			}
 
+			Integer avg = pageSize / corePoolSize;
+			if (avg * corePoolSize - pageSize < 0) {
+				avg = avg + 1;
+			}
+			
 			List<Future<String>> list = new ArrayList<>();
 			for (int i = 0; i < corePoolSize; i++) {
 				int start = i * avg + 1;
@@ -55,7 +62,7 @@ public class FileThreadPoolExecutor {
 				if (end > totalNum) {
 					end = totalNum;
 				}
-				Future<String> futrue= executor.submit(new FileProcessTask(start, end, fileKey));
+				Future<String> futrue= executor.submit(new FileProcessTask(start, (end - start) +1, interval, fileKey));
 				list.add(futrue);
 			}
 			

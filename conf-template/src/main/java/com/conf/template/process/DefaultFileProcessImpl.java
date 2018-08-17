@@ -69,12 +69,12 @@ public class DefaultFileProcessImpl extends FileProcess<UserInfo, CheckQulityRes
 	}
 
 	@Override
-	public List<UserInfo> readData(Integer startLine, Integer endLine, Map<String, ? extends Object> filekey) {
+	public List<UserInfo> readData(Integer pageNum, Integer pageSize, Map<String, ? extends Object> filekey) {
 		String marketingCampaigntId = ToolsUtil.obj2Str(filekey.get("marketingCampaigntId"));
 		CustomerByTopicIdReq req = new CustomerByTopicIdReq();
 		req.setMarketingCampaigntId(marketingCampaigntId);
-		req.setCountNum(endLine);
-		req.setPageNum(startLine);
+		req.setCountNum(pageSize);
+		req.setPageNum(pageNum);
 		try {
 			return InvokerESBServer.getCustList(req).getCustomerList();
 		} catch (Exception e) {

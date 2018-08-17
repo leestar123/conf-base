@@ -8,15 +8,17 @@ import com.conf.common.ConfContext;
 
 public class FileProcessTask implements Callable<String>{
 
-	private Integer start;
+	private Integer startNum;
 	
-	private Integer end;
+	private Integer pageCount;
+	
+	private Integer pageSize;
 	
 	private Map<String, ? extends Object> fileKey;
 	
-	FileProcessTask(Integer start, Integer end, Map<String, ? extends Object> fileKey) {
-		this.start = start;
-		this.end = end;
+	FileProcessTask(Integer startNum, Integer pageCount, Integer pageSize, Map<String, ? extends Object> fileKey) {
+		this.startNum = startNum;
+		this.pageCount = pageCount;
 		this.fileKey = fileKey;
 	}
 	
@@ -24,7 +26,7 @@ public class FileProcessTask implements Callable<String>{
 	public String call() throws Exception {
 		FileProcess<?,?> process = ConfContext.getApplicationContext().getBean(FileProcess.class);
 		try {
-			return process.readFile(start, end, fileKey);
+			return process.readFile(startNum, pageCount, pageSize, fileKey);
 		} catch (IOException e) {
 			return null;
 		}

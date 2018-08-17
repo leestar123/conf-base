@@ -11,47 +11,39 @@ public abstract class FileProcess<T,B> {
 	/**
 	 * 读文件处理
 	 * 
-	 * @param startLine
-	 * @param endLine
-	 * @param filekey
+	 * @param startNum	开始页
+	 * @param pageCount 总共业数
+	 * @param pageSize	每页大小
+	 * @param filekey	查询关键数据
 	 * @return
 	 * @throws IOException
 	 */
-	public String readFile(Integer startLine, Integer endLine, Map<String, ? extends Object> filekey) throws IOException {
+	public String readFile(Integer startNum, Integer pageCount, Integer pageSize, Map<String, ? extends Object> filekey) throws IOException {
 		LineNumberReader reader = null;
 		String returnStr = null;
 		try {
-			Integer interval = getCommitInterval();
+			int count = 0;
 			do {
-				if ((startLine + startLine) > endLine) {
-					interval = (endLine - startLine);
-				}
-				List<T> list = readData(startLine, interval, filekey);
+				List<T> list = readData(startNum, pageSize, filekey);
 				if (list == null || list.isEmpty())
 				{
 					return null;
 				}
-				startLine += interval;
 				
-				Integer lineNum = startLine;
+				Integer lineNum = (startNum - 1) * pageSize + 1;
 				List<B> resultList = new ArrayList<>();
-				int count = 0;
 				for (T t : list) {
 					lineNum ++;
-					count ++;
 					B b = lineProcess(lineNum, t, filekey);
 					resultList.add(b);
-					if (count == getCommitInterval()) {
-						returnStr = writeData(resultList, filekey);
-						count = 0;
-						resultList = new ArrayList<>();
-					}
 				}
 				
 				if (resultList.size() > 0) {
 					writeData(resultList, filekey);
 				}
-			} while ((startLine + startLine) < endLine);
+				count ++;
+				startNum ++;
+			} while (count <= pageCount);
 			
 			return returnStr;
 		} finally {
@@ -66,7 +58,7 @@ public abstract class FileProcess<T,B> {
 	 * @param filekey
 	 * @return
 	 */
-	public abstract List<T> readData(Integer startLine, Integer endLine, Map<String, ? extends Object> filekey);
+	public abstract List<T> readData(Integer pageNum, Integer pageSize, Map<String, ? extends Object> filekey);
 	
 	/**
 	 * 单行根据执行结果写入结果

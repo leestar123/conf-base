@@ -437,4 +437,14 @@ public class ConfBaseController implements CommController
     {
         return confUruleService.excuteKnowledgeForList(data);
     }
+    
+    /**
+     * 查询资质审查列表
+     * 
+     */
+    @ApiException
+    public Map<String, ? extends Object> queryQualificationReviewInfoList(Map<String, ? extends Object> data)
+    {
+        return confUruleService.queryQualificationReviewInfoList(data);
+    }
 }

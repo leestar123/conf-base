@@ -108,16 +108,6 @@ public class QualificationInvokerAopProcess implements AbstractInvokerAopProcess
 		Object rating = params.get("creditRatingResult");
 		if (rating != null && rating instanceof Map) {
 			Map<String, Object> map = (Map<String, Object>)rating;
-			String LAST_SCORE = ToolsUtil.obj2Str(map.get("LAST_SCORE"));//风险评估总分
-			String SYS_ADVICE = ToolsUtil.obj2Str(map.get("SYS_ADVICE"));//系统建议额度
-			String RISK_CODE = ToolsUtil.obj2Str(map.get("RISK_CODE"));//风险评级
-			info.setCreidtValue(LAST_SCORE);
-			info.setCreidtLevel(RISK_CODE);
-			info.setLoanQuota(SYS_ADVICE);
-		}
-		Object card = params.get("creditCardRatingResult");
-		if (card != null && card instanceof Map) {
-			Map<String, Object> map = (Map<String, Object>)card;
 			String CREIDT_VALUE = ToolsUtil.obj2Str(map.get("CREIDT_VALUE"));//信用评分
 			String CREIDT_LEVEL = ToolsUtil.obj2Str(map.get("CREIDT_LEVEL"));//信用评级
 			String PASS_RATE = ToolsUtil.obj2Str(map.get("PASS_RATE"));//建议通过率
@@ -128,6 +118,16 @@ public class QualificationInvokerAopProcess implements AbstractInvokerAopProcess
 			info.setPassRate(PASS_RATE);
 			info.setOverPercent(OVER_PERCENT);
 			info.setPassFlag(PASS_FLAG);
+		}
+		Object card = params.get("creditCardRatingResult");
+		if (card != null && card instanceof Map) {
+			Map<String, Object> map = (Map<String, Object>)card;
+			String LAST_SCORE = ToolsUtil.obj2Str(map.get("LAST_SCORE"));//风险评估总分
+			String SYS_ADVICE = ToolsUtil.obj2Str(map.get("SYS_ADVICE"));//系统建议额度
+			String RISK_CODE = ToolsUtil.obj2Str(map.get("RISK_CODE"));//风险评级
+			info.setCreidtValue(LAST_SCORE);
+			info.setCreidtLevel(RISK_CODE);
+			info.setLoanQuota(SYS_ADVICE);
 		}
 		String failReason = ToolsUtil.obj2Str(data.get("failReason"));
 		String failResult = ToolsUtil.obj2Str(data.get("failResult"));

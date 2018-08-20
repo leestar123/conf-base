@@ -92,9 +92,49 @@ public class Constants {
     
     public final static String QUALITY_INFO_STR = "UserInfo";
     
+    public final static String ARRAY_INFO_STR = "UserArrayInfo";
+    
     //资质审查结果 0-成功 1-失败
     public final static String QUALITY_RESULT_SUCCESS = "0";
     
     public final static String QUALITY_RESULT_FAIL = "1";
     
+    /**
+     * 
+	    01- 直销业务
+	    02- 到期待处理业务
+	    03- 提额业务
+	    04- 营销启用业务
+	    05- 预授信转授信业务
+	    06- 贷后检查业务
+	    07- 年检业务
+	    08- 逾期分析业务
+	    09- 流失回归业务
+	    10- 信用卡申请业务
+	    11- 贷款申请业务
+	    12-交叉销售
+	    13-客户营销
+    **/
+    public final static String BUSINESS_TYEP_DSELL = "01";
+    
+    public final static String BUSINESS_TYEP_LOAN = "14";
+    
+    public final static String BUSINESS_TYEP_CREDIT = "10";
+    
+    /**
+     * 1 通用预筛选评分评级
+     * 2 通用信审选评分评级
+     * 3 消费贷信审评分评级
+     * 4 信用卡预筛选评分评级
+     * 5 信用卡信审评分评级
+     */
+    public final static String SCORE_LEVEL_COMMON_PRE = "1";
+    
+    public final static String SCORE_LEVEL_COMMON_TRIAL = "2";
+    
+    public final static String SCORE_LEVEL_LOAN_TRIAL = "3";
+    
+    public final static String SCORE_LEVEL_CREDIT_PRE = "4";
+    
+    public final static String SCORE_LEVEL_CREDIT_TRIAL = "5";
 }

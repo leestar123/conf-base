@@ -122,8 +122,9 @@ public class ConfUruleService
     	Long time = System.currentTimeMillis();
     	body.put("dateTime", time);
     	body.put("result", Constants.QUALITY_RESULT_SUCCESS);
-    	userInfoArray.stream().forEach( userInfo -> {
-     	 	List<Map<String, Object>> objList = new ArrayList<>();
+    	
+    	List<Map<String, Object>> objList = new ArrayList<>();
+    	for (Map<String, Object> userInfo : userInfoArray) {
           	Map<String, Object> objMap = new HashMap<>();
           	String custType = ToolsUtil.obj2Str(userInfo.get("custType"));
           	objMap.put("key", Constants.QUALITY_INFO_STR);
@@ -134,9 +135,30 @@ public class ConfUruleService
           	objMap.put("GLOBAL_TYPE", userInfo.get("globalType")); // 证件类型
           	objMap.put("GLOBAL_ID", userInfo.get("globalId")); // 证件号码
           	objMap.put("PHONE_NO", userInfo.get("telphoneNo")); // 手机号
-          	objMap.put("CLIENT_TYPE_CODE", custType); // 客户类型 01-借款人 02-共同借款人 03-担保人
+          	objMap.put("CLIENT_TYPE_CODE", custType); // 客户类型 1-借款人 2-共同借款人 3-担保人
+          	objMap.put("IF_RATEING", false); // 是否评分评级
+          	String stageType = ToolsUtil.obj2Str(queryMap.get("stageType"));
+          	String businessType = ToolsUtil.obj2Str(queryMap.get("businessType"));
+          	String stage = "";
+          	if (Constants.STAGE_TYPE_02.equals(stageType)) {
+          		if (Constants.BUSINESS_TYEP_CREDIT.equals(businessType)) {
+          			stage = Constants.SCORE_LEVEL_CREDIT_PRE;
+          		} else {
+          			stage = Constants.SCORE_LEVEL_COMMON_PRE;
+          		}
+          	} else if (Constants.STAGE_TYPE_03.equals(stageType)) {
+          		if (Constants.BUSINESS_TYEP_CREDIT.equals(businessType)) {
+          			stage = Constants.SCORE_LEVEL_CREDIT_TRIAL;
+          		} else if (Constants.BUSINESS_TYEP_LOAN.equals(businessType)) {
+          			stage = Constants.SCORE_LEVEL_LOAN_TRIAL;
+          		} else {
+          			stage = Constants.SCORE_LEVEL_COMMON_PRE;
+          		}
+          	} else {}
           	objList.add(objMap);
           	queryMap.put("objList", objList);
+          	
+      		objMap.put("STAGE", stage);
           	Map<String, ? extends Object> resultMap = excuteKnowledge(ToolsUtil.obj2Str(userInfo.get("custNo")), custType, queryMap);
           	if (ErrorUtil.isSuccess(resultMap))
           	{
@@ -159,7 +181,7 @@ public class ConfUruleService
           		ErrorUtil.getBody(resultMap).putAll(userInfo);
           		resultList.add(ErrorUtil.getBody(resultMap));
            	}
-         });
+    	}
     	body.put("evalArray", resultList);
 		return body;
 	}

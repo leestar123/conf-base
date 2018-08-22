@@ -6,10 +6,15 @@ import org.conf.application.client.dto.OuterInfoQueryReq;
 import org.conf.application.client.dto.OuterInfoQueryRes;
 import org.conf.application.client.dto.QuotaPriceReq;
 import org.conf.application.client.dto.QuotaPriceRes;
+import org.conf.application.util.DubboServiceUtil;
 import org.conf.application.util.XmlUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bosent.rpcinterface.esb.common.service.CopServices;
+import com.bosent.rpcinterface.esb.common.service.CopServicesAddNameListInputBean;
+import com.bosent.rpcinterface.esb.common.service.CopServicesAddNameListOutputBean;
+import com.bosent.rpcinterface.esb.common.service.CopServicesVerifyElementInputBean;
+import com.bosent.rpcinterface.esb.common.service.CopServicesVerifyElementOutputBean;
 import com.bosent.rpcinterface.esb.common.service.EsbServices;
 import com.bosent.rpcinterface.esb.common.service.EsbServicesCalcConsumeLoanCreditScoreInputBean;
 import com.bosent.rpcinterface.esb.common.service.EsbServicesCalcConsumeLoanCreditScoreOutputBean;
@@ -21,6 +26,10 @@ import com.bosent.rpcinterface.esb.common.service.EsbServicesCreditCardCreditSco
 import com.bosent.rpcinterface.esb.common.service.EsbServicesCreditCardCreditScoreOutputBean;
 import com.bosent.rpcinterface.esb.common.service.EsbServicesCreditCardPrescreeningScoreInputBean;
 import com.bosent.rpcinterface.esb.common.service.EsbServicesCreditCardPrescreeningScoreOutputBean;
+import com.bosent.rpcinterface.esb.common.service.EsbServicesQueryCreditInfoInputBean;
+import com.bosent.rpcinterface.esb.common.service.EsbServicesQueryCreditInfoOutputBean;
+import com.bosent.rpcinterface.esb.common.service.EsbServicesQueryNameListInputBean;
+import com.bosent.rpcinterface.esb.common.service.EsbServicesQueryNameListOutputBean;
 import com.conf.common.HttpUtil;
 
 /**
@@ -31,8 +40,9 @@ import com.conf.common.HttpUtil;
  */
 public class InvokerESBService {
 
-	@Autowired
-	private static EsbServices esbService;
+	private static EsbServices esbService = DubboServiceUtil.getContext().getBean(EsbServices.class);
+	
+	private static CopServices copServices = DubboServiceUtil.getContext().getBean(CopServices.class);
 	
 	/**
 	 * 定额定价
@@ -128,4 +138,43 @@ public class InvokerESBService {
 			return null;
 		}
 	} 
+	
+	/**
+	 * 身份验真
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static CopServicesVerifyElementOutputBean verifyElement (CopServicesVerifyElementInputBean input) {
+		return copServices.verifyElement(input);
+	}
+	
+	/**
+	 * 查询个人征信信息
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static EsbServicesQueryCreditInfoOutputBean queryCreditInfo (EsbServicesQueryCreditInfoInputBean input) {
+		return esbService.queryCreditInfo(input);
+	}
+	
+	/**
+	 * 查询名单制信息
+	 * @param input
+	 * @return
+	 */
+	public static EsbServicesQueryNameListOutputBean queryNameList (EsbServicesQueryNameListInputBean input ) {
+		return esbService.queryNameList(input);
+	}
+	
+	/**
+	 * 名单制登记
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static CopServicesAddNameListOutputBean addNameList (CopServicesAddNameListInputBean input) {
+		return copServices.addNameList(input);
+	}
 }

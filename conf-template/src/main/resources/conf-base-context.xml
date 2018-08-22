@@ -64,4 +64,7 @@
 		<property name="corePoolSize" value="${process.corePoolSize}"></property>
 		<property name="keepAliveTime" value="${process.keepAliveTime}"></property>
 	</bean>
+	
+<!-- 	<bean id="invokerESBService" class="org.conf.application.client.InvokerESBService"  />-->
+	
 </beans>

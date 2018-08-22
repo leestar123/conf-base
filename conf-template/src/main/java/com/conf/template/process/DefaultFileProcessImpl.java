@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.conf.application.FileProcess;
-import org.conf.application.client.InvokerESBServer;
-import org.conf.application.client.dto.ApplyUserInfoRes;
+import org.conf.application.client.InvokerCustomerService;
 import org.conf.application.client.dto.CheckQulityResultRes;
 import org.conf.application.client.dto.CustomerByTopicIdReq;
 import org.conf.application.client.dto.CustomerByTopicIdRes.UserInfo;
@@ -31,12 +30,7 @@ public class DefaultFileProcessImpl extends FileProcess<UserInfo, CheckQulityRes
 	@Override
 	public CheckQulityResultRes lineProcess(Integer lineNum, UserInfo t, Map<String, ? extends Object> filekey) {
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
-		//授信申请书编号
-		String applyNo = ToolsUtil.obj2Str(filekey.get("applyNo"));
-		ApplyUserInfoRes res = InvokerESBServer.getApplyUserList(applyNo);
-		if (res != null) {
-			//TODO:添加担保人、共同借款人信息
-		}
+
 		Map<String, Object> map = new HashMap<>();
 		map.put("custType", Constants.CUST_TYPE_LOAN);
 		map.put("custNo", t.getCustId());
@@ -60,7 +54,7 @@ public class DefaultFileProcessImpl extends FileProcess<UserInfo, CheckQulityRes
 	@Override
 	public Integer getTotalNum(Map<String, ? extends Object> filekey) {
 		String marketingCampaigntId = ToolsUtil.obj2Str(filekey.get("marketingCampaigntId"));
-		return InvokerESBServer.getCustListNum(marketingCampaigntId);
+		return InvokerCustomerService.getCustListNum(marketingCampaigntId);
 	}
 
 	@Override
@@ -76,7 +70,7 @@ public class DefaultFileProcessImpl extends FileProcess<UserInfo, CheckQulityRes
 		req.setCountNum(pageSize);
 		req.setPageNum(pageNum);
 		try {
-			return InvokerESBServer.getCustList(req).getCustomerList();
+			return InvokerCustomerService.getCustList(req).getCustomerList();
 		} catch (Exception e) {
 			
 		}

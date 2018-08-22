@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.conf.application.client.InvokerESBServer;
+import org.conf.application.client.InvokerCustomerService;
+import org.conf.application.client.InvokerESBService;
 import org.conf.application.client.dto.LossWarningReq;
 import org.conf.application.client.dto.LossWarningRes;
 import org.conf.application.client.dto.ModelSystemReq;
@@ -95,13 +96,13 @@ public class QualificationInvokerAopProcess implements AbstractInvokerAopProcess
   		{
   			ModelSystemReq modelSystem = new ModelSystemReq();
   			modelSystem.setCustNo(custNo);
-  			ModelSystemRes modelSystemRes =InvokerESBServer.modelSystem(modelSystem);
+  			ModelSystemRes modelSystemRes =InvokerCustomerService.modelSystem(modelSystem);
   			LossWarningReq lossWarn = new LossWarningReq();
   			lossWarn.setCustNo(custNo);
-  			LossWarningRes lossWarningRes = InvokerESBServer.lossWarning(lossWarn);
+  			LossWarningRes lossWarningRes = InvokerCustomerService.lossWarning(lossWarn);
   			QuotaPriceReq quota = new QuotaPriceReq();
   			quota.setCLIENT_NO(custNo);
-  			QuotaPriceRes quotaProces = InvokerESBServer.quotaPrice(quota);
+  			QuotaPriceRes quotaProces = InvokerESBService.quotaPrice(quota);
   			buildParam(modelSystemRes, lossWarningRes, quotaProces, params);
   		}
 		
